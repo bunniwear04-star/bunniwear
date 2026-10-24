@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>bunniwear | ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี มินิมอล คัดเกรดพรีเมียม</title>
-  <meta name="description" content="bunniwear ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี มินิมอล เนื้อผ้าพรีเมียม ใส่สบาย แมทช์ง่ายทุกลุค พร้อมระบบสั่งซื้อง่ายๆ ในหน้าเดียว" />
+  <meta name="description" content="bunniwear ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี มินิมอล เนื้อผ้าพรีเมียม ใส่สบาย แมทช์ง่ายทุกลุค พร้อมระบบสั่งซื้อและออกใบเสนอราคา PDF ในหน้าเดียว" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,6 +16,9 @@
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- html2pdf.js CDN for 1-Click PDF Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -89,19 +92,55 @@
       animation: pulseRing 2s infinite;
       z-index: -1;
     }
+
+    /* Print Styles for Crisp A4 Quotation */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+      body * {
+        visibility: hidden !important;
+      }
+      #quotationModal,
+      #quotationPaper,
+      #quotationPaper * {
+        visibility: visible !important;
+      }
+      #quotationModal {
+        position: absolute !important;
+        inset: 0 !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+      }
+      #quotationPaper {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body class="antialiased selection:bg-bunni-300 selection:text-stone-900">
 
   <!-- Top Announcement Bar -->
-  <div class="bg-stone-900 text-stone-100 text-xs sm:text-sm py-2.5 px-4 text-center font-light tracking-wide">
+  <div class="bg-stone-900 text-stone-100 text-xs sm:text-sm py-2.5 px-4 text-center font-light tracking-wide no-print">
     <span class="inline-flex items-center gap-1.5 flex-wrap justify-center">
       🐰 <strong>โปรโมชั่นเปิดร้าน bunniwear!</strong> ส่งฟรีทุกออเดอร์เมื่อช้อปครบ ฿990 + ใช้โค้ด <span class="bg-bunni-500 text-white px-2 py-0.5 rounded font-medium">BUNNI10</span> ลดเพิ่ม 10%
     </span>
   </div>
 
   <!-- Navbar -->
-  <header class="sticky top-0 z-40 glass-nav border-b border-bunni-200/70 transition-all">
+  <header class="sticky top-0 z-40 glass-nav border-b border-bunni-200/70 transition-all no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
       <!-- Brand Logo -->
       <a href="#" class="flex items-center gap-2.5 group">
@@ -115,38 +154,41 @@
       </a>
 
       <!-- Desktop Menu -->
-      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-stone-700">
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-stone-700">
         <a href="#home" class="hover:text-bunni-600 transition">หน้าแรก</a>
         <a href="#catalog" class="hover:text-bunni-600 transition">สินค้าทั้งหมด</a>
         <button onclick="openSizeModal()" class="inline-flex items-center gap-1.5 hover:text-bunni-600 transition text-bunni-700 font-semibold">
           <i data-lucide="ruler" class="w-4 h-4"></i>
           <span>ตารางเทียบไซส์</span>
         </button>
-        <a href="#lookbook" class="hover:text-bunni-600 transition">ลุคบุ๊ค</a>
+        <button onclick="openQuotationModal()" class="inline-flex items-center gap-1.5 hover:text-bunni-600 transition text-stone-700">
+          <i data-lucide="file-text" class="w-4 h-4 text-bunni-600"></i>
+          <span>ใบเสนอราคา (PDF)</span>
+        </button>
         <a href="#reviews" class="hover:text-bunni-600 transition">รีวิวลูกค้า</a>
       </nav>
 
       <!-- Actions -->
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2">
         <div class="relative hidden lg:block">
           <input
             id="searchInput"
             type="text"
             placeholder="ค้นหาเสื้อเชิ้ต, เดรส, กางเกง..."
             oninput="handleSearch(this.value)"
-            class="w-56 pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500 focus:ring-2 focus:ring-bunni-200 transition"
+            class="w-52 pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500 focus:ring-2 focus:ring-bunni-200 transition"
           />
           <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
         </div>
 
-        <!-- Mobile Size Chart Trigger -->
+        <!-- Quotation Button -->
         <button
-          onclick="openSizeModal()"
-          class="md:hidden inline-flex items-center gap-1 px-3 py-2 rounded-full bg-white border border-bunni-200 text-xs font-medium text-stone-700 hover:bg-bunni-100 transition"
-          title="ตารางเทียบไซส์"
+          onclick="openQuotationModal()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-full bg-bunni-100 hover:bg-bunni-200 text-bunni-900 border border-bunni-300/80 text-xs sm:text-sm font-medium transition"
+          title="ออกใบเสนอราคา / พิมพ์ PDF"
         >
-          <i data-lucide="ruler" class="w-3.5 h-3.5 text-bunni-600"></i>
-          <span>ตารางไซส์</span>
+          <i data-lucide="printer" class="w-4 h-4 text-bunni-700"></i>
+          <span class="hidden sm:inline">ใบเสนอราคา</span>
         </button>
 
         <!-- Cart Button -->
@@ -155,7 +197,7 @@
           class="relative inline-flex items-center gap-2 bg-stone-900 hover:bg-bunni-600 text-white px-4 py-2.5 rounded-full text-sm font-medium transition shadow-sm"
         >
           <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">ตะกร้าสินค้า</span>
+          <span class="hidden sm:inline">ตะกร้า</span>
           <span id="cartCountBadge" class="bg-bunni-400 text-stone-950 text-xs font-bold w-5 h-5 rounded-full inline-flex items-center justify-center">0</span>
         </button>
       </div>
@@ -163,7 +205,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section id="home" class="relative overflow-hidden pt-8 pb-16 md:py-20 bg-gradient-to-b from-bunni-100/70 via-bunni-50 to-bunni-50">
+  <section id="home" class="relative overflow-hidden pt-8 pb-16 md:py-20 bg-gradient-to-b from-bunni-100/70 via-bunni-50 to-bunni-50 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         <!-- Left Content -->
@@ -179,7 +221,7 @@
           </h1>
 
           <p class="text-stone-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
-            คัดสรรเสื้อผ้าแฟชั่นสไตล์มินิมอล-เกาหลี เนื้อผ้าเกรดพรีเมียม คัตติ้งเนี้ยบ ใส่สบายระบายอากาศดี ไม่ว่าจะวันทำงานหรือวันเที่ยวคาเฟ่ก็มั่นใจทุกมุมกล้อง
+            คัดสรรเสื้อผ้าแฟชั่นสไตล์มินิมอล-เกาหลี เนื้อผ้าเกรดพรีเมียม คัตติ้งเนี้ยบ ใส่สบายระบายอากาศดี พร้อมระบบออกใบเสนอราคาและสั่งซื้อออนไลน์ได้ทันที
           </p>
 
           <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
@@ -191,11 +233,11 @@
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
             <button
-              onclick="openSizeModal()"
+              onclick="openQuotationModal()"
               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white hover:bg-bunni-100 text-stone-800 border border-bunni-200 font-medium text-base transition"
             >
-              <i data-lucide="ruler" class="w-4 h-4 text-bunni-500"></i>
-              <span>เช็คไซส์ที่เหมาะกับคุณ</span>
+              <i data-lucide="file-text" class="w-4 h-4 text-bunni-600"></i>
+              <span>ออกใบเสนอราคา (PDF)</span>
             </button>
           </div>
 
@@ -250,10 +292,10 @@
 
             <!-- Floating Card 2 -->
             <div class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-bunni-100 absolute -right-6 bottom-24 animate-float" style="animation-delay: 1.5s;">
-              <div class="w-11 h-11 rounded-xl bg-rose-100 flex items-center justify-center text-xl">🎀</div>
+              <div class="w-11 h-11 rounded-xl bg-rose-100 flex items-center justify-center text-xl">📄</div>
               <div>
-                <p class="text-xs font-semibold text-stone-900">ส่งด่วนทุกวัน จันทร์-อาทิตย์</p>
-                <p class="text-[11px] text-stone-500">เปลี่ยนไซส์ได้ภายใน 7 วัน</p>
+                <p class="text-xs font-semibold text-stone-900">ออกใบเสนอราคา PDF ได้ทันที</p>
+                <p class="text-[11px] text-stone-500">รองรับทั้งปลีกและส่ง / งานองค์กร</p>
               </div>
             </div>
           </div>
@@ -263,7 +305,7 @@
   </section>
 
   <!-- Highlights / Benefits Bar -->
-  <section class="py-10 bg-white border-y border-bunni-100">
+  <section class="py-10 bg-white border-y border-bunni-100 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="flex items-start gap-3.5">
@@ -286,11 +328,11 @@
         </div>
         <div class="flex items-start gap-3.5">
           <div class="w-11 h-11 rounded-2xl bg-bunni-100 text-bunni-700 flex items-center justify-center shrink-0">
-            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+            <i data-lucide="file-check-2" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-semibold text-stone-900 text-sm sm:text-base">เปลี่ยนไซส์ได้ใน 7 วัน</h3>
-            <p class="text-xs text-stone-500 mt-0.5">ใส่ไม่พอดี ทักแอดมินเปลี่ยนได้ทันที</p>
+            <h3 class="font-semibold text-stone-900 text-sm sm:text-base">ออกใบเสนอราคา PDF ได้</h3>
+            <p class="text-xs text-stone-500 mt-0.5">พิมพ์หรือบันทึกไฟล์ PDF ขนาด A4 ได้ทันที</p>
           </div>
         </div>
         <div class="flex items-start gap-3.5">
@@ -307,12 +349,12 @@
   </section>
 
   <!-- Catalog Section -->
-  <section id="catalog" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section id="catalog" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 no-print">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
       <div>
         <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Our Collection</span>
         <h2 class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">เลือกช้อปสินค้า bunniwear</h2>
-        <p class="text-stone-500 text-sm mt-1">คลิกที่รูปสินค้าเพื่อดูรายละเอียดแบบขยาย (Quick View) หรือเลือกสีและไซส์ได้เลย</p>
+        <p class="text-stone-500 text-sm mt-1">คลิกที่รูปสินค้าเพื่อดูรายละเอียดแบบขยาย (Quick View) หรือหยิบใส่ตะกร้าเพื่อออกใบเสนอราคา</p>
       </div>
 
       <!-- Search, Size Chart Button & Sort -->
@@ -359,7 +401,7 @@
   </section>
 
   <!-- Lookbook Banner Section -->
-  <section id="lookbook" class="py-16 bg-bunni-100/60 border-y border-bunni-200/60">
+  <section id="lookbook" class="py-16 bg-bunni-100/60 border-y border-bunni-200/60 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-12">
         <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Style Inspiration</span>
@@ -414,7 +456,7 @@
   </section>
 
   <!-- Customer Reviews -->
-  <section id="reviews" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section id="reviews" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 no-print">
     <div class="text-center max-w-2xl mx-auto mb-12">
       <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Happy Bunnies</span>
       <h2 class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">รีวิวจากลูกค้าจริง</h2>
@@ -453,13 +495,13 @@
       <div class="bg-white p-6 rounded-3xl border border-bunni-200/70 shadow-sm space-y-4">
         <div class="flex items-center text-amber-400 text-sm">★★★★★</div>
         <p class="text-stone-700 text-sm leading-relaxed">
-          "กางเกงสแล็คเอวสูงเก็บทรงดีมากค่ะ เราสูง 158 ใส่แล้วดูขายาวขึ้นเยอะมาก ผ้าทิ้งตัวสวยไม่ต้องรีดเยอะเลย แนะนำร้านนี้เลยค่ะ"
+          "สั่งชุดเซ็ตไปเป็นยูนิฟอร์มทีมออฟฟิศ กดออกใบเสนอราคา PDF จากหน้าเว็บไปเบิกบริษัทได้ทันที สะดวกมากๆ เลยค่ะ ผ้าสวยทุกคนชม!"
         </p>
         <div class="flex items-center gap-3 pt-2 border-t border-stone-100">
           <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center font-bold text-amber-800">น</div>
           <div>
             <p class="text-sm font-semibold text-stone-900">คุณนุ่น (ขอนแก่น)</p>
-            <p class="text-xs text-stone-400">ซื้อ กางเกงขายาวเอวสูง ทรงขากระบอก</p>
+            <p class="text-xs text-stone-400">ซื้อ ชุดเซ็ต & เบลเซอร์ครอป</p>
           </div>
         </div>
       </div>
@@ -467,12 +509,12 @@
   </section>
 
   <!-- How to Order Section -->
-  <section id="how-to-order" class="py-16 bg-stone-900 text-white">
+  <section id="how-to-order" class="py-16 bg-stone-900 text-white no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-12">
         <span class="text-xs uppercase tracking-widest text-bunni-300 font-semibold">Easy Shopping</span>
-        <h2 class="text-3xl sm:text-4xl font-bold mt-1">ขั้นตอนการสั่งซื้อง่ายๆ ใน 3 ขั้นตอน</h2>
-        <p class="text-stone-400 text-sm mt-2">ไม่ต้องสมัครสมาชิก ไม่ต้องล็อกอิน กดเลือกสินค้าแล้วสรุปยอดสั่งซื้อได้ทันที</p>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-1">ขั้นตอนการสั่งซื้อ & ออกใบเสนอราคา</h2>
+        <p class="text-stone-400 text-sm mt-2">ไม่ต้องสมัครสมาชิก ไม่ต้องล็อกอิน กดเลือกสินค้าแล้วออกใบเสนอราคา PDF หรือสั่งซื้อได้ทันที</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -483,8 +525,8 @@
         </div>
         <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">2</div>
-          <h3 class="text-lg font-semibold">กรอกชื่อ-ที่อยู่จัดส่ง</h3>
-          <p class="text-sm text-stone-400">เปิดตะกร้าสินค้า ใส่โค้ดส่วนลด <code class="text-bunni-300">BUNNI10</code> และกรอกที่อยู่จัดส่ง</p>
+          <h3 class="text-lg font-semibold">ออกใบเสนอราคา / กรอกที่อยู่</h3>
+          <p class="text-sm text-stone-400">กดปุ่ม "ออกใบเสนอราคา" เพื่อพิมพ์หรือดาวน์โหลดเป็นไฟล์ PDF ขนาด A4 ได้ทันที</p>
         </div>
         <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">3</div>
@@ -496,7 +538,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-bunni-200 pt-14 pb-24">
+  <footer class="bg-white border-t border-bunni-200 pt-14 pb-24 no-print">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-stone-100">
         <div class="space-y-3">
@@ -522,9 +564,9 @@
         <div>
           <h4 class="font-semibold text-stone-900 mb-3 text-sm uppercase tracking-wider">บริการช่วยเหลือ</h4>
           <ul class="space-y-2 text-sm text-stone-600">
+            <li><button onclick="openQuotationModal()" class="hover:text-bunni-600 underline font-medium">📄 ออกใบเสนอราคา (Print / PDF)</button></li>
             <li><button onclick="openSizeModal()" class="hover:text-bunni-600 underline">📏 เปิดตารางเทียบไซส์ & คำนวณไซส์</button></li>
             <li><button onclick="toggleLineWidget(true)" class="hover:text-bunni-600">💬 ทักแชทสอบถามแอดมิน</button></li>
-            <li class="text-xs text-stone-400 pt-1">เปลี่ยนไซส์ได้ภายใน 7 วันหลังได้รับสินค้า</li>
           </ul>
         </div>
 
@@ -547,9 +589,105 @@
   </footer>
 
   <!-- ========================================================= -->
+  <!-- FEATURE 4: Printable & PDF Quotation Modal (ใบเสนอราคา A4) -->
+  <!-- ========================================================= -->
+  <div id="quotationModal" class="fixed inset-0 z-50 hidden items-start justify-center p-2 sm:p-6 overflow-y-auto bg-stone-950/70 backdrop-blur-xs">
+    <div class="relative w-full max-w-4xl my-auto">
+      <!-- Top Control Bar (Hidden when printing) -->
+      <div class="no-print bg-stone-900 text-white rounded-t-3xl p-4 sm:px-6 flex flex-wrap items-center justify-between gap-3 border-b border-stone-700">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-bunni-500 text-white flex items-center justify-center">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm sm:text-base">ระบบออกใบเสนอราคา (Quotation / PDF)</h3>
+            <p class="text-[11px] text-stone-400">กรอกข้อมูลลูกค้าด้านล่าง แล้วกดพิมพ์หรือบันทึกเป็น PDF ได้ทันที</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onclick="window.print()"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-stone-100 text-stone-900 text-xs font-semibold transition shadow-xs"
+          >
+            <i data-lucide="printer" class="w-4 h-4 text-bunni-600"></i>
+            <span>พิมพ์ / Save as PDF</span>
+          </button>
+          <button
+            id="downloadPdfBtn"
+            type="button"
+            onclick="downloadQuotationPdf()"
+            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-bunni-500 hover:bg-bunni-600 text-white text-xs font-semibold transition shadow-xs"
+          >
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>ดาวน์โหลดไฟล์ PDF</span>
+          </button>
+          <button
+            type="button"
+            onclick="closeQuotationModal()"
+            class="p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 transition"
+            title="ปิดหน้าต่าง"
+          >
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Customer Details Input Panel (Hidden when printing) -->
+      <div class="no-print bg-bunni-50 p-4 sm:px-6 border-b border-bunni-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-stone-800 uppercase tracking-wider">📝 ข้อมูลผู้ขอใบเสนอราคา / ลูกค้า (แก้ไขแล้วอัปเดตในใบเสนอราคาทันที)</span>
+          <label class="inline-flex items-center gap-2 text-xs font-medium text-stone-700 cursor-pointer">
+            <input id="quoteVatToggle" type="checkbox" onchange="renderQuotationPaper()" class="accent-bunni-600 rounded" />
+            <span>คำนวณภาษีมูลค่าเพิ่ม (VAT 7%)</span>
+          </label>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <input
+            id="qCustName"
+            type="text"
+            placeholder="ชื่อลูกค้า / บริษัท"
+            oninput="renderQuotationPaper()"
+            class="px-3 py-2 rounded-xl border border-bunni-200 bg-white text-xs focus:outline-none focus:border-bunni-500"
+          />
+          <input
+            id="qCustTaxId"
+            type="text"
+            placeholder="เลขผู้เสียภาษี (ถ้ามี)"
+            oninput="renderQuotationPaper()"
+            class="px-3 py-2 rounded-xl border border-bunni-200 bg-white text-xs focus:outline-none focus:border-bunni-500"
+          />
+          <input
+            id="qCustPhone"
+            type="text"
+            placeholder="เบอร์โทรศัพท์ / อีเมล"
+            oninput="renderQuotationPaper()"
+            class="px-3 py-2 rounded-xl border border-bunni-200 bg-white text-xs focus:outline-none focus:border-bunni-500"
+          />
+          <input
+            id="qCustAddress"
+            type="text"
+            placeholder="ที่อยู่ลูกค้า / บริษัท"
+            oninput="renderQuotationPaper()"
+            class="px-3 py-2 rounded-xl border border-bunni-200 bg-white text-xs focus:outline-none focus:border-bunni-500"
+          />
+        </div>
+      </div>
+
+      <!-- A4 Printable Quotation Sheet -->
+      <div class="bg-stone-200/70 p-2 sm:p-6 rounded-b-3xl">
+        <div id="quotationPaper" class="bg-white mx-auto shadow-xl rounded-xl sm:rounded-none p-6 sm:p-10 text-stone-900 max-w-[794px]">
+          <!-- Dynamically populated by renderQuotationPaper() -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
   <!-- FEATURE 1: Product Quick View Modal (ดูรายละเอียดแบบขยาย) -->
   <!-- ========================================================= -->
-  <div id="quickViewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div id="quickViewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 no-print">
     <div onclick="closeQuickView()" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs transition-opacity"></div>
 
     <div class="relative bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-bunni-100 z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -569,7 +707,7 @@
   <!-- ========================================================= -->
   <!-- FEATURE 2: Size Chart & Smart Size Finder Modal (ตารางไซส์) -->
   <!-- ========================================================= -->
-  <div id="sizeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div id="sizeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 no-print">
     <div onclick="closeSizeModal()" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs transition-opacity"></div>
 
     <div class="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-bunni-100 z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -680,7 +818,7 @@
   <!-- ========================================================= -->
   <!-- FEATURE 3: Floating LINE Chat Widget (ปุ่มลอยแชท LINE)    -->
   <!-- ========================================================= -->
-  <div class="fixed bottom-5 right-5 z-40 flex flex-col items-end">
+  <div class="fixed bottom-5 right-5 z-40 flex flex-col items-end no-print">
     <!-- Expandable Chat Box -->
     <div
       id="lineChatPopup"
@@ -780,7 +918,7 @@
   </div>
 
   <!-- Slide-over Shopping Cart Drawer -->
-  <div id="cartModal" class="fixed inset-0 z-50 hidden">
+  <div id="cartModal" class="fixed inset-0 z-50 hidden no-print">
     <!-- Backdrop -->
     <div onclick="toggleCart(false)" class="fixed inset-0 bg-stone-950/50 backdrop-blur-xs transition-opacity"></div>
 
@@ -846,20 +984,29 @@
             </div>
           </div>
 
-          <button
-            onclick="openCheckoutModal()"
-            class="w-full py-3.5 rounded-full bg-bunni-600 hover:bg-bunni-700 text-white font-semibold text-sm shadow-lg shadow-bunni-600/20 transition flex items-center justify-center gap-2"
-          >
-            <span>ดำเนินการสั่งซื้อ</span>
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-          </button>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button
+              onclick="toggleCart(false); openQuotationModal();"
+              class="py-3.5 px-3 rounded-full bg-white hover:bg-bunni-100 text-stone-900 border border-bunni-300 font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-1.5"
+            >
+              <i data-lucide="file-text" class="w-4 h-4 text-bunni-600"></i>
+              <span>ออกใบเสนอราคา</span>
+            </button>
+            <button
+              onclick="openCheckoutModal()"
+              class="py-3.5 px-3 rounded-full bg-bunni-600 hover:bg-bunni-700 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-bunni-600/20 transition flex items-center justify-center gap-1.5"
+            >
+              <span>สั่งซื้อเลย</span>
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Checkout / Order Summary Modal (No Backend Required) -->
-  <div id="checkoutModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div id="checkoutModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 no-print">
     <div onclick="closeCheckoutModal()" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs"></div>
 
     <div class="relative bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-bunni-100 max-h-[90vh] overflow-y-auto custom-scrollbar z-10">
@@ -921,6 +1068,14 @@
             </button>
             <button
               type="button"
+              onclick="closeCheckoutModal(); openQuotationModal();"
+              class="py-2.5 px-4 rounded-xl bg-bunni-600 hover:bg-bunni-700 text-white text-xs font-medium transition flex items-center gap-1"
+            >
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>พิมพ์ใบเสนอราคา PDF</span>
+            </button>
+            <button
+              type="button"
               onclick="finishAndClearOrder()"
               class="py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium transition"
             >
@@ -941,7 +1096,7 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-24 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+  <div id="toast" class="fixed bottom-24 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
     <div class="bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-sm">
       <span class="text-lg">🐰</span>
       <span id="toastMessage">เพิ่มสินค้าลงตะกร้าแล้ว!</span>
@@ -959,7 +1114,7 @@
       { id: 'outerwear', name: 'เสื้อคลุม & คาร์ดิแกน' }
     ];
 
-    // Products Catalog Data with Extended Features for Quick View
+    // Products Catalog Data
     const PRODUCTS = [
       {
         id: 'bunni-01',
@@ -975,7 +1130,6 @@
           'ทรง Oversize พลางต้นแขนและช่วงตัวได้ดีเยี่ยม',
           'รีดง่าย ยับยาก ใส่ได้ทั้งเป็นเสื้อเดี่ยวและเสื้อคลุม'
         ],
-        fabricCare: 'ซักมือหรือซักเครื่องในถุงถนอมผ้า รีดด้วยไฟอ่อน-ปานกลาง',
         image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80',
         colors: ['ขาวครีม', 'เบจละมุน', 'ฟ้าพาสเทล'],
         sizes: ['S', 'M', 'L']
@@ -994,7 +1148,6 @@
           'ดีไซน์คอเหลี่ยมช่วยโชว์ไหปลาร้าให้ดูเพรียว',
           'ซิปหลังซ่อนอย่างดี สวมใส่ง่าย ทรงเข้ารูปพอดีตัว'
         ],
-        fabricCare: 'แนะนำซักมือหรือใส่ถุงซักผ้า ตากในที่ร่ม',
         image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80',
         colors: ['ชมพูพาสเทล', 'ขาวครีม', 'กลีบบัว'],
         sizes: ['S', 'M', 'L']
@@ -1013,7 +1166,6 @@
           'ผ้าเปเป้เนื้อหนาพรีเมียม ทิ้งตัวสวย ไม่เป็นขุย',
           'มีกระเป๋าใช้งานได้จริงทั้ง 2 ข้าง ตะขอหน้าแข็งแรง'
         ],
-        fabricCare: 'ซักเครื่องได้ตามปกติ สะบัดตากแทบไม่ต้องรีด',
         image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80',
         colors: ['ครีมงาช้าง', 'น้ำตาลม็อคค่า', 'ดำคลาสสิก'],
         sizes: ['S', 'M', 'L']
@@ -1032,7 +1184,6 @@
           'แต่งกระดุมมุกขอบทอง เพิ่มความหรูหราละมุน',
           'ขนาด Free Size ยืดหยุ่นตามสัดส่วน'
         ],
-        fabricCare: 'ซักมือและตากแนวราบเพื่อรักษารูปทรงไหมพรม',
         image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=800&q=80',
         colors: ['ครีมนม', 'ชมพูพีช', 'น้ำตาลคาราเมล'],
         sizes: ['Free Size']
@@ -1051,7 +1202,6 @@
           'กางเกงมีซับในและสม็อกหลังยืดหยุ่นตามเอว',
           'เนื้อผ้าลินินทอพิเศษ อยู่ทรงสวยตลอดวัน'
         ],
-        fabricCare: 'ซักเครื่องในถุงถนอมผ้า รีดด้วยไฟกลาง',
         image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80',
         colors: ['เบจธรรมชาติ', 'เทาอ่อน'],
         sizes: ['S', 'M', 'L']
@@ -1070,7 +1220,6 @@
           'งานปักโลโก้กระต่าย bunni ละเอียดแน่นไม่หลุดลอก',
           'ความยาวกำลังดี ไม่เต่อเกินไป'
         ],
-        fabricCare: 'ซักเครื่องได้ปกติ หลีกเลี่ยงการอบความร้อนสูง',
         image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
         colors: ['ขาว', 'ชมพูเบบี้พิงค์', 'ดำ'],
         sizes: ['S', 'M', 'L']
@@ -1089,7 +1238,6 @@
           'อัดจีบคมด้วยเทคนิคพิเศษ ซักแล้วจีบไม่คลาย',
           'ทรงเอวสูงช่วยเก็บหน้าท้องและพรางต้นขา'
         ],
-        fabricCare: 'ใส่ถุงถนอมผ้าก่อนซัก ตากโดยใช้ไม้หนีบขอบเอว',
         image: 'https://images.unsplash.com/photo-1582142306909-195724d33ffc?auto=format&fit=crop&w=800&q=80',
         colors: ['ขาวครีม', 'เทาเกาหลี', 'ดำ'],
         sizes: ['S', 'M', 'L']
@@ -1108,7 +1256,6 @@
           'เสริมฟองน้ำบ่าบางๆ ช่วยให้บุคลิกดูสง่า',
           'คัตติ้งเนี้ยบระดับงานขึ้นห้าง'
         ],
-        fabricCare: 'ซักมือหรือซักแห้ง รีดด้วยเตารีดไอน้ำ',
         image: 'https://images.unsplash.com/photo-1548624313-0396c75e4b1a?auto=format&fit=crop&w=800&q=80',
         colors: ['ครีมเบจ', 'น้ำตาลช็อกโกแลต'],
         sizes: ['S', 'M', 'L']
@@ -1122,9 +1269,9 @@
     let promoDiscountRate = 0;
     let activeQuickViewId = null;
     let quickViewQty = 1;
+    let currentQuotationNo = 'QT-' + new Date().getFullYear() + '-' + String(Math.floor(1000 + Math.random() * 9000));
     let cart = JSON.parse(localStorage.getItem('bunniwear_cart') || '[]');
 
-    // Track selected options per product card
     const selectedOptions = {};
     PRODUCTS.forEach(p => {
       selectedOptions[p.id] = {
@@ -1319,6 +1466,289 @@
     }
 
     // =========================================================
+    // FEATURE 4 FUNCTIONS: Printable & PDF Quotation Generator
+    // =========================================================
+    function numberToThaiBahtText(amount) {
+      amount = Math.round(amount * 100) / 100;
+      if (isNaN(amount) || amount <= 0) return 'ศูนย์บาทถ้วน';
+      const numText = ['ศูนย์', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+      const unitText = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน'];
+
+      function convertInteger(numStr) {
+        let result = '';
+        const len = numStr.length;
+        for (let i = 0; i < len; i++) {
+          const digit = parseInt(numStr.charAt(i), 10);
+          const pos = (len - i - 1) % 6;
+          if (digit !== 0) {
+            if (pos === 0 && digit === 1 && len > 1 && numStr.charAt(i - 1) !== '0') {
+              result += 'เอ็ด';
+            } else if (pos === 1 && digit === 2) {
+              result += 'ยี่';
+            } else if (pos === 1 && digit === 1) {
+              result += '';
+            } else {
+              result += numText[digit];
+            }
+            result += unitText[pos];
+          }
+          if ((len - i - 1) > 0 && (len - i - 1) % 6 === 0) {
+            result += 'ล้าน';
+          }
+        }
+        return result;
+      }
+
+      const parts = amount.toFixed(2).split('.');
+      const bahtPart = parseInt(parts[0], 10);
+      const satangPart = parseInt(parts[1], 10);
+
+      let text = '';
+      if (bahtPart > 0) {
+        text += convertInteger(String(bahtPart)) + 'บาท';
+      }
+      if (satangPart === 0) {
+        text += 'ถ้วน';
+      } else {
+        text += convertInteger(String(satangPart)) + 'สตางค์';
+      }
+      return text;
+    }
+
+    function openQuotationModal() {
+      // Sync customer info if already typed in checkout form
+      const checkoutName = document.getElementById('custName')?.value;
+      const checkoutPhone = document.getElementById('custPhone')?.value;
+      const checkoutAddress = document.getElementById('custAddress')?.value;
+      if (checkoutName && !document.getElementById('qCustName').value) {
+        document.getElementById('qCustName').value = checkoutName;
+      }
+      if (checkoutPhone && !document.getElementById('qCustPhone').value) {
+        document.getElementById('qCustPhone').value = checkoutPhone;
+      }
+      if (checkoutAddress && !document.getElementById('qCustAddress').value) {
+        document.getElementById('qCustAddress').value = checkoutAddress;
+      }
+
+      renderQuotationPaper();
+      const modal = document.getElementById('quotationModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeQuotationModal() {
+      const modal = document.getElementById('quotationModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderQuotationPaper() {
+      const paper = document.getElementById('quotationPaper');
+      const custName = document.getElementById('qCustName').value.trim() || 'ลูกค้าทั่วไป (คุณลูกค้าผู้มีอุปการคุณ)';
+      const custTaxId = document.getElementById('qCustTaxId').value.trim() || '-';
+      const custPhone = document.getElementById('qCustPhone').value.trim() || '-';
+      const custAddress = document.getElementById('qCustAddress').value.trim() || '-';
+      const includeVat = document.getElementById('quoteVatToggle').checked;
+
+      // If cart is empty, show sample preview items so user can still test/print quotation anytime
+      const quoteItems = cart.length > 0 ? cart : [
+        {
+          id: PRODUCTS[0].id,
+          name: PRODUCTS[0].name,
+          color: PRODUCTS[0].colors[0],
+          size: PRODUCTS[0].sizes[0],
+          price: PRODUCTS[0].price,
+          qty: 1
+        },
+        {
+          id: PRODUCTS[1].id,
+          name: PRODUCTS[1].name,
+          color: PRODUCTS[1].colors[0],
+          size: PRODUCTS[1].sizes[0],
+          price: PRODUCTS[1].price,
+          qty: 1
+        }
+      ];
+
+      const subtotal = quoteItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const discount = Math.round(subtotal * promoDiscountRate);
+      const afterDiscount = subtotal - discount;
+      const shipping = afterDiscount >= 990 || afterDiscount === 0 ? 0 : 50;
+      const vatAmount = includeVat ? Math.round(afterDiscount * 0.07 * 100) / 100 : 0;
+      const grandTotal = afterDiscount + vatAmount + shipping;
+
+      const today = new Date();
+      const validUntil = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
+      const formatDate = (d) => d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      paper.innerHTML = `
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 pb-6 border-b-2 border-stone-900">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-2xl bg-bunni-200 flex items-center justify-center text-xl">🐰</div>
+              <div>
+                <h1 class="font-serif text-3xl font-bold tracking-tight text-stone-900">bunniwear</h1>
+                <p class="text-[11px] uppercase tracking-widest text-bunni-700 font-semibold">Seoul Minimal Fashion Studio</p>
+              </div>
+            </div>
+            <p class="text-xs text-stone-600 pt-1">ร้านเสื้อผ้าแฟชั่น bunniwear (สำนักงานใหญ่)</p>
+            <p class="text-xs text-stone-500">99/8 อาคารโซลสตูดิโอ ถนนสุขุมวิท แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110</p>
+            <p class="text-xs text-stone-500">โทร: 02-123-4567 | LINE Official: @bunniwear | อีเมล: bunniwear04@gmail.com</p>
+          </div>
+
+          <div class="sm:text-right space-y-1 bg-bunni-50 px-5 py-4 rounded-2xl border border-bunni-200 w-full sm:w-auto">
+            <span class="text-xs font-bold uppercase tracking-widest text-bunni-700 block">QUOTATION</span>
+            <h2 class="text-2xl font-bold text-stone-900">ใบเสนอราคา</h2>
+            <div class="text-xs text-stone-600 space-y-0.5 pt-1">
+              <p><strong>เลขที่เอกสาร:</strong> ${currentQuotationNo}</p>
+              <p><strong>วันที่ออกเอกสาร:</strong> ${formatDate(today)}</p>
+              <p><strong>ยืนยันราคาถึงวันที่:</strong> ${formatDate(validUntil)}</p>
+            </div>
+          </div>
+        </div>
+
+        ${cart.length === 0 ? `
+          <div class="no-print mt-4 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+            <span>💡</span>
+            <span>ขณะนี้ตะกร้าสินค้ายังว่างอยู่ ระบบจึงแสดง <strong>รายการสินค้าตัวอย่าง</strong> เพื่อให้คุณทดสอบพิมพ์หรือบันทึก PDF ได้ทันที (หากต้องการเปลี่ยนสินค้า ให้กดหยิบสินค้าใส่ตะกร้าได้เลยค่ะ)</span>
+          </div>
+        ` : ''}
+
+        <!-- Customer Info Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6 p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs">
+          <div class="space-y-1">
+            <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">เสนอราคาแก่ (Customer)</p>
+            <p class="text-sm font-bold text-stone-900">${custName}</p>
+            <p class="text-stone-600"><strong>ที่อยู่:</strong> ${custAddress}</p>
+          </div>
+          <div class="space-y-1 sm:text-right">
+            <p class="text-stone-600"><strong>เลขประจำตัวผู้เสียภาษี:</strong> ${custTaxId}</p>
+            <p class="text-stone-600"><strong>เบอร์โทรศัพท์ / ติดต่อ:</strong> ${custPhone}</p>
+            <p class="text-stone-600"><strong>เงื่อนไขการชำระเงิน:</strong> โอนชำระ / เก็บเงินปลายทาง (COD)</p>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-stone-900 text-white">
+                <th class="py-3 px-3 font-semibold text-center w-12 rounded-tl-xl">ลำดับ</th>
+                <th class="py-3 px-3 font-semibold">รายการสินค้า (Description)</th>
+                <th class="py-3 px-3 font-semibold text-center w-28">สี / ไซส์</th>
+                <th class="py-3 px-3 font-semibold text-center w-16">จำนวน</th>
+                <th class="py-3 px-3 font-semibold text-right w-28">ราคา/หน่วย</th>
+                <th class="py-3 px-3 font-semibold text-right w-28 rounded-tr-xl">จำนวนเงิน (บาท)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200 border-x border-b border-stone-200">
+              ${quoteItems.map((item, idx) => `
+                <tr>
+                  <td class="py-3 px-3 text-center text-stone-500 font-medium">${idx + 1}</td>
+                  <td class="py-3 px-3">
+                    <p class="font-semibold text-stone-900">${item.name}</p>
+                    <p class="text-[11px] text-stone-400">รหัสสินค้า: ${item.id.toUpperCase()}</p>
+                  </td>
+                  <td class="py-3 px-3 text-center text-stone-700">${item.color} / ${item.size}</td>
+                  <td class="py-3 px-3 text-center font-semibold text-stone-900">${item.qty}</td>
+                  <td class="py-3 px-3 text-right text-stone-700">฿${item.price.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                  <td class="py-3 px-3 text-right font-semibold text-stone-900">฿${(item.price * item.qty).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Totals & Baht Text Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 mt-6 items-start">
+          <div class="sm:col-span-7 space-y-3">
+            <div class="p-3.5 rounded-xl bg-bunni-50 border border-bunni-200 text-xs">
+              <span class="text-stone-500 block text-[11px]">จำนวนเงินรวมทั้งสิ้น (ตัวอักษร):</span>
+              <strong class="text-stone-900 text-sm">( ${numberToThaiBahtText(grandTotal)} )</strong>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-600 space-y-1">
+              <p class="font-semibold text-stone-800">หมายเหตุและเงื่อนไขการสั่งซื้อ:</p>
+              <p>1. ใบเสนอราคานี้มีอายุ 15 วัน นับจากวันที่ออกเอกสาร</p>
+              <p>2. จัดส่งด่วนฟรีทั่วประเทศเมื่อมียอดสั่งซื้อหลังหักส่วนลดครบ 990 บาทขึ้นไป</p>
+              <p>3. ช่องทางชำระเงิน: ธนาคารกสิกรไทย เลขที่บัญชี 123-4-56789-0 ชื่อบัญชี ร้าน bunniwear</p>
+            </div>
+          </div>
+
+          <div class="sm:col-span-5 bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-2 text-xs">
+            <div class="flex justify-between text-stone-600">
+              <span>รวมเป็นเงิน (Subtotal)</span>
+              <span class="font-medium text-stone-900">฿${subtotal.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
+            </div>
+            ${discount > 0 ? `
+              <div class="flex justify-between text-rose-600">
+                <span>ส่วนลดโปรโมชั่น (BUNNI10)</span>
+                <span>-฿${discount.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
+              </div>
+            ` : ''}
+            ${includeVat ? `
+              <div class="flex justify-between text-stone-600">
+                <span>ภาษีมูลค่าเพิ่ม (VAT 7%)</span>
+                <span>฿${vatAmount.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
+              </div>
+            ` : ''}
+            <div class="flex justify-between text-stone-600">
+              <span>ค่าจัดส่ง (Shipping)</span>
+              <span>${shipping === 0 ? 'ฟรี (฿0.00)' : '฿' + shipping.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
+            </div>
+            <div class="flex justify-between text-sm font-bold text-stone-900 pt-2.5 border-t-2 border-stone-900">
+              <span>จำนวนเงินรวมสุทธิ</span>
+              <span class="text-bunni-700 text-base">฿${grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signatures -->
+        <div class="grid grid-cols-2 gap-8 mt-12 pt-6 border-t border-stone-200 text-center text-xs text-stone-600">
+          <div class="space-y-8">
+            <p class="font-semibold text-stone-800">ในนาม ผู้สั่งซื้อ / ผู้อนุมัติ</p>
+            <div class="border-b border-dashed border-stone-400 w-44 mx-auto"></div>
+            <p>( ...................................................... )<br/>วันที่ ........../........../..........</p>
+          </div>
+          <div class="space-y-8">
+            <p class="font-semibold text-stone-800">ในนาม ร้าน bunniwear (ผู้เสนอราคา)</p>
+            <div class="border-b border-dashed border-stone-400 w-44 mx-auto"></div>
+            <p>( ฝ่ายขาย bunniwear Official )<br/>วันที่ ${formatDate(today)}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    async function downloadQuotationPdf() {
+      const btn = document.getElementById('downloadPdfBtn');
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<span>กำลังสร้างไฟล์ PDF...</span>';
+      btn.disabled = true;
+
+      try {
+        const element = document.getElementById('quotationPaper');
+        const opt = {
+          margin: [8, 8, 8, 8],
+          filename: `Quotation-${currentQuotationNo}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await html2pdf().set(opt).from(element).save();
+        showToast(`ดาวน์โหลดใบเสนอราคา ${currentQuotationNo}.pdf สำเร็จ!`);
+      } catch (err) {
+        console.error(err);
+        window.print();
+      } finally {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+
+    // =========================================================
     // FEATURE 1 FUNCTIONS: Quick View Modal
     // =========================================================
     function openQuickView(productId) {
@@ -1471,11 +1901,11 @@
             </button>
             <button
               type="button"
-              onclick="addToCart('${product.id}', quickViewQty); closeQuickView(); openCheckoutModal();"
+              onclick="addToCart('${product.id}', quickViewQty); closeQuickView(); openQuotationModal();"
               class="py-3 px-4 rounded-2xl bg-bunni-600 hover:bg-bunni-700 text-white text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 shadow-md shadow-bunni-600/20"
             >
-              <i data-lucide="zap" class="w-4 h-4"></i>
-              <span>ซื้อเลยทันที</span>
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>ออกใบเสนอราคารุ่นนี้</span>
             </button>
           </div>
         </div>
