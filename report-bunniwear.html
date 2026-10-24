@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>รายงานการวิเคราะห์และออกแบบระบบ - โครงการ bunniwear</title>
   <style>
-    /* ฝังฟอนต์ TH SarabunPSK โดยตรงจากเครื่องเพื่อให้ PDF ใช้ฟอนต์ TH SarabunPSK 100% */
+    /* ฝังฟอนต์ TH SarabunPSK แท้จากระบบ */
     @font-face {
       font-family: 'TH SarabunPSK';
       src: local('TH SarabunPSK'),
@@ -21,20 +21,13 @@
       font-weight: bold;
       font-style: normal;
     }
-    @font-face {
-      font-family: 'TH SarabunPSK';
-      src: local('TH SarabunPSK Italic'),
-           url('file:///C:/Users/chati/AppData/Local/Microsoft/Windows/Fonts/THSarabun%20Italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
 
     /* ตั้งค่าหน้ากระดาษ A4 เว้นขอบซ้าย 1.5 นิ้ว (38.1 มม.) เผื่อเย็บเล่ม */
     @page {
       size: A4 portrait;
-      margin-top: 25.4mm;
-      margin-right: 25.4mm;
-      margin-bottom: 25.4mm;
+      margin-top: 18mm;
+      margin-right: 24mm;
+      margin-bottom: 18mm;
       margin-left: 38.1mm; /* เว้นพื้นที่ด้านซ้ายเผื่อเย็บเล่ม 1.5 นิ้ว */
     }
 
@@ -49,12 +42,11 @@
       font-family: 'TH SarabunPSK', sans-serif;
       font-size: 16pt;
       font-weight: normal;
-      line-height: 1.45;
+      line-height: 1.25;
       color: #000000;
       background-color: #ffffff;
     }
 
-    /* สำหรับเปิดดูบนหน้าจอเว็บ (ก่อนพิมพ์) จะจำลองกระดาษ A4 พร้อมระยะเย็บเล่ม */
     @media screen {
       body {
         background-color: #d6d3d1;
@@ -64,9 +56,9 @@
         width: 210mm;
         margin: 0 auto;
         background: #ffffff;
-        padding-top: 25.4mm;
-        padding-right: 25.4mm;
-        padding-bottom: 25.4mm;
+        padding-top: 18mm;
+        padding-right: 24mm;
+        padding-bottom: 18mm;
         padding-left: 38.1mm;
         box-shadow: 0 8px 28px rgba(0,0,0,0.18);
       }
@@ -91,6 +83,11 @@
         font-weight: bold;
         cursor: pointer;
       }
+      .report-page {
+        border-bottom: 1px dashed #d6d3d1;
+        padding-bottom: 14mm;
+        margin-bottom: 14mm;
+      }
     }
 
     @media print {
@@ -103,27 +100,36 @@
         margin: 0;
         box-shadow: none;
       }
+      .report-page {
+        page-break-after: always;
+        break-after: page;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      .report-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
     }
 
-    /* หัวข้อขนาด 18pt ตัวหนา ตามข้อกำหนด */
+    /* หัวข้อขนาด 18pt ตัวหนา */
     h1, h2, h3, .heading-18 {
       font-family: 'TH SarabunPSK', sans-serif;
       font-size: 18pt;
       font-weight: bold;
-      margin-top: 12pt;
-      margin-bottom: 4pt;
-      line-height: 1.35;
+      margin-top: 6pt;
+      margin-bottom: 3pt;
+      line-height: 1.25;
       color: #000000;
-      page-break-after: avoid;
-      break-after: avoid;
     }
 
-    /* เนื้อหาขนาด 16pt ตัวบาง/ปกติ ตามข้อกำหนด */
+    /* เนื้อหาขนาด 16pt ตัวบาง/ปกติ */
     p, li, td, th, div, span {
       font-family: 'TH SarabunPSK', sans-serif;
       font-size: 16pt;
       font-weight: normal;
-      line-height: 1.45;
+      line-height: 1.25;
     }
 
     .bold-text {
@@ -132,7 +138,7 @@
 
     p {
       margin-top: 0;
-      margin-bottom: 8pt;
+      margin-bottom: 4pt;
       text-align: justify;
     }
 
@@ -141,49 +147,68 @@
     }
 
     ul, ol {
-      margin-top: 2pt;
-      margin-bottom: 10pt;
-      padding-left: 1.2cm;
+      margin-top: 1pt;
+      margin-bottom: 5pt;
+      padding-left: 1.0cm;
     }
 
     li {
-      margin-bottom: 3pt;
+      margin-bottom: 1.5pt;
+    }
+
+    /* เลขหน้ามุมบนขวา */
+    .page-header-num {
+      text-align: right;
+      font-size: 16pt;
+      margin-bottom: 2pt;
     }
 
     /* หน้าปกรายงาน */
     .cover-page {
-      min-height: 240mm;
+      min-height: 235mm;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-align: center;
-      page-break-after: always;
-      break-after: page;
       padding: 15mm 0 10mm 0;
     }
 
-    .page-break {
-      page-break-before: always;
-      break-before: page;
+    /* ตารางสารบัญ */
+    .toc-row {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 1.5pt;
     }
-
-    .avoid-break {
-      page-break-inside: avoid;
-      break-inside: avoid;
+    .toc-title {
+      white-space: nowrap;
+    }
+    .toc-sub {
+      padding-left: 1.0cm;
+      white-space: nowrap;
+    }
+    .toc-dots {
+      flex: 1;
+      border-bottom: 1px dotted #57534e;
+      margin: 0 6pt;
+    }
+    .toc-page {
+      white-space: nowrap;
+      min-width: 24px;
+      text-align: right;
     }
 
     /* ตารางมาตรฐานรายงานวิชาการ */
     table.report-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 6pt;
-      margin-bottom: 12pt;
+      margin-top: 3pt;
+      margin-bottom: 5pt;
     }
 
     table.report-table th,
     table.report-table td {
       border: 1px solid #000000;
-      padding: 5pt 8pt;
+      padding: 3pt 6pt;
       vertical-align: top;
       text-align: left;
       font-size: 16pt;
@@ -195,27 +220,27 @@
       text-align: center;
     }
 
-    /* กล่องแผนภาพมาตรฐานวิชาการ (ใช้ฟอนต์ TH SarabunPSK 16pt ทั้งหมด) */
+    /* กล่องแผนภาพมาตรฐานวิชาการ */
     .diagram-box {
       border: 1px solid #000000;
-      padding: 12pt;
-      margin: 8pt 0 14pt 0;
+      padding: 6pt 8pt;
+      margin: 4pt 0 6pt 0;
       background-color: #ffffff;
     }
 
     .flow-node {
       border: 1.2px solid #000000;
-      padding: 5pt 12pt;
+      padding: 3pt 10pt;
       text-align: center;
       background: #ffffff;
       display: inline-block;
-      min-width: 180px;
+      min-width: 170px;
     }
 
     .flow-node-round {
       border: 1.2px solid #000000;
       border-radius: 999px;
-      padding: 5pt 16pt;
+      padding: 3pt 14pt;
       text-align: center;
       background: #f5f5f4;
       display: inline-block;
@@ -224,14 +249,14 @@
     .flow-arrow {
       text-align: center;
       font-size: 16pt;
-      line-height: 1.1;
-      margin: 2pt 0;
+      line-height: 1.0;
+      margin: 0.5pt 0;
     }
 
     .erd-entity {
       border: 1.2px solid #000000;
       width: 100%;
-      margin-bottom: 4pt;
+      margin-bottom: 1pt;
     }
 
     .erd-header {
@@ -239,11 +264,11 @@
       border-bottom: 1.2px solid #000000;
       text-align: center;
       font-weight: bold;
-      padding: 3pt 8pt;
+      padding: 1.5pt 6pt;
     }
 
     .erd-body {
-      padding: 4pt 10pt;
+      padding: 2pt 6pt;
     }
   </style>
 </head>
@@ -252,7 +277,7 @@
   <!-- แถบเครื่องมือบนหน้าจอ (ไม่แสดงใน PDF) -->
   <div class="screen-toolbar">
     <div>
-      <span class="bold-text">รายงานส่งอาจารย์: โครงการ bunniwear</span>
+      <span class="bold-text">รายงานส่งอาจารย์ (พร้อมสารบัญ): โครงการ bunniwear</span>
       <span> (หัวข้อ 18pt ตัวหนา | เนื้อหา 16pt ตัวบาง | ฟอนต์ TH SarabunPSK | เว้นขอบซ้าย 1.5 นิ้ว เผื่อเย็บเล่ม)</span>
     </div>
     <button class="btn-print" onclick="window.print()">พิมพ์ / บันทึกเป็น PDF</button>
@@ -260,8 +285,8 @@
 
   <div class="paper-container">
 
-    <!-- ==================== หน้าปก (COVER PAGE) ==================== -->
-    <div class="cover-page">
+    <!-- ==================== แผ่นที่ 1: หน้าปก (COVER PAGE) ==================== -->
+    <div class="report-page cover-page">
       <div style="margin-top: 20mm;">
         <div class="heading-18" style="margin-bottom: 12pt;">รายงานการวิเคราะห์และออกแบบระบบ (System Analysis and Design)</div>
         <div class="heading-18" style="margin-bottom: 8pt;">โครงการ: ระบบหน้าเว็บขายเสื้อผ้าแฟชั่นและออกใบเสนอราคาออนไลน์</div>
@@ -282,16 +307,164 @@
       </div>
     </div>
 
-    <!-- ==================== บทที่ 1: โครงสร้างภาพรวมและที่มาของโครงการ ==================== -->
-    <div>
+    <!-- ==================== แผ่นที่ 2: สารบัญ (หน้า ก) ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">ก</div>
+      <div class="heading-18" style="text-align: center; margin-top: 0; margin-bottom: 8pt;">สารบัญ</div>
+
+      <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 4pt; border-bottom: 1px solid #000; padding-bottom: 2pt;">
+        <span class="bold-text">เรื่อง</span>
+        <span class="bold-text">หน้า</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">สารบัญ</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">ก</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">1. ภาพรวมกระบวนการวิเคราะห์และออกแบบระบบ (System Development Overview)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">1</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">2. โจทย์ปัญหาและที่มาของโครงการ (? และ Review)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">2</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">2.1 ที่มาของปัญหา (Problem Statement)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">2</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">2.2 การทบทวนความต้องการ (Review)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">2</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">3. กรณีการใช้งานระบบ (Use Case)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">2</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">4. ความต้องการของระบบ (FR และ NF) และฮาร์ดแวร์ (HW)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">3</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">4.1 ความต้องการทางฟังก์ชัน (Functional Requirements: FR)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">3</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">4.2 ความต้องการที่ไม่ใช่ฟังก์ชัน (Non-Functional Requirements: NF)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">3</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">4.3 ฮาร์ดแวร์และสภาพแวดล้อม (Hardware &amp; Environment: HW)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">3</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">5. การออกแบบระบบ (DFD, ERD, UX/UI และ Flowchart)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">4</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">5.1 แผนภาพกระแสข้อมูล (Data Flow Diagram: DFD)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">4</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">5.2 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">5</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">5.3 การออกแบบประสบการณ์และส่วนติดต่อผู้ใช้ (UX/UI Design)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">6</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">5.4 ผังงานการทำงานของระบบ (System Flowchart)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">6</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title bold-text">6. การพัฒนาโปรแกรม (Dev) และการทดสอบระบบ (Testing)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">7</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">6.1 การพัฒนาโปรแกรม (Development)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">7</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-sub">6.2 การทดสอบระบบเทียบกับกรณีการใช้งาน (Testing &amp; Verification)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">7</span>
+      </div>
+
+      <!-- สารบัญแผนภาพและตาราง -->
+      <div class="heading-18" style="text-align: center; margin-top: 12pt; margin-bottom: 6pt;">สารบัญแผนภาพและตาราง</div>
+      <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 4pt; border-bottom: 1px solid #000; padding-bottom: 2pt;">
+        <span class="bold-text">แผนภาพและตาราง</span>
+        <span class="bold-text">หน้า</span>
+      </div>
+
+      <div class="toc-row">
+        <span class="toc-title">แผนภาพที่ 1 โครงสร้างขั้นตอนการวิเคราะห์และออกแบบระบบโครงการ bunniwear</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">1</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-title">ตารางที่ 1 รายละเอียดฮาร์ดแวร์และสภาพแวดล้อมที่รองรับของระบบ (HW)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">3</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-title">แผนภาพที่ 2 แผนภาพกระแสข้อมูล (Data Flow Diagram: DFD) ของระบบร้าน bunniwear</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">4</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-title">แผนภาพที่ 3 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">5</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-title">แผนภาพที่ 4 ผังงานการทำงานของระบบ (System Flowchart)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">6</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-title">ตารางที่ 2 ผลการทดสอบระบบเทียบกับกรณีการใช้งาน (Testing &amp; Verification)</span>
+        <span class="toc-dots"></span>
+        <span class="toc-page">7</span>
+      </div>
+    </div>
+
+    <!-- ==================== หน้า 1: หัวข้อที่ 1 และ แผนภาพที่ 1 ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">1</div>
+
       <div class="heading-18" style="margin-top: 0;">1. ภาพรวมกระบวนการวิเคราะห์และออกแบบระบบ (System Development Overview)</div>
       <p class="indent-p">
         การพัฒนาระบบหน้าร้านเสื้อผ้าแฟชั่นออนไลน์ bunniwear ได้ดำเนินงานตามขั้นตอนกระบวนการพัฒนาระบบ (System Development Life Cycle) โดยเริ่มตั้งแต่การกำหนดโจทย์ปัญหา (?) การทบทวนความต้องการของผู้ใช้ (Review) การสร้างกรณีการใช้งาน (Use Case) แล้วแยกวิเคราะห์ออกเป็นความต้องการทางฟังก์ชัน (Functional Requirements: FR) และความต้องการที่ไม่ใช่ฟังก์ชัน (Non-Functional Requirements: NF) ซึ่งเชื่อมโยงไปสู่การกำหนดอุปกรณ์ฮาร์ดแวร์ (Hardware: HW) การออกแบบระบบ (DFD, ERD, UX/UI, Flowchart) การพัฒนาโปรแกรม (Dev) และการทดสอบระบบ (Testing) เพื่อตรวจสอบย้อนกลับไปยัง Use Case ดังแสดงในแผนภาพที่ 1
       </p>
 
-      <div class="diagram-box avoid-break" style="padding: 8pt 10pt; margin: 6pt 0 10pt 0;">
+      <div class="diagram-box" style="margin-top: 8pt;">
         <div style="text-align: center;" class="bold-text">แผนภาพที่ 1 โครงสร้างขั้นตอนการวิเคราะห์และออกแบบระบบโครงการ bunniwear</div>
-        <div style="text-align: center; margin-top: 4pt;">
+        <div style="text-align: center; margin-top: 6pt;">
           <div class="flow-node-round">1. โจทย์ปัญหาและที่มาของโครงการ (?)</div>
           <div class="flow-arrow">↓ &nbsp;&nbsp; ← (Review: ทบทวนและตรวจสอบความต้องการ)</div>
           <div class="flow-node">2. กรณีการใช้งานระบบ (Use Case)</div>
@@ -300,7 +473,7 @@
             <div style="flex: 1; text-align: center;">
               <div class="flow-node">3.1 ความต้องการทางฟังก์ชัน (FR)</div>
               <div class="flow-arrow">↓</div>
-              <div class="flow-node" style="text-align: left; padding: 4pt 12pt;">
+              <div class="flow-node" style="text-align: left; padding: 4pt 10pt;">
                 5. การออกแบบระบบ<br/>
                 - แผนภาพกระแสข้อมูล (DFD)<br/>
                 - แผนภาพความสัมพันธ์ข้อมูล (ERD)<br/>
@@ -319,26 +492,29 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ==================== หัวข้อที่ 2: โจทย์ปัญหา (?) และ Review ==================== -->
-    <div>
-      <div class="heading-18">2. โจทย์ปัญหาและที่มาของโครงการ (? และ Review)</div>
-      <p class="indent-p">
-        <span class="bold-text">2.1 ที่มาของปัญหา (Problem Statement):</span> ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลีและมินิมอล bunniwear ต้องการมีเว็บไซต์หน้าร้านออนไลน์ (Landing Page) ที่ช่วยให้ลูกค้าสามารถเลือกชมแคตตาล็อกเสื้อผ้า ดูรายละเอียดเนื้อผ้า เลือกสีและไซส์ คำนวณส่วนลดโปรโมชั่น สรุปยอดคำสั่งซื้อส่งต่อให้แอดมินทาง LINE และสามารถออกเอกสารใบเสนอราคา (Quotation) ขนาดมาตรฐาน A4 เพื่อสั่งพิมพ์หรือบันทึกเป็นไฟล์ PDF ได้ทันที โดยผู้ประกอบการมีข้อจำกัดคือไม่ต้องการเช่าเซิร์ฟเวอร์หรือดูแลระบบฐานข้อมูลหลังบ้าน (No Backend) เพื่อลดต้นทุนและลดความซับซ้อนในการดูแลรักษา
-      </p>
-      <p class="indent-p">
-        <span class="bold-text">2.2 การทบทวนความต้องการ (Review):</span> จากการทบทวนขอบเขตของระบบร่วมกับผู้ใช้งาน พบว่าระบบต้องทำงานจบภายในไฟล์ HTML มาตรฐานเพียงไฟล์เดียว สามารถจดจำรายการสินค้าในตะกร้าของลูกค้าได้ด้วยหน่วยความจำของเว็บเบราว์เซอร์ (LocalStorage) มีระบบช่วยคำนวณไซส์เสื้อผ้าอัตโนมัติ และรองรับทั้งลูกค้าซื้อปลีกรายบุคคลและลูกค้าองค์กรที่ต้องการใบเสนอราคาเพื่อทำเรื่องเบิกจ่าย
+      <p class="indent-p" style="margin-top: 8pt; margin-bottom: 0;">
+        จากแผนภาพที่ 1 จะเห็นได้ว่าการวิเคราะห์และออกแบบระบบของโครงการ bunniwear มีการตรวจสอบย้อนกลับ (Feedback Loop) ในสองจุดสำคัญ คือ การทบทวนความต้องการ (Review) ก่อนสรุปเป็น Use Case และการนำผลการทดสอบระบบ (Testing) กลับไปเทียบกับ Use Case เพื่อให้มั่นใจว่าระบบที่พัฒนาขึ้นสามารถตอบโจทย์ผู้ใช้งานได้ครบถ้วนทุกฟังก์ชัน
       </p>
     </div>
 
-    <!-- ==================== หัวข้อที่ 3: Use Case ==================== -->
-    <div>
-      <div class="heading-18">3. กรณีการใช้งานระบบ (Use Case)</div>
+    <!-- ==================== หน้า 2: หัวข้อที่ 2 และ หัวข้อที่ 3 ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">2</div>
+
+      <div class="heading-18" style="margin-top: 0;">2. โจทย์ปัญหาและที่มาของโครงการ (? และ Review)</div>
+      <p class="indent-p">
+        <span class="bold-text">2.1 ที่มาของปัญหา (Problem Statement):</span> ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลีและมินิมอล bunniwear ต้องการมีเว็บไซต์หน้าร้านออนไลน์ (Landing Page) ที่ช่วยให้ลูกค้าสามารถเลือกชมแคตตาล็อกเสื้อผ้า ดูรายละเอียดเนื้อผ้า เลือกสีและไซส์ คำนวณส่วนลดโปรโมชั่น สรุปยอดคำสั่งซื้อส่งต่อให้แอดมินทาง LINE และสามารถออกเอกสารใบเสนอราคา (Quotation) ขนาดมาตรฐาน A4 เพื่อสั่งพิมพ์หรือบันทึกเป็นไฟล์ PDF ได้ทันที โดยไม่ต้องการเช่าเซิร์ฟเวอร์หรือดูแลระบบฐานข้อมูลหลังบ้าน (No Backend) เพื่อลดต้นทุนและลดความซับซ้อนในการดูแลรักษา
+      </p>
+      <p class="indent-p">
+        <span class="bold-text">2.2 การทบทวนความต้องการ (Review):</span> จากการทบทวนขอบเขตของระบบร่วมกับผู้ใช้งาน พบว่าระบบต้องทำงานจบภายในไฟล์ HTML มาตรฐานเพียงไฟล์เดียว จดจำรายการสินค้าในตะกร้าได้ด้วยหน่วยความจำของเบราว์เซอร์ (LocalStorage) มีระบบช่วยคำนวณไซส์เสื้อผ้าอัตโนมัติ และรองรับทั้งลูกค้าซื้อปลีกและลูกค้าองค์กรที่ต้องการใบเสนอราคา PDF
+      </p>
+
+      <div class="heading-18" style="margin-top: 10pt;">3. กรณีการใช้งานระบบ (Use Case)</div>
       <p class="indent-p">
         ผู้ใช้งานหลักของระบบคือ ลูกค้าผู้เข้าชมเว็บไซต์ (Customer) ซึ่งสามารถโต้ตอบกับระบบหน้าร้าน bunniwear ได้ทั้งหมด 7 กรณีการใช้งานหลัก (Use Cases) ดังนี้
       </p>
-      <ul>
+      <ul style="margin-bottom: 0;">
         <li><span class="bold-text">UC01 ค้นหาและกรองหมวดหมู่เสื้อผ้า:</span> ลูกค้าเลือกดูสินค้าตามหมวดหมู่ ค้นหาจากชื่อสินค้า และเรียงลำดับตามราคาได้</li>
         <li><span class="bold-text">UC02 ดูรายละเอียดสินค้าแบบขยาย (Quick View):</span> ลูกค้าคลิกดูภาพสินค้าขนาดใหญ่ จุดเด่นเนื้อผ้า และสถานะสินค้าพร้อมส่ง</li>
         <li><span class="bold-text">UC03 เปิดตารางเทียบไซส์และคำนวณไซส์อัตโนมัติ:</span> ลูกค้ากรอกขนาดรอบอกและรอบเอว (นิ้ว) เพื่อให้ระบบแนะนำไซส์ที่เหมาะสม</li>
@@ -349,30 +525,33 @@
       </ul>
     </div>
 
-    <!-- ==================== หัวข้อที่ 4: FR, NF และ HW ==================== -->
-    <div>
-      <div class="heading-18">4. ความต้องการของระบบ (FR และ NF) และฮาร์ดแวร์ (HW)</div>
+    <!-- ==================== หน้า 3: หัวข้อที่ 4 (4.1 FR, 4.2 NF, 4.3 HW) ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">3</div>
 
-      <p class="bold-text" style="margin-bottom: 2pt;">4.1 ความต้องการทางฟังก์ชัน (Functional Requirements: FR)</p>
+      <div class="heading-18" style="margin-top: 0;">4. ความต้องการของระบบ (FR และ NF) และฮาร์ดแวร์ (HW)</div>
+
+      <p class="bold-text" style="margin-bottom: 1pt;">4.1 ความต้องการทางฟังก์ชัน (Functional Requirements: FR)</p>
       <ol>
-        <li>ระบบสามารถแสดงรายการสินค้าและกรองตามหมวดหมู่ทั้ง 5 หมวดหมู่ ได้แก่ ทั้งหมด, เสื้อเชิ้ตและเสื้อยืด, ชุดเดรสและชุดเซ็ต, กางเกงและกระโปรง, เสื้อคลุมและคาร์ดิแกน</li>
-        <li>ระบบสามารถแสดงหน้าต่างรายละเอียดสินค้าแบบขยาย (Quick View) พร้อมตัวเลือกสี ไซส์ และจำนวนชิ้น</li>
-        <li>ระบบสามารถรับค่ารอบอกและรอบเอวเป็นนิ้ว เพื่อคำนวณและแนะนำไซส์มาตรฐาน (S, M, L หรือ Free Size) ให้แก่ลูกค้าอัตโนมัติ</li>
-        <li>ระบบตะกร้าสินค้าสามารถคำนวณยอดรวม ส่วนลดโปรโมชั่น 10% (โค้ด BUNNI10) และคำนวณค่าจัดส่งด่วน 50 บาท (ส่งฟรีเมื่อยอดสุทธิตั้งแต่ 990 บาทขึ้นไป)</li>
-        <li>ระบบออกใบเสนอราคาสามารถสร้างเอกสารขนาด A4 คำนวณภาษีมูลค่าเพิ่ม 7% (VAT) แปลงตัวเลขยอดสุทธิเป็นตัวอักษรภาษาไทยอัตโนมัติ และส่งออกเป็นไฟล์ PDF ได้</li>
-        <li>ระบบสามารถสร้างใบสรุปคำสั่งซื้อพร้อมหมายเลขคำสั่งซื้อ และมีปุ่มลอยสำหรับติดต่อแอดมินผ่าน LINE Official</li>
+        <li>แสดงรายการสินค้าและกรองตาม 5 หมวดหมู่ ได้แก่ ทั้งหมด, เสื้อเชิ้ตและเสื้อยืด, ชุดเดรสและชุดเซ็ต, กางเกงและกระโปรง, เสื้อคลุมและคาร์ดิแกน</li>
+        <li>แสดงหน้าต่างรายละเอียดสินค้าแบบขยาย (Quick View) พร้อมตัวเลือกสี ไซส์ และจำนวนชิ้น</li>
+        <li>รับค่ารอบอกและรอบเอว (นิ้ว) เพื่อคำนวณและแนะนำไซส์มาตรฐาน (S, M, L หรือ Free Size) อัตโนมัติ</li>
+        <li>คำนวณยอดรวมในตะกร้า ส่วนลด 10% (โค้ด BUNNI10) และค่าจัดส่งด่วน 50 บาท (ส่งฟรีเมื่อครบ 990 บาท)</li>
+        <li>ออกใบเสนอราคาขนาด A4 คำนวณ VAT 7% แปลงยอดสุทธิเป็นตัวอักษรภาษาไทย และส่งออกเป็นไฟล์ PDF ได้</li>
+        <li>สร้างใบสรุปคำสั่งซื้อพร้อมหมายเลขคำสั่งซื้อ และมีปุ่มลอยสำหรับติดต่อแอดมินผ่าน LINE Official</li>
       </ol>
 
-      <p class="bold-text" style="margin-bottom: 2pt;">4.2 ความต้องการที่ไม่ใช่ฟังก์ชัน (Non-Functional Requirements: NF)</p>
+      <p class="bold-text" style="margin-bottom: 1pt;">4.2 ความต้องการที่ไม่ใช่ฟังก์ชัน (Non-Functional Requirements: NF)</p>
       <ol>
-        <li><span class="bold-text">ด้านประสิทธิภาพ (Performance):</span> หน้าเว็บสามารถโหลดและประมวลผลการค้นหา กรองหมวดหมู่ และคำนวณราคาได้ทันทีแบบ Real-time โดยไม่ต้องโหลดหน้าเว็บใหม่</li>
-        <li><span class="bold-text">ด้านการใช้งาน (Usability & Responsiveness):</span> ส่วนติดต่อผู้ใช้รองรับการแสดงผลทั้งบนหน้าจอสมาร์ทโฟน แท็บเล็ต และคอมพิวเตอร์</li>
-        <li><span class="bold-text">ด้านความคงอยู่ของข้อมูล (Persistence):</span> จัดเก็บข้อมูลตะกร้าสินค้าไว้ใน LocalStorage ของเบราว์เซอร์ ทำให้ข้อมูลไม่สูญหายเมื่อรีเฟรชหน้าเว็บ</li>
+        <li><span class="bold-text">ด้านประสิทธิภาพ (Performance):</span> ประมวลผลการค้นหา กรองหมวดหมู่ และคำนวณราคาได้ทันทีแบบ Real-time โดยไม่ต้องโหลดหน้าเว็บใหม่</li>
+        <li><span class="bold-text">ด้านการใช้งาน (Usability &amp; Responsiveness):</span> รองรับการแสดงผลทั้งบนสมาร์ทโฟน แท็บเล็ต และคอมพิวเตอร์</li>
+        <li><span class="bold-text">ด้านความคงอยู่ของข้อมูล (Persistence):</span> จัดเก็บข้อมูลตะกร้าสินค้าไว้ใน LocalStorage ของเบราว์เซอร์</li>
         <li><span class="bold-text">ด้านความสะดวกในการติดตั้ง (Portability):</span> ทำงานในรูปแบบ Static HTML โดยไม่ต้องใช้เซิร์ฟเวอร์ฐานข้อมูลหลังบ้าน</li>
       </ol>
 
-      <p class="bold-text" style="margin-bottom: 2pt;">4.3 ฮาร์ดแวร์และสภาพแวดล้อม (Hardware & Environment: HW)</p>
-      <table class="report-table avoid-break">
+      <p class="bold-text" style="margin-bottom: 2pt;">4.3 ฮาร์ดแวร์และสภาพแวดล้อม (Hardware &amp; Environment: HW)</p>
+      <div style="text-align: center;" class="bold-text">ตารางที่ 1 รายละเอียดฮาร์ดแวร์และสภาพแวดล้อมที่รองรับของระบบ (HW)</div>
+      <table class="report-table" style="margin-bottom: 0;">
         <thead>
           <tr>
             <th style="width: 32%;">หมวดหมู่อุปกรณ์</th>
@@ -400,18 +579,20 @@
       </table>
     </div>
 
-    <!-- ==================== หัวข้อที่ 5: การออกแบบระบบ (DFD, ERD, UX/UI, Flowchart) ==================== -->
-    <div>
-      <div class="heading-18">5. การออกแบบระบบ (DFD, ERD, UX/UI และ Flowchart)</div>
+    <!-- ==================== หน้า 4: หัวข้อที่ 5 (5.1 DFD) ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">4</div>
+
+      <div class="heading-18" style="margin-top: 0;">5. การออกแบบระบบ (DFD, ERD, UX/UI และ Flowchart)</div>
 
       <p class="bold-text">5.1 แผนภาพกระแสข้อมูล (Data Flow Diagram: DFD)</p>
       <p class="indent-p">
-        แผนภาพกระแสข้อมูลแสดงทิศทางการรับและส่งข้อมูลระหว่างผู้ใช้งานภายนอก (ลูกค้า และแอดมินร้าน) กระบวนการทำงานหลักทั้ง 4 กระบวนการ (Processes 1.0 ถึง 4.0) และแหล่งเก็บข้อมูล 2 แหล่ง ได้แก่ D1 ข้อมูลสินค้า (PRODUCTS) และ D2 ข้อมูลตะกร้าสินค้า (LocalStorage) ดังนี้
+        แผนภาพกระแสข้อมูลแสดงทิศทางการรับและส่งข้อมูลระหว่างผู้ใช้งานภายนอก (ลูกค้า และแอดมินร้าน) กระบวนการทำงานหลักทั้ง 4 กระบวนการ (Processes 1.0 ถึง 4.0) และแหล่งเก็บข้อมูล 2 แหล่ง ได้แก่ D1 ข้อมูลสินค้า (PRODUCTS) และ D2 ข้อมูลตะกร้าสินค้า (LocalStorage) ดังแสดงในแผนภาพที่ 2
       </p>
 
-      <div class="diagram-box avoid-break">
-        <div style="text-align: center;" class="bold-text">แผนภาพที่ 2 แผนภาพกระแสข้อมูล (Data Flow Diagram) ของระบบร้าน bunniwear</div>
-        <table class="report-table" style="margin-top: 8pt; margin-bottom: 4pt;">
+      <div class="diagram-box">
+        <div style="text-align: center;" class="bold-text">แผนภาพที่ 2 แผนภาพกระแสข้อมูล (Data Flow Diagram: DFD) ของระบบร้าน bunniwear</div>
+        <table class="report-table" style="margin-top: 4pt; margin-bottom: 2pt;">
           <thead>
             <tr>
               <th style="width: 22%;">ผู้ส่งข้อมูล / ต้นทาง</th>
@@ -449,69 +630,79 @@
         </table>
       </div>
 
-      <p class="bold-text">5.2 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</p>
-      <p class="indent-p">
-        แม้ระบบจะทำงานแบบไม่มีฐานข้อมูลหลังบ้าน แต่ภายในโปรแกรมมีการจัดโครงสร้างความสัมพันธ์ของข้อมูลออกเป็น 4 ตารางหลัก (Entities) ที่เชื่อมโยงกันแบบหนึ่งต่อหลายรายการ (One-to-Many) ดังแสดงในแผนภาพที่ 3 และคำอธิบายรายละเอียดทั้ง 3 ส่วนด้านล่าง
+      <p class="bold-text" style="margin-top: 6pt; margin-bottom: 2pt;">คำอธิบายองค์ประกอบของแผนภาพกระแสข้อมูล (DFD)</p>
+      <ul style="margin-bottom: 0;">
+        <li><span class="bold-text">ผู้เกี่ยวข้องภายนอก (External Entities):</span> ประกอบด้วย ลูกค้า (Customer) ผู้เลือกชมสินค้าและป้อนข้อมูลสั่งซื้อ และ แอดมินร้าน (LINE @bunniwear) ผู้รับใบสรุปคำสั่งซื้อเพื่อดำเนินการจัดส่งสินค้า</li>
+        <li><span class="bold-text">แหล่งเก็บข้อมูล (Data Stores):</span> ประกอบด้วย D1 ข้อมูลสินค้า (PRODUCTS) ซึ่งเก็บรายละเอียดเสื้อผ้าทั้ง 8 รุ่นในหน่วยความจำโปรแกรม และ D2 ตะกร้าสินค้า (LocalStorage) ซึ่งเก็บรายการที่ลูกค้าเลือกไว้ในเบราว์เซอร์</li>
+        <li><span class="bold-text">กระบวนการทำงาน (Processes 1.0 - 4.0):</span> แบ่งหน้าที่ชัดเจนตั้งแต่การค้นหาและแสดงผลสินค้า (1.0), การคำนวณยอดรวมและส่วนลดในตะกร้า (2.0), การสร้างใบเสนอราคา PDF ขนาด A4 (3.0) และการสรุปใบสั่งซื้อส่งต่อทาง LINE (4.0)</li>
+      </ul>
+    </div>
+
+    <!-- ==================== หน้า 5: หัวข้อที่ 5.2 (ERD พร้อมคำอธิบาย 3 ส่วน) ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">5</div>
+
+      <p class="bold-text" style="margin-top: 0;">5.2 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</p>
+      <p class="indent-p" style="margin-bottom: 3pt;">
+        ภายในโปรแกรมมีการจัดโครงสร้างความสัมพันธ์ของข้อมูลออกเป็น 4 ตารางหลัก (Entities) ที่เชื่อมโยงกันแบบหนึ่งต่อหลายรายการ (One-to-Many) ดังแสดงในแผนภาพที่ 3 และคำอธิบายรายละเอียดทั้ง 3 ส่วนด้านล่าง
       </p>
 
-      <div class="diagram-box avoid-break" style="padding: 8pt 10pt; margin: 6pt 0 10pt 0;">
-        <div style="text-align: center; margin-bottom: 4pt;" class="bold-text">แผนภาพที่ 3 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</div>
+      <div class="diagram-box" style="padding: 3pt 6pt; margin: 2pt 0 3pt 0;">
+        <div style="text-align: center; margin-bottom: 1pt;" class="bold-text">แผนภาพที่ 3 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</div>
 
         <div class="erd-entity">
           <div class="erd-header">1. ตาราง CATEGORY (หมวดหมู่สินค้า)</div>
-          <div class="erd-body">
-            • id (PK : string) — รหัสหมวดหมู่สินค้า &nbsp;&nbsp;|&nbsp;&nbsp; • name (string) — ชื่อหมวดหมู่ภาษาไทย
-          </div>
+          <div class="erd-body">• id (PK : string) รหัสหมวดหมู่ | • name (string) ชื่อหมวดหมู่ภาษาไทย</div>
         </div>
         <div class="flow-arrow">|| ─── contains (1 หมวดหมู่ มีสินค้าได้หลายรายการ : 1 to Many) ─── o{</div>
 
         <div class="erd-entity">
           <div class="erd-header">2. ตาราง PRODUCT (ข้อมูลสินค้า)</div>
-          <div class="erd-body">
-            • id (PK : string) — รหัสสินค้า &nbsp;&nbsp;|&nbsp;&nbsp; • name (string) — ชื่อสินค้า &nbsp;&nbsp;|&nbsp;&nbsp; • category (FK : string) — รหัสหมวดหมู่<br/>
-            • price (number) — ราคาขาย &nbsp;&nbsp;|&nbsp;&nbsp; • originalPrice (number) — ราคาปกติ &nbsp;&nbsp;|&nbsp;&nbsp; • colors / sizes (string_array) — สีและไซส์
-          </div>
+          <div class="erd-body">• id (PK) | • name | • category (FK) | • price / originalPrice (number) | • colors / sizes (string_array)</div>
         </div>
         <div class="flow-arrow">|| ─── selected_as (1 สินค้า ถูกเลือกใส่ตะกร้าได้หลายสี/หลายไซส์ : 1 to Many) ─── o{</div>
 
         <div class="erd-entity">
-          <div class="erd-header">3. ตาราง CART_ITEM (รายการสินค้าในตะกร้า - เก็บใน LocalStorage)</div>
-          <div class="erd-body">
-            • cartKey (PK : string) — รหัสเฉพาะในตะกร้า (id_color_size) &nbsp;&nbsp;|&nbsp;&nbsp; • id (FK : string) — รหัสสินค้า<br/>
-            • name (string) — ชื่อสินค้า &nbsp;&nbsp;|&nbsp;&nbsp; • price (number) — ราคาต่อหน่วย &nbsp;&nbsp;|&nbsp;&nbsp; • color / size (string) &nbsp;&nbsp;|&nbsp;&nbsp; • qty (number) — จำนวนชิ้น
-          </div>
+          <div class="erd-header">3. ตาราง CART_ITEM (รายการสินค้าในตะกร้า - LocalStorage)</div>
+          <div class="erd-body">• cartKey (PK: id_color_size) | • id (FK) | • name | • price (number) | • color / size | • qty (number)</div>
         </div>
         <div class="flow-arrow">}o ─── included_in (หลายรายการในตะกร้า ถูกรวมอยู่ในใบเสนอราคา/ใบสั่งซื้อ 1 ใบ : Many to 1) ─── ||</div>
 
         <div class="erd-entity" style="margin-bottom: 0;">
           <div class="erd-header">4. ตาราง QUOTATION_ORDER (ใบเสนอราคา / ใบสั่งซื้อ)</div>
-          <div class="erd-body">
-            • docNo (PK : string) — เลขที่เอกสาร (QT-XXXX / BNW-XXXXXX) &nbsp;&nbsp;|&nbsp;&nbsp; • customerName (string) — ชื่อลูกค้า/บริษัท<br/>
-            • taxId (string) — เลขผู้เสียภาษี &nbsp;&nbsp;|&nbsp;&nbsp; • phone / address (string) &nbsp;&nbsp;|&nbsp;&nbsp; • includeVat (boolean) &nbsp;&nbsp;|&nbsp;&nbsp; • grandTotal (number)
-          </div>
+          <div class="erd-body">• docNo (PK: QT-XXXX) | • customerName / taxId / phone / address | • includeVat (boolean) | • grandTotal</div>
         </div>
       </div>
 
-      <p class="bold-text" style="margin-bottom: 2pt;">คำอธิบายแผนภาพ ERD อย่างละเอียด (แบ่งออกเป็น 3 ส่วน)</p>
-      <p style="margin-bottom: 4pt;">
+      <p class="bold-text" style="margin-bottom: 1pt;">คำอธิบายแผนภาพ ERD อย่างละเอียด (แบ่งออกเป็น 3 ส่วน)</p>
+      <p style="margin-bottom: 2pt;">
         <span class="bold-text">ส่วนที่ 1 ความหมายของคำย่อและชนิดข้อมูล:</span> รหัส PK (Primary Key) คือคีย์หลักที่ใช้ระบุความไม่ซ้ำกันของข้อมูลในแต่ละตาราง, รหัส FK (Foreign Key) คือคีย์นอกที่ใช้อ้างอิงความสัมพันธ์ไปยังคีย์หลักของตารางอื่น ส่วนชนิดข้อมูลประกอบด้วย string (ข้อความ), number (ตัวเลขราคาและจำนวน), boolean (ค่าความจริง true/false) และ string_array (ชุดข้อมูลตัวเลือกหลายค่า เช่น รายการสีและไซส์)
       </p>
-      <p style="margin-bottom: 4pt;">
-        <span class="bold-text">ส่วนที่ 2 ความหมายของทั้ง 4 ตารางข้อมูล:</span> (1) ตาราง CATEGORY เก็บรหัสและชื่อหมวดหมู่เสื้อผ้า (2) ตาราง PRODUCT เก็บข้อมูลเสื้อผ้าแต่ละรุ่นโดยอ้างอิงหมวดหมู่ผ่านฟิลด์ category (FK) (3) ตาราง CART_ITEM เก็บรายการสินค้าที่ลูกค้าเลือกใส่ตะกร้าใน LocalStorage โดยใช้ cartKey (เกิดจาก รหัสสินค้า_สี_ไซส์ เช่น bunni-01_ขาวครีม_S) เป็นคีย์หลัก เพื่อให้สามารถแยกบรรทัดรายการกรณีลูกค้าสั่งเสื้อรุ่นเดียวกันแต่คนละสีหรือคนละไซส์ได้ และ (4) ตาราง QUOTATION_ORDER เก็บข้อมูลหัวเอกสารใบเสนอราคาและใบสรุปคำสั่งซื้อ
+      <p style="margin-bottom: 2pt;">
+        <span class="bold-text">ส่วนที่ 2 ความหมายของทั้ง 4 ตารางข้อมูล:</span> (1) ตาราง CATEGORY เก็บรหัสและชื่อหมวดหมู่เสื้อผ้า (2) ตาราง PRODUCT เก็บข้อมูลเสื้อผ้าแต่ละรุ่นโดยอ้างอิงหมวดหมู่ผ่านฟิลด์ category (FK) (3) ตาราง CART_ITEM เก็บรายการสินค้าที่ลูกค้าเลือกใส่ตะกร้าใน LocalStorage โดยใช้ cartKey (รหัสสินค้า_สี_ไซส์ เช่น bunni-01_ขาวครีม_S) เป็นคีย์หลัก เพื่อแยกบรรทัดรายการกรณีสั่งเสื้อรุ่นเดียวกันแต่คนละสีหรือไซส์ และ (4) ตาราง QUOTATION_ORDER เก็บข้อมูลหัวเอกสารใบเสนอราคาและใบสั่งซื้อ
       </p>
-      <p style="margin-bottom: 8pt;">
-        <span class="bold-text">ส่วนที่ 3 ความหมายของเส้นเชื่อมความสัมพันธ์ (Crow's Foot Notation):</span> สัญลักษณ์ขีดตรงสองขีด (||) แทนค่าหนึ่งเดียว (1) และสัญลักษณ์วงกลมพร้อมสามแฉก (o{) แทนค่าศูนย์หรือหลายรายการ (Many) ได้แก่ (1) หมวดหมู่ 1 หมวดหมู่ มีสินค้าได้หลายชิ้น (2) สินค้า 1 รุ่น ถูกเลือกเป็นรายการในตะกร้าได้หลายสีหรือหลายไซส์ และ (3) รายการในตะกร้าหลายรายการ ถูกรวบรวมอยู่ในใบเสนอราคาหรือใบสั่งซื้อ 1 ใบ
+      <p style="margin-bottom: 0;">
+        <span class="bold-text">ส่วนที่ 3 ความหมายของเส้นเชื่อมความสัมพันธ์ (Crow's Foot Notation):</span> สัญลักษณ์ขีดตรงสองขีด (||) แทนค่าหนึ่งเดียว (1) และสัญลักษณ์วงกลมพร้อมสามแฉก (o{) แทนค่าศูนย์หรือหลายรายการ (Many) ได้แก่ (1) หมวดหมู่ 1 หมวดหมู่ มีสินค้าได้หลายชิ้น (2) สินค้า 1 รุ่น ถูกเลือกใส่ตะกร้าได้หลายสีหรือหลายไซส์ และ (3) รายการในตะกร้าหลายรายการ ถูกรวบรวมอยู่ในใบเสนอราคาหรือใบสั่งซื้อ 1 ใบ
       </p>
+    </div>
 
-      <p class="bold-text">5.3 การออกแบบประสบการณ์และส่วนติดต่อผู้ใช้ (UX/UI Design)</p>
+    <!-- ==================== หน้า 6: หัวข้อที่ 5.3 (UX/UI) และ 5.4 (Flowchart) ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">6</div>
+
+      <p class="bold-text" style="margin-top: 0;">5.3 การออกแบบประสบการณ์และส่วนติดต่อผู้ใช้ (UX/UI Design)</p>
       <ul>
-        <li><span class="bold-text">แนวคิดการออกแบบ (Mood & Tone):</span> ออกแบบภายใต้แนวคิด Seoul Minimal Studio ใช้โทนสีครีมพาสเทล (#fdf8f6) และสีพีชโรสโกลด์ (#da7b5b) เพื่อให้สอดคล้องกับภาพลักษณ์แบรนด์เสื้อผ้าแฟชั่นสไตล์เกาหลี</li>
+        <li><span class="bold-text">แนวคิดการออกแบบ (Mood &amp; Tone):</span> ออกแบบภายใต้แนวคิด Seoul Minimal Studio ใช้โทนสีครีมพาสเทล (#fdf8f6) และสีพีชโรสโกลด์ (#da7b5b) เพื่อให้สอดคล้องกับภาพลักษณ์แบรนด์เสื้อผ้าแฟชั่นสไตล์เกาหลี</li>
         <li><span class="bold-text">การออกแบบการใช้งานในหน้าเดียว (Single-Page Experience):</span> ลูกค้าสามารถคลิกเลือกสีและไซส์บนการ์ดสินค้าได้ทันทีโดยไม่ต้องเปลี่ยนหน้า พร้อมแถบคำนวณยอดสั่งซื้อขั้นต่ำเพื่อรับสิทธิ์ส่งฟรีแบบอัตโนมัติ</li>
         <li><span class="bold-text">การออกแบบหน้าพิมพ์เอกสาร (Print-Ready Layout):</span> ใช้คำสั่ง CSS @media print ซ่อนแถบเมนูและปุ่มควบคุมทั้งหมดเมื่อสั่งพิมพ์ เหลือเฉพาะหน้ากระดาษใบเสนอราคาขนาด A4 ที่ถูกต้องตามมาตรฐานเอกสารการค้า</li>
       </ul>
 
       <p class="bold-text">5.4 ผังงานการทำงานของระบบ (System Flowchart)</p>
-      <div class="diagram-box avoid-break">
+      <p class="indent-p">
+        ผังงานแสดงลำดับการทำงานตั้งแต่ลูกค้าเปิดหน้าเว็บไซต์ เลือกชมและกรองสินค้า คำนวณไซส์ หยิบสินค้าใส่ตะกร้า จนถึงการเลือกออกใบเสนอราคา PDF หรือการยืนยันคำสั่งซื้อส่งทาง LINE ดังแสดงในแผนภาพที่ 4
+      </p>
+
+      <div class="diagram-box" style="margin-bottom: 0;">
         <div style="text-align: center; margin-bottom: 6pt;" class="bold-text">แผนภาพที่ 4 ผังงานการทำงานของระบบ (System Flowchart)</div>
         <div style="text-align: center;">
           <div class="flow-node-round">เริ่มต้น (Start): ลูกค้าเปิดหน้าเว็บไซต์ bunniwear</div>
@@ -536,14 +727,18 @@
       </div>
     </div>
 
-    <!-- ==================== หัวข้อที่ 6: Dev และ 7: Testing ==================== -->
-    <div class="avoid-break">
-      <div class="heading-18">6. การพัฒนาโปรแกรม (Dev) และการทดสอบระบบ (Testing)</div>
+    <!-- ==================== หน้า 7: หัวข้อที่ 6 (Dev และ Testing) ==================== -->
+    <div class="report-page">
+      <div class="page-header-num">7</div>
+
+      <div class="heading-18" style="margin-top: 0;">6. การพัฒนาโปรแกรม (Dev) และการทดสอบระบบ (Testing)</div>
       <p class="indent-p">
         <span class="bold-text">6.1 การพัฒนาโปรแกรม (Development):</span> พัฒนาด้วยภาษา HTML5, Tailwind CSS และ JavaScript (ES6+) โดยรวมโครงสร้างหน้าเว็บ ระบบตะกร้าสินค้า ระบบคำนวณไซส์ และระบบออกใบเสนอราคา PDF (html2pdf.js พร้อมฟังก์ชันแปลงจำนวนเงินเป็นตัวอักษรภาษาไทย numberToThaiBahtText) ไว้ในไฟล์ index.html เพียงไฟล์เดียว และใช้ Git ร่วมกับ GitHub เพื่อบริหารจัดการเวอร์ชันของโค้ดระหว่างคอมพิวเตอร์ที่บ้านและที่ทำงาน
       </p>
-      <p class="bold-text" style="margin-bottom: 2pt;">6.2 การทดสอบระบบเทียบกับกรณีการใช้งาน (Testing & Verification)</p>
-      <table class="report-table">
+
+      <p class="bold-text" style="margin-bottom: 4pt;">6.2 การทดสอบระบบเทียบกับกรณีการใช้งาน (Testing &amp; Verification)</p>
+      <div style="text-align: center;" class="bold-text">ตารางที่ 2 ผลการทดสอบระบบเทียบกับกรณีการใช้งาน (Testing &amp; Verification)</div>
+      <table class="report-table" style="margin-bottom: 0;">
         <thead>
           <tr>
             <th style="width: 12%;">รหัส</th>
