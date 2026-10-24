@@ -25,9 +25,9 @@
     /* ตั้งค่าหน้ากระดาษ A4 เว้นขอบซ้าย 1.5 นิ้ว (38.1 มม.) เผื่อเย็บเล่ม */
     @page {
       size: A4 portrait;
-      margin-top: 18mm;
+      margin-top: 13mm;
       margin-right: 24mm;
-      margin-bottom: 18mm;
+      margin-bottom: 13mm;
       margin-left: 38.1mm; /* เว้นพื้นที่ด้านซ้ายเผื่อเย็บเล่ม 1.5 นิ้ว */
     }
 
@@ -96,7 +96,7 @@
       }
       .paper-container {
         width: 100%;
-        padding: 0;
+        padding: 0 2mm 0 0;
         margin: 0;
         box-shadow: none;
       }
@@ -105,6 +105,7 @@
         break-after: page;
         border-bottom: none;
         padding-bottom: 0;
+        padding-right: 1mm;
         margin-bottom: 0;
       }
       .report-page:last-child {
@@ -199,15 +200,18 @@
 
     /* ตารางมาตรฐานรายงานวิชาการ */
     table.report-table {
-      width: 100%;
+      width: 99%;
+      margin-left: auto;
+      margin-right: auto;
       border-collapse: collapse;
+      border: 1.2pt solid #000000;
       margin-top: 3pt;
       margin-bottom: 5pt;
     }
 
     table.report-table th,
     table.report-table td {
-      border: 1px solid #000000;
+      border: 1pt solid #000000;
       padding: 3pt 6pt;
       vertical-align: top;
       text-align: left;
@@ -222,14 +226,18 @@
 
     /* กล่องแผนภาพมาตรฐานวิชาการ */
     .diagram-box {
-      border: 1px solid #000000;
+      width: 99%;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1.2pt solid #000000;
       padding: 6pt 8pt;
-      margin: 4pt 0 6pt 0;
+      margin-top: 4pt;
+      margin-bottom: 6pt;
       background-color: #ffffff;
     }
 
     .flow-node {
-      border: 1.2px solid #000000;
+      border: 1.2pt solid #000000;
       padding: 3pt 10pt;
       text-align: center;
       background: #ffffff;
@@ -238,7 +246,7 @@
     }
 
     .flow-node-round {
-      border: 1.2px solid #000000;
+      border: 1.2pt solid #000000;
       border-radius: 999px;
       padding: 3pt 14pt;
       text-align: center;
@@ -254,14 +262,16 @@
     }
 
     .erd-entity {
-      border: 1.2px solid #000000;
-      width: 100%;
+      border: 1.2pt solid #000000;
+      width: 99%;
+      margin-left: auto;
+      margin-right: auto;
       margin-bottom: 1pt;
     }
 
     .erd-header {
       background: #e7e5e4;
-      border-bottom: 1.2px solid #000000;
+      border-bottom: 1.2pt solid #000000;
       text-align: center;
       font-weight: bold;
       padding: 1.5pt 6pt;
@@ -658,19 +668,19 @@
 
         <div class="erd-entity">
           <div class="erd-header">2. ตาราง PRODUCT (ข้อมูลสินค้า)</div>
-          <div class="erd-body">• id (PK) | • name | • category (FK) | • price / originalPrice (number) | • colors / sizes (string_array)</div>
+          <div class="erd-body">• id (PK) | • name | • category (FK) | • price / originalPrice | • colors / sizes</div>
         </div>
-        <div class="flow-arrow">|| ─── selected_as (1 สินค้า ถูกเลือกใส่ตะกร้าได้หลายสี/หลายไซส์ : 1 to Many) ─── o{</div>
+        <div class="flow-arrow">|| ─── selected_as (1 สินค้า ถูกเลือกใส่ตะกร้าได้หลายสี/ไซส์ : 1 to Many) ─── o{</div>
 
         <div class="erd-entity">
           <div class="erd-header">3. ตาราง CART_ITEM (รายการสินค้าในตะกร้า - LocalStorage)</div>
-          <div class="erd-body">• cartKey (PK: id_color_size) | • id (FK) | • name | • price (number) | • color / size | • qty (number)</div>
+          <div class="erd-body">• cartKey (PK: id_color_size) | • id (FK) | • name | • price | • color / size | • qty</div>
         </div>
-        <div class="flow-arrow">}o ─── included_in (หลายรายการในตะกร้า ถูกรวมอยู่ในใบเสนอราคา/ใบสั่งซื้อ 1 ใบ : Many to 1) ─── ||</div>
+        <div class="flow-arrow">}o ─── included_in (หลายรายการในตะกร้า รวมในใบเสนอราคา/ใบสั่งซื้อ 1 ใบ : Many to 1) ─── ||</div>
 
         <div class="erd-entity" style="margin-bottom: 0;">
           <div class="erd-header">4. ตาราง QUOTATION_ORDER (ใบเสนอราคา / ใบสั่งซื้อ)</div>
-          <div class="erd-body">• docNo (PK: QT-XXXX) | • customerName / taxId / phone / address | • includeVat (boolean) | • grandTotal</div>
+          <div class="erd-body">• docNo (PK) | • customerName / taxId / phone / address | • includeVat | • grandTotal</div>
         </div>
       </div>
 
