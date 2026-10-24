@@ -264,8 +264,8 @@ flowchart LR
         <div class="p-4 rounded-2xl bg-bunni-50/60 border border-bunni-200 space-y-2">
           <h3 class="font-bold text-sm text-bunni-900">3.1 Functional Requirements (FR: ระบบทำอะไรได้บ้าง)</h3>
           <ol class="list-decimal list-inside space-y-1.5 text-stone-700 leading-relaxed">
-            <li><strong>ระบบแคตตาล็อกและค้นหา:</strong> กรองสินค้าตาม 5 หมวดหมู่ ค้นหาชื่อสินค้า และเรียงลำดับตามราคา/ความนิยม</li>
-            <li><strong>ระบบ Quick View:</strong> แสดงป๊อปอัปภาพขนาดใหญ่ จุดเด่นเนื้อผ้า เลือกสี ไซส์ และจำนวนชิ้น</li>
+            <li><strong>ระบบแคตตาล็อกและค้นหา:</strong> แสดงสินค้าทั้งหมด 16 รุ่น แยกกลุ่มตาม 4 หมวดหมู่หลักชัดเจน (หมวดหมู่ละ 4 รุ่น) พร้อมช่องค้นหาชื่อสินค้าและเรียงลำดับตามราคา</li>
+            <li><strong>ระบบ Quick View &amp; ตัวเลือกบนการ์ด:</strong> แสดงป๊อปอัปภาพขนาดใหญ่ จุดเด่นเนื้อผ้า เลือกสี ไซส์ และปรับจำนวนชิ้นได้ทันที</li>
             <li><strong>ระบบตารางไซส์อัจฉริยะ:</strong> รับค่ารอบอกและรอบเอว (นิ้ว) เพื่อประมวลผลแนะนำไซส์ (<code>S</code>, <code>M</code>, <code>L</code>, <code>Free Size</code>)</li>
             <li><strong>ระบบตะกร้าและโปรโมชั่น:</strong> เพิ่ม/ลดจำนวนสินค้า คำนวณสิทธิ์ส่งฟรีเมื่อครบ ฿990 และลด 10% เมื่อใช้โค้ด <code>BUNNI10</code></li>
             <li><strong>ระบบใบเสนอราคา (Quotation PDF):</strong> กรอกชื่อลูกค้า/บริษัท เลขผู้เสียภาษี คำนวณ VAT 7% แปลงยอดเงินเป็นตัวอักษรไทย และพิมพ์/โหลด PDF ขนาด A4</li>
@@ -347,7 +347,7 @@ flowchart TD
             <li><strong>ผู้เกี่ยวข้องภายนอก (External Entities):</strong> มี 2 ฝั่ง คือ <code>👤 ลูกค้า (Customer)</code> ผู้เลือกซื้อและป้อนข้อมูล กับ <code>💬 แอดมินร้าน (LINE @bunniwear)</code> ผู้รับใบสรุปคำสั่งซื้อไปจัดส่งสินค้า</li>
             <li><strong>แหล่งเก็บข้อมูล (Data Stores):</strong>
               <ul class="list-none pl-4 space-y-0.5 text-stone-600">
-                <li>• <code>D1: ข้อมูลสินค้า (PRODUCTS)</code> — เก็บข้อมูลเสื้อผ้าทั้ง 8 รุ่นในหน่วยความจำของโปรแกรม</li>
+                <li>• <code>D1: ข้อมูลสินค้า (PRODUCTS)</code> — เก็บข้อมูลเสื้อผ้าทั้ง 16 รุ่น (แยกเป็น 4 หมวดหมู่หลัก หมวดหมู่ละ 4 รุ่น) ในหน่วยความจำของโปรแกรม</li>
                 <li>• <code>D2: ตะกร้าสินค้า (LocalStorage)</code> — เก็บรายการที่ลูกค้าหยิบใส่ตะกร้าไว้ในเบราว์เซอร์</li>
               </ul>
             </li>
@@ -425,19 +425,19 @@ erDiagram
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
                 <p class="font-bold text-bunni-800">📦 กล่องที่ 1: <code>CATEGORY</code> (หมวดหมู่สินค้า)</p>
-                <p class="text-stone-600">ทำหน้าที่เก็บหมวดหมู่เสื้อผ้าทั้งหมดของร้าน</p>
+                <p class="text-stone-600">ทำหน้าที่เก็บหมวดหมู่เสื้อผ้าทั้ง 4 หมวดหมู่หลักของร้าน</p>
                 <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
                   <li><code>id (PK)</code>: รหัสหมวดหมู่ เช่น <code>shirts</code>, <code>dresses</code>, <code>pants</code>, <code>outerwear</code></li>
-                  <li><code>name</code>: ชื่อหมวดหมู่ภาษาไทย เช่น <em>"เสื้อเชิ้ต & เสื้อยืด"</em>, <em>"ชุดเดรส & ชุดเซ็ต"</em></li>
+                  <li><code>name</code>: ชื่อหมวดหมู่ภาษาไทย เช่น <em>"เสื้อเชิ้ต &amp; เสื้อยืด"</em>, <em>"ชุดเดรส &amp; มินิเดรส"</em></li>
                 </ul>
               </div>
 
               <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
                 <p class="font-bold text-bunni-800">👗 กล่องที่ 2: <code>PRODUCT</code> (ข้อมูลสินค้า)</p>
-                <p class="text-stone-600">ทำหน้าที่เก็บรายละเอียดเสื้อผ้าแต่ละรุ่นในแคตตาล็อก</p>
+                <p class="text-stone-600">ทำหน้าที่เก็บรายละเอียดเสื้อผ้าทั้ง 16 รุ่นในแคตตาล็อก (หมวดหมู่ละ 4 รุ่น)</p>
                 <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
-                  <li><code>id (PK)</code>: รหัสสินค้า เช่น <code>bunni-01</code> ถึง <code>bunni-08</code></li>
-                  <li><code>name</code>: ชื่อรุ่นสินค้า เช่น <em>"เสื้อเชิ้ตโอเวอร์ไซส์ ผ้าลินินพรีเมียม"</em></li>
+                  <li><code>id (PK)</code>: รหัสสินค้า เช่น <code>bunni-01</code> ถึง <code>bunni-16</code></li>
+                  <li><code>name</code>: ชื่อรุ่นสินค้า เช่น <em>"เสื้อเบลาส์แขนพองผ้าชีฟองลายจุด"</em></li>
                   <li><code>category (FK)</code>: รหัสหมวดหมู่ที่เชื่อมมาจากตาราง <code>CATEGORY</code></li>
                   <li><code>price</code> / <code>originalPrice</code>: ราคาขายจริง และราคาเต็มก่อนลด</li>
                   <li><code>colors</code> / <code>sizes</code>: รายการสีและไซส์ที่มีให้เลือก</li>
@@ -448,7 +448,7 @@ erDiagram
                 <p class="font-bold text-bunni-800">🛒 กล่องที่ 3: <code>CART_ITEM</code> (รายการในตะกร้าสินค้า)</p>
                 <p class="text-stone-600">ทำหน้าที่เก็บสินค้าที่ลูกค้ากดเลือกใส่ตะกร้า (บันทึกใน <code>LocalStorage</code>)</p>
                 <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
-                  <li><code>cartKey (PK)</code>: รหัสเฉพาะของรายการในตะกร้า เกิดจาก <code>รหัสสินค้า_สี_ไซส์</code> (เช่น <code>bunni-01_ขาวครีม_S</code>) เพื่อแยกสีและไซส์ของเสื้อรุ่นเดียวกันได้</li>
+                  <li><code>cartKey (PK)</code>: รหัสเฉพาะของรายการในตะกร้า เกิดจาก <code>รหัสสินค้า_สี_ไซส์</code> (เช่น <code>bunni-01_ขาวลายจุดดำ_S</code>) เพื่อแยกสีและไซส์ของเสื้อรุ่นเดียวกันได้</li>
                   <li><code>id (FK)</code>: อ้างอิงรหัสสินค้าจากตาราง <code>PRODUCT</code></li>
                   <li><code>name</code> / <code>price</code>: ชื่อสินค้าและราคาต่อหน่วย</li>
                   <li><code>color</code> / <code>size</code> / <code>qty</code>: สีที่เลือก, ไซส์ที่เลือก และจำนวนชิ้น</li>
@@ -545,7 +545,7 @@ flowchart TD
               <tr>
                 <td class="py-2.5 px-3 font-semibold">TC01</td>
                 <td class="py-2.5 px-3">UC01: ค้นหาและกรองสินค้า</td>
-                <td class="py-2.5 px-3 text-stone-600">คลิกหมวดหมู่ "ชุดเดรส" และค้นหาคำว่า "ลินิน"</td>
+                <td class="py-2.5 px-3 text-stone-600">คลิกหมวดหมู่ "ชุดเดรส" และค้นหาคำว่า "ชีฟอง"</td>
                 <td class="py-2.5 px-3 text-stone-600">แสดงรายการสินค้าตรงตามเงื่อนไขทันที</td>
                 <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
               </tr>
