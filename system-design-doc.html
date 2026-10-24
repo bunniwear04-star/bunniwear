@@ -338,6 +338,28 @@ flowchart TD
     Customer -->|"คัดลอกใบสั่งซื้อส่งแชท"| Admin
           </div>
         </div>
+
+        <!-- Detailed Thai Explanation of DFD -->
+        <div class="p-4 rounded-2xl bg-white border border-stone-200 text-xs space-y-2">
+          <h4 class="font-bold text-stone-900 text-sm">📌 คำอธิบายแผนภาพกระแสข้อมูล (DFD) ทั้ง 3 องค์ประกอบ:</h4>
+          <ul class="list-disc list-inside space-y-1 text-stone-700 leading-relaxed">
+            <li><strong>ผู้เกี่ยวข้องภายนอก (External Entities):</strong> มี 2 ฝั่ง คือ <code>👤 ลูกค้า (Customer)</code> ผู้เลือกซื้อและป้อนข้อมูล กับ <code>💬 แอดมินร้าน (LINE @bunniwear)</code> ผู้รับใบสรุปคำสั่งซื้อไปจัดส่งสินค้า</li>
+            <li><strong>แหล่งเก็บข้อมูล (Data Stores):</strong>
+              <ul class="list-none pl-4 space-y-0.5 text-stone-600">
+                <li>• <code>D1: ข้อมูลสินค้า (PRODUCTS)</code> — เก็บข้อมูลเสื้อผ้าทั้ง 8 รุ่นในหน่วยความจำของโปรแกรม</li>
+                <li>• <code>D2: ตะกร้าสินค้า (LocalStorage)</code> — เก็บรายการที่ลูกค้าหยิบใส่ตะกร้าไว้ในเบราว์เซอร์</li>
+              </ul>
+            </li>
+            <li><strong>กระบวนการทำงานหลัก (Processes 1.0 - 4.0):</strong>
+              <ul class="list-none pl-4 space-y-0.5 text-stone-600">
+                <li>• <strong>Process 1.0:</strong> รับคำค้นหา/หมวดหมู่จากลูกค้า ดึงข้อมูลจาก <code>D1</code> มาแสดงผลการ์ดสินค้าและหน้าต่าง Quick View</li>
+                <li>• <strong>Process 2.0:</strong> รับคำสั่งหยิบสินค้าและโค้ดส่วนลด <code>BUNNI10</code> บันทึกลง <code>D2</code> และคำนวณยอดรวมพร้อมสิทธิ์ส่งฟรี</li>
+                <li>• <strong>Process 3.0:</strong> ดึงรายการจาก <code>D2</code> รวมกับชื่อบริษัท/เลขผู้เสียภาษี/VAT 7% เพื่อสร้างใบเสนอราคา A4 และไฟล์ PDF</li>
+                <li>• <strong>Process 4.0:</strong> ดึงรายการจาก <code>D2</code> รวมกับชื่อ-ที่อยู่จัดส่ง เพื่อสร้างใบสรุปคำสั่งซื้อให้ลูกค้าคัดลอกส่งให้แอดมินทาง LINE</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- 5.2 ERD -->
