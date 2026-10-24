@@ -94,23 +94,6 @@
       z-index: -1;
     }
 
-    /* Prevent html2pdf overlay from clipping quotation height on smaller laptop screens */
-    .html2pdf__overlay {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: auto !important;
-      bottom: auto !important;
-      width: 794px !important;
-      height: auto !important;
-      overflow: visible !important;
-    }
-    .html2pdf__container {
-      position: relative !important;
-      width: 794px !important;
-      margin: 0 !important;
-    }
-
     /* Print Styles for Crisp A4 Quotation */
     @media print {
       @page {
@@ -721,7 +704,7 @@
 
       <!-- A4 Printable Quotation Sheet -->
       <div id="quotationPaperWrapper" class="bg-stone-200/70 p-2 sm:p-6 rounded-b-3xl">
-        <div id="quotationPaper" class="bg-white mx-auto shadow-xl rounded-xl sm:rounded-none p-6 sm:p-10 text-stone-900 max-w-[794px]">
+        <div id="quotationPaper" class="bg-white mx-auto shadow-xl rounded-xl sm:rounded-none p-5 sm:p-8 text-stone-900 max-w-[794px]">
           <!-- Dynamically populated by renderQuotationPaper() -->
         </div>
       </div>
@@ -1532,19 +1515,246 @@
       renderProducts();
     }
 
+    // Visual Color Swatch & Image Variant Configuration for all 16 Products
+    const COLOR_VARIANTS = {
+      'ขาวลายจุดดำ': {
+        swatchBg: 'radial-gradient(#1c1917 22%, transparent 24%) 0 0 / 8px 8px, radial-gradient(#1c1917 22%, #ffffff 24%) 4px 4px / 8px 8px #ffffff',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมลายจุดน้ำตาล': {
+        swatchBg: 'radial-gradient(#6b4226 22%, transparent 24%) 0 0 / 8px 8px, radial-gradient(#6b4226 22%, #f3e5d0 24%) 4px 4px / 8px 8px #f3e5d0',
+        imgFilter: 'sepia(0.42) saturate(1.25) brightness(0.96)',
+        tintBg: 'rgba(212, 178, 136, 0.22)',
+        tintBlend: 'multiply'
+      },
+      'ขาวออฟไวท์': {
+        swatchBg: '#faf8f5',
+        imgFilter: 'brightness(1.04) saturate(0.85)',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมวนิลา': {
+        swatchBg: '#f3e3c3',
+        imgFilter: 'sepia(0.35) saturate(1.2) brightness(0.98)',
+        tintBg: 'rgba(243, 222, 178, 0.25)',
+        tintBlend: 'multiply'
+      },
+      'เบจธรรมชาติ': {
+        swatchBg: '#d8c2a6',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ขาวครีม': {
+        swatchBg: '#f7f3eb',
+        imgFilter: 'saturate(0.45) brightness(1.08)',
+        tintBg: 'rgba(255, 252, 245, 0.18)',
+        tintBlend: 'screen'
+      },
+      'น้ำตาลอัลมอนด์': {
+        swatchBg: '#9c6b46',
+        imgFilter: 'sepia(0.48) saturate(1.4) brightness(0.84) contrast(1.06)',
+        tintBg: 'rgba(140, 82, 42, 0.24)',
+        tintBlend: 'multiply'
+      },
+      'ดำวินเทจ': {
+        swatchBg: '#232122',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'เทาชาร์โคล': {
+        swatchBg: '#5e6066',
+        imgFilter: 'brightness(1.26) contrast(0.86) saturate(0.65)',
+        tintBg: 'rgba(130, 135, 145, 0.22)',
+        tintBlend: 'screen'
+      },
+      'ชมพูพาสเทล': {
+        swatchBg: 'radial-gradient(#e88da7 25%, #f9dce5 27%) 0 0 / 8px 8px #f9dce5',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมดอกไม้': {
+        swatchBg: 'radial-gradient(#d49b6a 25%, #f6ebd8 27%) 0 0 / 8px 8px #f6ebd8',
+        imgFilter: 'hue-rotate(26deg) sepia(0.32) saturate(0.95) brightness(1.03)',
+        tintBg: 'rgba(244, 226, 190, 0.22)',
+        tintBlend: 'multiply'
+      },
+      'ขาวบริสุทธิ์': {
+        swatchBg: '#ffffff',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมงาช้าง': {
+        swatchBg: '#f2e6cf',
+        imgFilter: 'sepia(0.34) saturate(1.15) brightness(0.97)',
+        tintBg: 'rgba(238, 218, 180, 0.24)',
+        tintBlend: 'multiply'
+      },
+      'ฟ้าคราม': {
+        swatchBg: '#6c9dc6',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'เบจลินิน': {
+        swatchBg: '#decab0',
+        imgFilter: 'sepia(0.65) hue-rotate(-18deg) saturate(0.85) brightness(1.03)',
+        tintBg: 'rgba(222, 202, 176, 0.28)',
+        tintBlend: 'multiply'
+      },
+      'ขาว': {
+        swatchBg: '#fafafa',
+        imgFilter: 'saturate(0.18) brightness(1.12) contrast(0.96)',
+        tintBg: 'rgba(255, 255, 255, 0.24)',
+        tintBlend: 'screen'
+      },
+      'เทาเข้มชาร์โคล': {
+        swatchBg: '#4c4e54',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ดำคลาสสิก': {
+        swatchBg: '#18181b',
+        imgFilter: 'grayscale(0.85) brightness(0.68) contrast(1.22)',
+        tintBg: 'rgba(20, 20, 24, 0.28)',
+        tintBlend: 'multiply'
+      },
+      'น้ำตาลม็อคค่า': {
+        swatchBg: '#7b533e',
+        imgFilter: 'sepia(0.55) saturate(1.45) brightness(0.9)',
+        tintBg: 'rgba(123, 83, 62, 0.25)',
+        tintBlend: 'multiply'
+      },
+      'เทาเกาหลี': {
+        swatchBg: '#9ca3af',
+        imgFilter: 'saturate(0.2) brightness(0.88) contrast(1.06)',
+        tintBg: 'rgba(140, 148, 160, 0.25)',
+        tintBlend: 'multiply'
+      },
+      'ดำ': {
+        swatchBg: '#1c1917',
+        imgFilter: 'grayscale(0.9) brightness(0.62) contrast(1.25)',
+        tintBg: 'rgba(24, 24, 28, 0.34)',
+        tintBlend: 'multiply'
+      },
+      'ชมพูโรสพาสเทล': {
+        swatchBg: '#e7a4b6',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมเบจ': {
+        swatchBg: '#e5d4be',
+        imgFilter: 'sepia(0.38) saturate(0.75) brightness(1.08)',
+        tintBg: 'rgba(229, 212, 190, 0.26)',
+        tintBlend: 'multiply'
+      },
+      'ยีนส์น้ำเงินวินเทจ': {
+        swatchBg: 'linear-gradient(135deg, #3f6184 0%, #5b7fa3 100%)',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ยีนส์ฟอกสีอ่อน': {
+        swatchBg: 'linear-gradient(135deg, #8fb3d4 0%, #b5d0e8 100%)',
+        imgFilter: 'brightness(1.16) saturate(0.78) contrast(0.92)',
+        tintBg: 'rgba(175, 208, 238, 0.24)',
+        tintBlend: 'screen'
+      },
+      'ครบเซ็ต (เสื้อ+กระโปรง)': {
+        swatchBg: 'repeating-linear-gradient(0deg, #ffffff 0px, #ffffff 3px, #1c1917 3px, #1c1917 6px)',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'เฉพาะกระโปรงดำ': {
+        swatchBg: '#1c1917',
+        imgFilter: 'contrast(1.12) brightness(0.9)',
+        tintBg: 'rgba(20, 20, 24, 0.15)',
+        tintBlend: 'multiply'
+      },
+      'น้ำตาลคาราเมล': {
+        swatchBg: '#b67145',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมนม': {
+        swatchBg: '#f3e7d4',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'เขียวเข้มลายสก๊อต': {
+        swatchBg: 'repeating-linear-gradient(45deg, #274237 0px, #274237 4px, #1c2d27 4px, #1c2d27 8px)',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'เทาลายสก๊อต': {
+        swatchBg: 'repeating-linear-gradient(45deg, #6b7078 0px, #6b7078 4px, #4b4f56 4px, #4b4f56 8px)',
+        imgFilter: 'grayscale(0.88) brightness(1.06) contrast(1.05)',
+        tintBg: 'rgba(115, 120, 130, 0.2)',
+        tintBlend: 'multiply'
+      },
+      'น้ำตาลคาเมล': {
+        swatchBg: '#c28752',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      },
+      'ครีมโอ๊ตมีล': {
+        swatchBg: '#e4d6c5',
+        imgFilter: 'saturate(0.55) brightness(1.12) contrast(0.95)',
+        tintBg: 'rgba(232, 218, 202, 0.25)',
+        tintBlend: 'multiply'
+      }
+    };
+
+    function getColorVariant(product, colorName) {
+      const idx = product ? product.colors.indexOf(colorName) : 0;
+      const preset = COLOR_VARIANTS[colorName] || {
+        swatchBg: '#e69f86',
+        imgFilter: 'none',
+        tintBg: 'transparent',
+        tintBlend: 'normal'
+      };
+      // Primary color (first option) always shows the original studio photo clearly
+      if (idx === 0) {
+        return {
+          swatchBg: preset.swatchBg,
+          imgFilter: 'none',
+          tintBg: 'transparent',
+          tintBlend: 'normal'
+        };
+      }
+      return preset;
+    }
+
     function renderSingleProductCard(product) {
       const sel = selectedOptions[product.id];
       const cardQty = sel.cardQty || 1;
+      const activeVariant = getColorVariant(product, sel.color);
       return `
         <div class="bg-white rounded-3xl border border-bunni-200/70 overflow-hidden shadow-xs hover:shadow-xl transition duration-300 flex flex-col justify-between group">
           <div>
-            <!-- Image Box with Quick View Overlay -->
+            <!-- Image Box with Quick View Overlay & Active Color Preview -->
             <div onclick="openQuickView('${product.id}')" class="relative aspect-[4/5] overflow-hidden bg-bunni-100 cursor-pointer">
               <img
                 src="${product.image}"
-                alt="${product.name}"
+                alt="${product.name} - ${sel.color}"
+                style="filter: ${activeVariant.imgFilter};"
                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
+              ${activeVariant.tintBg !== 'transparent' ? `
+                <div class="absolute inset-0 pointer-events-none transition duration-300" style="background: ${activeVariant.tintBg}; mix-blend-mode: ${activeVariant.tintBlend};"></div>
+              ` : ''}
               ${product.badge ? `
                 <span class="absolute top-3.5 left-3.5 bg-stone-900/90 backdrop-blur-xs text-white text-[11px] font-medium px-3 py-1 rounded-full">
                   ${product.badge}
@@ -1554,11 +1764,17 @@
                 -${Math.round((1 - product.price / product.originalPrice) * 100)}%
               </span>
 
+              <!-- Active Color Indicator Pill on Image -->
+              <div class="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full shadow-xs border border-stone-200/80 flex items-center gap-1.5 pointer-events-none group-hover:opacity-0 transition">
+                <span class="w-3.5 h-3.5 rounded-full border border-stone-300 shrink-0" style="background: ${activeVariant.swatchBg};"></span>
+                <span class="text-[10px] font-medium text-stone-800">${sel.color}</span>
+              </div>
+
               <!-- Hover Quick View Button -->
               <div class="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition duration-200">
                 <div class="w-full py-2 px-3 rounded-xl bg-white/95 backdrop-blur-xs text-stone-900 text-xs font-semibold shadow-md flex items-center justify-center gap-1.5">
                   <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-bunni-600"></i>
-                  <span>ดูรายละเอียดสินค้า (Quick View)</span>
+                  <span>ดูรายละเอียดและรูปตัวอย่างสี</span>
                 </div>
               </div>
             </div>
@@ -1580,23 +1796,53 @@
                 </button>
               </div>
 
-              <!-- Color Selector -->
+              <!-- Color Selector with Visual Thumbnail Previews & Fabric Swatches -->
               <div class="mt-3.5">
-                <span class="block text-[11px] text-stone-500 mb-1.5">เลือกสี: <strong class="text-stone-800">${sel.color}</strong></span>
-                <div class="flex flex-wrap gap-1.5">
-                  ${product.colors.map(color => `
-                    <button
-                      type="button"
-                      onclick="selectProductOption('${product.id}', 'color', '${color}')"
-                      class="px-2.5 py-1 rounded-lg text-[11px] border transition ${
-                        sel.color === color
-                          ? 'bg-bunni-100 border-bunni-500 text-bunni-900 font-semibold'
-                          : 'bg-stone-50 border-stone-200 text-stone-600 hover:border-bunni-300'
-                      }"
-                    >
-                      ${color}
-                    </button>
-                  `).join('')}
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] text-stone-500">ตัวอย่างสี: <strong class="text-stone-800">${sel.color}</strong></span>
+                  <span class="text-[10px] text-stone-400">${product.colors.length} สีพร้อมส่ง</span>
+                </div>
+                <div class="grid grid-cols-2 gap-1.5">
+                  ${product.colors.map(color => {
+                    const v = getColorVariant(product, color);
+                    const isSelected = sel.color === color;
+                    return `
+                      <button
+                        type="button"
+                        onclick="selectProductOption('${product.id}', 'color', '${color}')"
+                        class="p-1.5 rounded-xl text-left border transition flex items-center gap-2 ${
+                          isSelected
+                            ? 'bg-bunni-50 border-bunni-500 ring-1 ring-bunni-400 text-bunni-900 font-semibold shadow-2xs'
+                            : 'bg-stone-50/80 border-stone-200 text-stone-600 hover:border-bunni-300 hover:bg-white'
+                        }"
+                      >
+                        <div class="relative w-8 h-10 rounded-lg overflow-hidden border border-stone-200 shrink-0 bg-bunni-100">
+                          <img
+                            src="${product.image}"
+                            alt="${color}"
+                            style="filter: ${v.imgFilter};"
+                            class="w-full h-full object-cover"
+                          />
+                          ${v.tintBg !== 'transparent' ? `
+                            <div class="absolute inset-0" style="background: ${v.tintBg}; mix-blend-mode: ${v.tintBlend};"></div>
+                          ` : ''}
+                          <span
+                            class="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full border border-white shadow-2xs"
+                            style="background: ${v.swatchBg};"
+                          ></span>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-1">
+                            <span class="w-2.5 h-2.5 rounded-full border border-stone-300 shrink-0" style="background: ${v.swatchBg};"></span>
+                            <span class="text-[11px] leading-tight truncate block">${color}</span>
+                          </div>
+                          <span class="text-[9px] ${isSelected ? 'text-bunni-600' : 'text-stone-400'} block mt-0.5">
+                            ${isSelected ? '✓ เลือกสีนี้' : 'คลิกดูสี'}
+                          </span>
+                        </div>
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
               </div>
 
@@ -1857,28 +2103,28 @@
 
       paper.innerHTML = `
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start gap-5 pb-5 border-b-2 border-stone-900">
-          <div class="space-y-1.5">
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b-2 border-stone-900">
+          <div class="space-y-1">
             <div class="flex items-center gap-3.5">
               <img
                 src="${typeof BUNNI_LOGO_DATA_URI !== 'undefined' ? BUNNI_LOGO_DATA_URI : 'logo.png'}"
                 alt="Bunni Wear Logo"
-                class="w-16 h-16 sm:w-18 sm:h-18 rounded-full object-cover border border-bunni-300 shadow-xs shrink-0"
+                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border border-bunni-300 shadow-xs shrink-0"
               />
               <div>
                 <h1 class="font-serif text-3xl font-bold tracking-tight text-stone-900">bunniwear</h1>
                 <p class="text-[11px] uppercase tracking-widest text-bunni-700 font-semibold">Women's Fashion • Seoul Minimal Studio</p>
               </div>
             </div>
-            <p class="text-xs text-stone-600 pt-1">ร้านเสื้อผ้าแฟชั่น bunniwear (สำนักงานใหญ่)</p>
+            <p class="text-xs text-stone-600 pt-0.5">ร้านเสื้อผ้าแฟชั่น bunniwear (สำนักงานใหญ่)</p>
             <p class="text-xs text-stone-500">99/8 อาคารโซลสตูดิโอ ถนนสุขุมวิท แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110</p>
             <p class="text-xs text-stone-500">โทร: 02-123-4567 | LINE Official: @bunniwear | อีเมล: bunniwear04@gmail.com</p>
           </div>
 
-          <div class="sm:text-right space-y-1 bg-bunni-50 px-5 py-3.5 rounded-2xl border border-bunni-200 w-full sm:w-auto shrink-0">
+          <div class="sm:text-right space-y-1 bg-bunni-50 px-5 py-3 rounded-2xl border border-bunni-200 w-full sm:w-auto shrink-0">
             <span class="text-xs font-bold uppercase tracking-widest text-bunni-700 block">QUOTATION</span>
             <h2 class="text-2xl font-bold text-stone-900">ใบเสนอราคา</h2>
-            <div class="text-xs text-stone-600 space-y-0.5 pt-1">
+            <div class="text-xs text-stone-600 space-y-0.5 pt-0.5">
               <p><span class="font-semibold text-stone-800">เลขที่เอกสาร:</span> ${currentQuotationNo}</p>
               <p><span class="font-semibold text-stone-800">วันที่ออกเอกสาร:</span> ${formatDate(today)}</p>
               <p><span class="font-semibold text-stone-800">ยืนยันราคาถึงวันที่:</span> ${formatDate(validUntil)}</p>
@@ -1887,7 +2133,7 @@
         </div>
 
         <!-- Customer Info Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5 p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3.5 p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs">
           <div class="space-y-1">
             <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">เสนอราคาแก่ (Customer)</p>
             <p class="text-sm font-bold text-stone-900">${custName}</p>
@@ -1905,26 +2151,26 @@
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-stone-900 text-white">
-                <th class="py-2.5 px-3 font-semibold text-center w-12 rounded-tl-xl">ลำดับ</th>
-                <th class="py-2.5 px-3 font-semibold">รายการสินค้า (Description)</th>
-                <th class="py-2.5 px-3 font-semibold text-center w-28">สี / ไซส์</th>
-                <th class="py-2.5 px-3 font-semibold text-center w-16">จำนวน</th>
-                <th class="py-2.5 px-3 font-semibold text-right w-28">ราคา/หน่วย</th>
-                <th class="py-2.5 px-3 font-semibold text-right w-28 rounded-tr-xl">จำนวนเงิน (บาท)</th>
+                <th class="py-2 px-3 font-semibold text-center w-12 rounded-tl-xl">ลำดับ</th>
+                <th class="py-2 px-3 font-semibold">รายการสินค้า (Description)</th>
+                <th class="py-2 px-3 font-semibold text-center w-28">สี / ไซส์</th>
+                <th class="py-2 px-3 font-semibold text-center w-16">จำนวน</th>
+                <th class="py-2 px-3 font-semibold text-right w-28">ราคา/หน่วย</th>
+                <th class="py-2 px-3 font-semibold text-right w-28 rounded-tr-xl">จำนวนเงิน (บาท)</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-stone-200 border-x border-b border-stone-200">
               ${quoteItems.map((item, idx) => `
                 <tr>
-                  <td class="py-2.5 px-3 text-center text-stone-500 font-medium">${idx + 1}</td>
-                  <td class="py-2.5 px-3">
+                  <td class="py-2 px-3 text-center text-stone-500 font-medium">${idx + 1}</td>
+                  <td class="py-2 px-3">
                     <p class="font-semibold text-stone-900">${item.name}</p>
                     <p class="text-[11px] text-stone-400">รหัสสินค้า: ${item.id.toUpperCase()}</p>
                   </td>
-                  <td class="py-2.5 px-3 text-center text-stone-700">${item.color} / ${item.size}</td>
-                  <td class="py-2.5 px-3 text-center font-semibold text-stone-900">${item.qty}</td>
-                  <td class="py-2.5 px-3 text-right text-stone-700">฿${item.price.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
-                  <td class="py-2.5 px-3 text-right font-semibold text-stone-900">฿${(item.price * item.qty).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                  <td class="py-2 px-3 text-center text-stone-700">${item.color} / ${item.size}</td>
+                  <td class="py-2 px-3 text-center font-semibold text-stone-900">${item.qty}</td>
+                  <td class="py-2 px-3 text-right text-stone-700">฿${item.price.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                  <td class="py-2 px-3 text-right font-semibold text-stone-900">฿${(item.price * item.qty).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -1932,14 +2178,14 @@
         </div>
 
         <!-- Totals & Baht Text Summary -->
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 mt-5 items-start">
-          <div class="sm:col-span-7 space-y-2.5">
-            <div class="p-3 rounded-xl bg-bunni-50 border border-bunni-200 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-4 items-start">
+          <div class="sm:col-span-7 space-y-2">
+            <div class="p-2.5 rounded-xl bg-bunni-50 border border-bunni-200 text-xs">
               <span class="text-stone-500 block text-[11px]">จำนวนเงินรวมทั้งสิ้น (ตัวอักษร):</span>
               <p class="font-bold text-stone-900 text-sm mt-0.5">( ${numberToThaiBahtText(grandTotal)} )</p>
             </div>
 
-            <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-600 space-y-1 leading-relaxed">
+            <div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-600 space-y-0.5 leading-relaxed">
               <p class="font-semibold text-stone-800">หมายเหตุและเงื่อนไขการสั่งซื้อ:</p>
               <p>1. ใบเสนอราคานี้มีอายุ 15 วัน นับจากวันที่ออกเอกสาร</p>
               <p>2. จัดส่งด่วนฟรีทั่วประเทศเมื่อมียอดสั่งซื้อหลังหักส่วนลดครบ 990 บาทขึ้นไป</p>
@@ -1947,7 +2193,7 @@
             </div>
           </div>
 
-          <div class="sm:col-span-5 bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-2 text-xs">
+          <div class="sm:col-span-5 bg-stone-50 p-3.5 rounded-2xl border border-stone-200 space-y-1.5 text-xs">
             <div class="flex justify-between text-stone-600">
               <span>รวมเป็นเงิน (Subtotal)</span>
               <span class="font-medium text-stone-900">฿${subtotal.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
@@ -1968,7 +2214,7 @@
               <span>ค่าจัดส่ง (Shipping)</span>
               <span>${shipping === 0 ? 'ฟรี (฿0.00)' : '฿' + shipping.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
             </div>
-            <div class="flex justify-between text-sm font-bold text-stone-900 pt-2.5 border-t-2 border-stone-900">
+            <div class="flex justify-between text-sm font-bold text-stone-900 pt-2 border-t-2 border-stone-900">
               <span>จำนวนเงินรวมสุทธิ</span>
               <span class="text-bunni-700 text-base">฿${grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
             </div>
@@ -1976,13 +2222,13 @@
         </div>
 
         <!-- Signatures -->
-        <div class="grid grid-cols-2 gap-8 mt-9 pt-5 border-t border-stone-200 text-center text-xs text-stone-600">
-          <div class="space-y-7">
+        <div class="grid grid-cols-2 gap-8 mt-5 pt-4 border-t border-stone-200 text-center text-xs text-stone-600">
+          <div class="space-y-5">
             <p class="font-semibold text-stone-800">ในนาม ผู้สั่งซื้อ / ผู้อนุมัติ</p>
             <div class="border-b border-dashed border-stone-400 w-44 mx-auto"></div>
             <p>( ...................................................... )<br/>วันที่ ........../........../..........</p>
           </div>
-          <div class="space-y-7">
+          <div class="space-y-5">
             <p class="font-semibold text-stone-800">ในนาม ร้าน bunniwear (ผู้เสนอราคา)</p>
             <div class="border-b border-dashed border-stone-400 w-44 mx-auto"></div>
             <p>( ฝ่ายขาย bunniwear Official )<br/>วันที่ ${formatDate(today)}</p>
@@ -1991,34 +2237,401 @@
       `;
     }
 
-    function segmentThaiWordsForCanvas(rootEl) {
-      if (typeof Intl === 'undefined' || !Intl.Segmenter) return;
-      const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
-      const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
-      const textNodes = [];
-      let current;
-      while ((current = walker.nextNode())) {
-        if (current.nodeValue && /[\u0E00-\u0E7F]/.test(current.nodeValue)) {
-          textNodes.push(current);
-        }
+    function drawRoundedRect(ctx, x, y, w, h, r, fillColor, strokeColor, lineWidth = 1) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      if (fillColor) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
       }
-      for (const textNode of textNodes) {
-        const text = textNode.nodeValue;
-        const frag = document.createDocumentFragment();
-        for (const part of segmenter.segment(text)) {
-          if (/^\s+$/.test(part.segment)) {
-            frag.appendChild(document.createTextNode(part.segment));
-          } else {
-            const span = document.createElement('span');
-            span.style.display = 'inline-block';
-            span.textContent = part.segment;
-            frag.appendChild(span);
-          }
-        }
-        if (textNode.parentNode) {
-          textNode.parentNode.replaceChild(frag, textNode);
-        }
+      if (strokeColor) {
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
       }
+    }
+
+    async function renderQuotationToCanvas() {
+      if (document.fonts && document.fonts.ready) {
+        try { await document.fonts.ready; } catch (e) {}
+      }
+
+      const custName = document.getElementById('qCustName').value.trim() || 'ลูกค้าทั่วไป (คุณลูกค้าผู้มีอุปการคุณ)';
+      const custTaxId = document.getElementById('qCustTaxId').value.trim() || '-';
+      const custPhone = document.getElementById('qCustPhone').value.trim() || '-';
+      const custAddress = document.getElementById('qCustAddress').value.trim() || '-';
+      const includeVat = document.getElementById('quoteVatToggle').checked;
+
+      const quoteItems = cart.length > 0 ? cart : [
+        {
+          id: PRODUCTS[0].id,
+          name: PRODUCTS[0].name,
+          color: PRODUCTS[0].colors[0],
+          size: PRODUCTS[0].sizes[0],
+          price: PRODUCTS[0].price,
+          qty: 1
+        },
+        {
+          id: PRODUCTS[1].id,
+          name: PRODUCTS[1].name,
+          color: PRODUCTS[1].colors[0],
+          size: PRODUCTS[1].sizes[0],
+          price: PRODUCTS[1].price,
+          qty: 1
+        }
+      ];
+
+      const subtotal = quoteItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const discount = Math.round(subtotal * promoDiscountRate);
+      const afterDiscount = subtotal - discount;
+      const shipping = afterDiscount >= 990 || afterDiscount === 0 ? 0 : 50;
+      const vatAmount = includeVat ? Math.round(afterDiscount * 0.07 * 100) / 100 : 0;
+      const grandTotal = afterDiscount + vatAmount + shipping;
+
+      const today = new Date();
+      const validUntil = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
+      const formatDate = (d) => d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+      const fmtMoney = (n) => '฿' + n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const SCALE = 2;
+      const W = 794;
+      const H = 1100;
+      const canvas = document.createElement('canvas');
+      canvas.width = W * SCALE;
+      canvas.height = H * SCALE;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(SCALE, SCALE);
+
+      // White A4 background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+      ctx.textBaseline = 'alphabetic';
+
+      const padX = 44;
+      const rightX = W - padX;
+      const contentW = W - padX * 2;
+      const fontSans = '"Prompt", "Tahoma", "Leelawadee UI", sans-serif';
+      const fontSerif = '"Playfair Display", Georgia, serif';
+
+      // Load embedded logo image
+      let logoImg = null;
+      if (typeof BUNNI_LOGO_DATA_URI !== 'undefined') {
+        logoImg = await new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(null);
+          img.src = BUNNI_LOGO_DATA_URI;
+        });
+      }
+
+      // 1. Header Section
+      const headerTop = 38;
+      if (logoImg) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(padX + 30, headerTop + 30, 30, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(logoImg, padX, headerTop, 60, 60);
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.arc(padX + 30, headerTop + 30, 30, 0, Math.PI * 2);
+        ctx.strokeStyle = '#f0c4b3';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      const brandX = logoImg ? padX + 74 : padX;
+      ctx.fillStyle = '#1c1917';
+      ctx.font = `bold 28px ${fontSerif}`;
+      ctx.textAlign = 'left';
+      ctx.fillText('bunniwear', brandX, headerTop + 28);
+
+      ctx.fillStyle = '#a74c32';
+      ctx.font = `600 10px ${fontSans}`;
+      ctx.fillText("WOMEN'S FASHION • SEOUL MINIMAL STUDIO", brandX, headerTop + 46);
+
+      ctx.fillStyle = '#57534e';
+      ctx.font = `400 11.5px ${fontSans}`;
+      ctx.fillText('ร้านเสื้อผ้าแฟชั่น bunniwear (สำนักงานใหญ่)', padX, headerTop + 80);
+      ctx.fillStyle = '#78716c';
+      ctx.font = `400 11px ${fontSans}`;
+      ctx.fillText('99/8 อาคารโซลสตูดิโอ ถนนสุขุมวิท แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110', padX, headerTop + 98);
+      ctx.fillText('โทร: 02-123-4567 | LINE Official: @bunniwear | อีเมล: bunniwear04@gmail.com', padX, headerTop + 116);
+
+      // Right Quotation Badge Box
+      const qBoxW = 236;
+      const qBoxH = 122;
+      const qBoxX = rightX - qBoxW;
+      drawRoundedRect(ctx, qBoxX, headerTop, qBoxW, qBoxH, 14, '#fdf8f6', '#f7dfd5', 1);
+
+      const qTextRight = rightX - 18;
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#a74c32';
+      ctx.font = `bold 10.5px ${fontSans}`;
+      ctx.fillText('QUOTATION', qTextRight, headerTop + 22);
+
+      ctx.fillStyle = '#1c1917';
+      ctx.font = `bold 21px ${fontSans}`;
+      ctx.fillText('ใบเสนอราคา', qTextRight, headerTop + 48);
+
+      ctx.fillStyle = '#57534e';
+      ctx.font = `400 11px ${fontSans}`;
+      ctx.fillText(`เลขที่เอกสาร: ${currentQuotationNo}`, qTextRight, headerTop + 72);
+      ctx.fillText(`วันที่ออกเอกสาร: ${formatDate(today)}`, qTextRight, headerTop + 90);
+      ctx.fillText(`ยืนยันราคาถึงวันที่: ${formatDate(validUntil)}`, qTextRight, headerTop + 108);
+
+      // Header bottom divider
+      const dividerY = headerTop + 136;
+      ctx.beginPath();
+      ctx.moveTo(padX, dividerY);
+      ctx.lineTo(rightX, dividerY);
+      ctx.strokeStyle = '#1c1917';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 2. Customer Info Section
+      const custBoxY = dividerY + 16;
+      const custBoxH = 86;
+      drawRoundedRect(ctx, padX, custBoxY, contentW, custBoxH, 14, '#fafaf9', '#e7e5e4', 1);
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#a8a29e';
+      ctx.font = `600 10px ${fontSans}`;
+      ctx.fillText('เสนอราคาแก่ (CUSTOMER)', padX + 16, custBoxY + 22);
+
+      ctx.fillStyle = '#1c1917';
+      ctx.font = `bold 13px ${fontSans}`;
+      ctx.fillText(custName, padX + 16, custBoxY + 44);
+
+      ctx.fillStyle = '#57534e';
+      ctx.font = `400 11px ${fontSans}`;
+      ctx.fillText(`ที่อยู่: ${custAddress}`, padX + 16, custBoxY + 66);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#57534e';
+      ctx.font = `400 11px ${fontSans}`;
+      ctx.fillText(`เลขประจำตัวผู้เสียภาษี: ${custTaxId}`, rightX - 16, custBoxY + 25);
+      ctx.fillText(`เบอร์โทรศัพท์ / ติดต่อ: ${custPhone}`, rightX - 16, custBoxY + 46);
+      ctx.fillText('เงื่อนไขการชำระเงิน: โอนชำระ / เก็บเงินปลายทาง (COD)', rightX - 16, custBoxY + 67);
+
+      // 3. Items Table
+      const tableTop = custBoxY + custBoxH + 18;
+      const thH = 34;
+      const maxTableRowsH = 380;
+      const rowH = Math.min(46, Math.max(26, Math.floor(maxTableRowsH / Math.max(quoteItems.length, 1))));
+
+      // Table Header background (rounded top)
+      ctx.beginPath();
+      ctx.moveTo(padX + 10, tableTop);
+      ctx.lineTo(rightX - 10, tableTop);
+      ctx.quadraticCurveTo(rightX, tableTop, rightX, tableTop + 10);
+      ctx.lineTo(rightX, tableTop + thH);
+      ctx.lineTo(padX, tableTop + thH);
+      ctx.lineTo(padX, tableTop + 10);
+      ctx.quadraticCurveTo(padX, tableTop, padX + 10, tableTop);
+      ctx.closePath();
+      ctx.fillStyle = '#1c1917';
+      ctx.fill();
+
+      const col1Center = padX + 24;
+      const col2Left = padX + 56;
+      const col3Center = padX + 392;
+      const col4Center = padX + 478;
+      const col5Right = padX + 592;
+      const col6Right = rightX - 12;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `600 11px ${fontSans}`;
+      ctx.textAlign = 'center';
+      ctx.fillText('ลำดับ', col1Center, tableTop + 21);
+      ctx.textAlign = 'left';
+      ctx.fillText('รายการสินค้า (Description)', col2Left, tableTop + 21);
+      ctx.textAlign = 'center';
+      ctx.fillText('สี / ไซส์', col3Center, tableTop + 21);
+      ctx.fillText('จำนวน', col4Center, tableTop + 21);
+      ctx.textAlign = 'right';
+      ctx.fillText('ราคา/หน่วย', col5Right, tableTop + 21);
+      ctx.fillText('จำนวนเงิน (บาท)', col6Right, tableTop + 21);
+
+      let curY = tableTop + thH;
+      quoteItems.forEach((item, idx) => {
+        // Row border
+        ctx.strokeStyle = '#e7e5e4';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(padX, curY, contentW, rowH);
+
+        const midY = curY + rowH / 2 + 4;
+        ctx.fillStyle = '#78716c';
+        ctx.font = `500 11px ${fontSans}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(String(idx + 1), col1Center, midY);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#1c1917';
+        ctx.font = `600 11.5px ${fontSans}`;
+        if (rowH >= 40) {
+          ctx.fillText(item.name, col2Left, curY + 19);
+          ctx.fillStyle = '#a8a29e';
+          ctx.font = `400 9.5px ${fontSans}`;
+          ctx.fillText(`รหัสสินค้า: ${item.id.toUpperCase()}`, col2Left, curY + 35);
+        } else {
+          ctx.fillText(`${item.name} (${item.id.toUpperCase()})`, col2Left, midY);
+        }
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#44403c';
+        ctx.font = `400 11px ${fontSans}`;
+        ctx.fillText(`${item.color} / ${item.size}`, col3Center, midY);
+
+        ctx.fillStyle = '#1c1917';
+        ctx.font = `600 11px ${fontSans}`;
+        ctx.fillText(String(item.qty), col4Center, midY);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#44403c';
+        ctx.font = `400 11px ${fontSans}`;
+        ctx.fillText(fmtMoney(item.price), col5Right, midY);
+
+        ctx.fillStyle = '#1c1917';
+        ctx.font = `600 11px ${fontSans}`;
+        ctx.fillText(fmtMoney(item.price * item.qty), col6Right, midY);
+
+        curY += rowH;
+      });
+
+      // 4. Totals & Baht Text Summary Section
+      const sumTop = curY + 18;
+      const leftColW = 404;
+      const rightColW = 286;
+      const rightColX = rightX - rightColW;
+
+      // Baht Text Box
+      const bahtBoxH = 54;
+      drawRoundedRect(ctx, padX, sumTop, leftColW, bahtBoxH, 12, '#fdf8f6', '#f7dfd5', 1);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#78716c';
+      ctx.font = `400 10.5px ${fontSans}`;
+      ctx.fillText('จำนวนเงินรวมทั้งสิ้น (ตัวอักษร):', padX + 14, sumTop + 20);
+      ctx.fillStyle = '#1c1917';
+      ctx.font = `bold 13px ${fontSans}`;
+      ctx.fillText(`( ${numberToThaiBahtText(grandTotal)} )`, padX + 14, sumTop + 41);
+
+      // Notes Box
+      const notesTop = sumTop + bahtBoxH + 10;
+      const notesH = 88;
+      drawRoundedRect(ctx, padX, notesTop, leftColW, notesH, 12, '#fafaf9', '#e7e5e4', 1);
+      ctx.fillStyle = '#292524';
+      ctx.font = `600 10.5px ${fontSans}`;
+      ctx.fillText('หมายเหตุและเงื่อนไขการสั่งซื้อ:', padX + 14, notesTop + 20);
+      ctx.fillStyle = '#57534e';
+      ctx.font = `400 10px ${fontSans}`;
+      ctx.fillText('1. ใบเสนอราคานี้มีอายุ 15 วัน นับจากวันที่ออกเอกสาร', padX + 14, notesTop + 39);
+      ctx.fillText('2. จัดส่งด่วนฟรีทั่วประเทศเมื่อมียอดสั่งซื้อหลังหักส่วนลดครบ 990 บาทขึ้นไป', padX + 14, notesTop + 57);
+      ctx.fillText('3. ชำระเงิน: ธนาคารกสิกรไทย เลขที่บัญชี 123-4-56789-0 (ชื่อบัญชี ร้าน bunniwear)', padX + 14, notesTop + 75);
+
+      // Right Totals Box
+      const summaryRows = [
+        { label: 'รวมเป็นเงิน (Subtotal)', val: fmtMoney(subtotal), color: '#1c1917' }
+      ];
+      if (discount > 0) {
+        summaryRows.push({ label: 'ส่วนลดโปรโมชั่น (BUNNI10)', val: '-' + fmtMoney(discount), color: '#e11d48' });
+      }
+      if (includeVat) {
+        summaryRows.push({ label: 'ภาษีมูลค่าเพิ่ม (VAT 7%)', val: fmtMoney(vatAmount), color: '#1c1917' });
+      }
+      summaryRows.push({
+        label: 'ค่าจัดส่ง (Shipping)',
+        val: shipping === 0 ? 'ฟรี (฿0.00)' : fmtMoney(shipping),
+        color: '#1c1917'
+      });
+
+      const totBoxH = 58 + summaryRows.length * 24;
+      drawRoundedRect(ctx, rightColX, sumTop, rightColW, totBoxH, 14, '#fafaf9', '#e7e5e4', 1);
+
+      let rowY = sumTop + 24;
+      summaryRows.forEach((r) => {
+        ctx.textAlign = 'left';
+        ctx.fillStyle = r.color === '#e11d48' ? '#e11d48' : '#57534e';
+        ctx.font = `400 11px ${fontSans}`;
+        ctx.fillText(r.label, rightColX + 16, rowY);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = r.color;
+        ctx.font = `500 11px ${fontSans}`;
+        ctx.fillText(r.val, rightX - 16, rowY);
+        rowY += 24;
+      });
+
+      // Net Total Divider
+      const netLineY = rowY - 8;
+      ctx.beginPath();
+      ctx.moveTo(rightColX + 16, netLineY);
+      ctx.lineTo(rightX - 16, netLineY);
+      ctx.strokeStyle = '#1c1917';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#1c1917';
+      ctx.font = `bold 13px ${fontSans}`;
+      ctx.fillText('จำนวนเงินรวมสุทธิ', rightColX + 16, netLineY + 24);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#a74c32';
+      ctx.font = `bold 15px ${fontSans}`;
+      ctx.fillText(fmtMoney(grandTotal), rightX - 16, netLineY + 24);
+
+      // 5. Signatures Section
+      const sigTop = Math.max(notesTop + notesH, sumTop + totBoxH) + 34;
+      ctx.beginPath();
+      ctx.moveTo(padX, sigTop);
+      ctx.lineTo(rightX, sigTop);
+      ctx.strokeStyle = '#e7e5e4';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      const leftSigX = padX + contentW * 0.25;
+      const rightSigX = padX + contentW * 0.75;
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#292524';
+      ctx.font = `600 11.5px ${fontSans}`;
+      ctx.fillText('ในนาม ผู้สั่งซื้อ / ผู้อนุมัติ', leftSigX, sigTop + 26);
+      ctx.fillText('ในนาม ร้าน bunniwear (ผู้เสนอราคา)', rightSigX, sigTop + 26);
+
+      // Dashed signature lines
+      ctx.save();
+      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = '#a8a29e';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(leftSigX - 88, sigTop + 68);
+      ctx.lineTo(leftSigX + 88, sigTop + 68);
+      ctx.moveTo(rightSigX - 88, sigTop + 68);
+      ctx.lineTo(rightSigX + 88, sigTop + 68);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = '#57534e';
+      ctx.font = `400 11px ${fontSans}`;
+      ctx.fillText('( ...................................................... )', leftSigX, sigTop + 88);
+      ctx.fillText('วันที่ ........../........../..........', leftSigX, sigTop + 106);
+
+      ctx.fillText('( ฝ่ายขาย bunniwear Official )', rightSigX, sigTop + 88);
+      ctx.fillText(`วันที่ ${formatDate(today)}`, rightSigX, sigTop + 106);
+
+      return canvas;
     }
 
     async function downloadQuotationPdf() {
@@ -2027,99 +2640,21 @@
       btn.innerHTML = '<span>กำลังสร้างไฟล์ PDF...</span>';
       btn.disabled = true;
 
-      const savedScrollX = window.scrollX || window.pageXOffset || 0;
-      const savedScrollY = window.scrollY || window.pageYOffset || 0;
-      let offscreenWrapper = null;
-
       try {
-        window.scrollTo(0, 0);
-        const element = document.getElementById('quotationPaper');
-        const A4_WIDTH_PX = 794;
-
-        offscreenWrapper = document.createElement('div');
-        offscreenWrapper.style.position = 'absolute';
-        offscreenWrapper.style.top = '0';
-        offscreenWrapper.style.left = '0';
-        offscreenWrapper.style.width = `${A4_WIDTH_PX}px`;
-        offscreenWrapper.style.backgroundColor = '#ffffff';
-        offscreenWrapper.style.zIndex = '-9999';
-        offscreenWrapper.style.pointerEvents = 'none';
-
-        const clone = element.cloneNode(true);
-        clone.style.width = `${A4_WIDTH_PX}px`;
-        clone.style.maxWidth = `${A4_WIDTH_PX}px`;
-        clone.style.margin = '0';
-        clone.style.padding = '36px 44px';
-        clone.style.boxSizing = 'border-box';
-        clone.style.boxShadow = 'none';
-        clone.style.border = 'none';
-        clone.style.borderRadius = '0';
-        clone.style.backgroundColor = '#ffffff';
-
-        clone.querySelectorAll('.no-print').forEach((el) => el.remove());
-        segmentThaiWordsForCanvas(clone);
-
-        offscreenWrapper.appendChild(clone);
-        document.body.appendChild(offscreenWrapper);
-
-        await new Promise((r) => setTimeout(r, 60));
-
-        const totalHeightPx = Math.max(clone.scrollHeight, clone.offsetHeight, 950);
-        const itemCount = cart.length > 0 ? cart.length : 2;
+        const canvas = await renderQuotationToCanvas();
         const opt = {
           margin: 0,
           filename: `Quotation-${currentQuotationNo}.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
-          pagebreak: { mode: itemCount <= 8 ? [] : ['css'] },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff',
-            scrollX: 0,
-            scrollY: 0,
-            width: A4_WIDTH_PX,
-            height: totalHeightPx,
-            windowWidth: A4_WIDTH_PX,
-            windowHeight: totalHeightPx + 120
-          },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        await html2pdf()
-          .set(opt)
-          .from(clone)
-          .toCanvas()
-          .then(function () {
-            const srcCanvas = this.prop.canvas;
-            if (!srcCanvas) return;
-            const maxSinglePageHeight = Math.floor(srcCanvas.width * this.prop.pageSize.inner.ratio);
-            if (srcCanvas.height > maxSinglePageHeight && itemCount <= 8) {
-              const fitted = document.createElement('canvas');
-              fitted.width = srcCanvas.width;
-              fitted.height = maxSinglePageHeight;
-              const ctx = fitted.getContext('2d');
-              ctx.fillStyle = '#ffffff';
-              ctx.fillRect(0, 0, fitted.width, fitted.height);
-              const scale = maxSinglePageHeight / srcCanvas.height;
-              const drawW = srcCanvas.width * scale;
-              const drawX = (fitted.width - drawW) / 2;
-              ctx.drawImage(srcCanvas, 0, 0, srcCanvas.width, srcCanvas.height, drawX, 0, drawW, maxSinglePageHeight);
-              this.prop.canvas = fitted;
-            }
-          })
-          .toPdf()
-          .save();
-
+        await html2pdf().set(opt).from(canvas, 'canvas').save();
         showToast(`ดาวน์โหลดใบเสนอราคา ${currentQuotationNo}.pdf สำเร็จ!`);
       } catch (err) {
         console.error(err);
         window.print();
       } finally {
-        if (offscreenWrapper && offscreenWrapper.parentNode) {
-          offscreenWrapper.parentNode.removeChild(offscreenWrapper);
-        }
-        window.scrollTo(savedScrollX, savedScrollY);
         btn.innerHTML = originalHtml;
         btn.disabled = false;
         lucide.createIcons();
@@ -2156,20 +2691,50 @@
       if (!product) return;
       const sel = selectedOptions[productId];
       const discountPercent = Math.round((1 - product.price / product.originalPrice) * 100);
+      const activeVariant = getColorVariant(product, sel.color);
 
       const container = document.getElementById('quickViewContent');
       container.innerHTML = `
-        <!-- Left Image Column -->
-        <div class="relative bg-bunni-100 aspect-[4/5] md:aspect-auto md:h-full">
-          <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
+        <!-- Left Image Column with Color Variant Preview -->
+        <div class="relative bg-bunni-100 aspect-[4/5] md:aspect-auto md:h-full overflow-hidden">
+          <img
+            src="${product.image}"
+            alt="${product.name} - ${sel.color}"
+            style="filter: ${activeVariant.imgFilter};"
+            class="w-full h-full object-cover transition duration-300"
+          />
+          ${activeVariant.tintBg !== 'transparent' ? `
+            <div class="absolute inset-0 pointer-events-none transition duration-300" style="background: ${activeVariant.tintBg}; mix-blend-mode: ${activeVariant.tintBlend};"></div>
+          ` : ''}
           ${product.badge ? `
             <span class="absolute top-4 left-4 bg-stone-900/90 text-white text-xs font-medium px-3.5 py-1 rounded-full">
               ${product.badge}
             </span>
           ` : ''}
-          <span class="absolute bottom-4 left-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+          <span class="absolute top-4 right-14 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
             ประหยัด ${discountPercent}%
           </span>
+          <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-xs p-2.5 rounded-2xl shadow-md border border-stone-200/80 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-4 h-4 rounded-full border border-stone-300 shrink-0" style="background: ${activeVariant.swatchBg};"></span>
+              <span class="text-xs font-semibold text-stone-800 truncate">สีที่แสดง: ${sel.color}</span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              ${product.colors.map(color => {
+                const v = getColorVariant(product, color);
+                const isSelected = sel.color === color;
+                return `
+                  <button
+                    type="button"
+                    onclick="selectProductOption('${product.id}', 'color', '${color}')"
+                    title="${color}"
+                    class="w-6 h-6 rounded-full border-2 transition ${isSelected ? 'border-bunni-600 scale-110 shadow-xs' : 'border-white opacity-80 hover:opacity-100'}"
+                    style="background: ${v.swatchBg};"
+                  ></button>
+                `;
+              }).join('')}
+            </div>
+          </div>
         </div>
 
         <!-- Right Details Column -->
@@ -2206,23 +2771,47 @@
               </ul>
             </div>
 
-            <!-- Color Option -->
+            <!-- Color Option with Visual Thumbnail Cards -->
             <div class="pt-2 border-t border-stone-100">
-              <span class="block text-xs text-stone-600 mb-2">เลือกสี: <strong class="text-stone-900">${sel.color}</strong></span>
-              <div class="flex flex-wrap gap-2">
-                ${product.colors.map(color => `
-                  <button
-                    type="button"
-                    onclick="selectProductOption('${product.id}', 'color', '${color}')"
-                    class="px-3.5 py-1.5 rounded-xl text-xs border transition ${
-                      sel.color === color
-                        ? 'bg-bunni-100 border-bunni-500 text-bunni-900 font-semibold shadow-2xs'
-                        : 'bg-white border-stone-200 text-stone-600 hover:border-bunni-300'
-                    }"
-                  >
-                    ${color}
-                  </button>
-                `).join('')}
+              <span class="block text-xs text-stone-600 mb-2">เลือกสีและดูรูปตัวอย่างสี: <strong class="text-stone-900">${sel.color}</strong></span>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                ${product.colors.map(color => {
+                  const v = getColorVariant(product, color);
+                  const isSelected = sel.color === color;
+                  return `
+                    <button
+                      type="button"
+                      onclick="selectProductOption('${product.id}', 'color', '${color}')"
+                      class="p-2 rounded-xl text-left border transition flex items-center gap-2.5 ${
+                        isSelected
+                          ? 'bg-bunni-50 border-bunni-500 ring-1 ring-bunni-400 text-bunni-900 font-semibold shadow-2xs'
+                          : 'bg-white border-stone-200 text-stone-600 hover:border-bunni-300'
+                      }"
+                    >
+                      <div class="relative w-10 h-12 rounded-lg overflow-hidden border border-stone-200 shrink-0 bg-bunni-100">
+                        <img
+                          src="${product.image}"
+                          alt="${color}"
+                          style="filter: ${v.imgFilter};"
+                          class="w-full h-full object-cover"
+                        />
+                        ${v.tintBg !== 'transparent' ? `
+                          <div class="absolute inset-0" style="background: ${v.tintBg}; mix-blend-mode: ${v.tintBlend};"></div>
+                        ` : ''}
+                        <span
+                          class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full border border-white shadow-2xs"
+                          style="background: ${v.swatchBg};"
+                        ></span>
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <span class="text-xs leading-tight block truncate">${color}</span>
+                        <span class="text-[10px] ${isSelected ? 'text-bunni-600' : 'text-stone-400'} block mt-0.5">
+                          ${isSelected ? '✓ เลือกอยู่' : 'ดูรูปสีนี้'}
+                        </span>
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
               </div>
             </div>
 
