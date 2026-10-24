@@ -94,39 +94,72 @@
       z-index: -1;
     }
 
+    /* Prevent html2pdf overlay from clipping quotation height on smaller laptop screens */
+    .html2pdf__overlay {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: auto !important;
+      bottom: auto !important;
+      width: 794px !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    .html2pdf__container {
+      position: relative !important;
+      width: 794px !important;
+      margin: 0 !important;
+    }
+
     /* Print Styles for Crisp A4 Quotation */
     @media print {
       @page {
         size: A4 portrait;
         margin: 0mm !important;
       }
-      body * {
-        visibility: hidden !important;
-      }
-      #quotationModal,
-      #quotationPaper,
-      #quotationPaper * {
-        visibility: visible !important;
-      }
-      #quotationModal {
-        position: absolute !important;
-        inset: 0 !important;
-        background: white !important;
-        padding: 10mm !important;
-        margin: 0 !important;
-        display: block !important;
-        overflow: visible !important;
-      }
-      #quotationPaper {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-shadow: none !important;
-        border: none !important;
+      html, body {
+        background: #ffffff !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 210mm !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      body > *:not(#quotationModal) {
+        display: none !important;
       }
       .no-print {
         display: none !important;
+      }
+      #quotationModal {
+        position: static !important;
+        inset: auto !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      #quotationModal > div,
+      #quotationPaperWrapper {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        border-radius: 0 !important;
+      }
+      #quotationPaper {
+        width: 210mm !important;
+        max-width: 210mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 auto !important;
+        padding: 12mm 14mm !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
     }
   </style>
@@ -642,7 +675,7 @@
       </div>
 
       <!-- Customer Details Input Panel (Hidden when printing) -->
-      <div class="no-print bg-bunni-50 p-4 sm:px-6 border-b border-bunni-200 space-y-3">
+      <div class="no-print bg-bunni-50 p-4 sm:px-6 border-b border-bunni-200 space-y-3" data-html2canvas-ignore="true">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold text-stone-800 uppercase tracking-wider">📝 ข้อมูลผู้ขอใบเสนอราคา / ลูกค้า (แก้ไขแล้วอัปเดตในใบเสนอราคาทันที)</span>
           <label class="inline-flex items-center gap-2 text-xs font-medium text-stone-700 cursor-pointer">
@@ -680,10 +713,14 @@
             class="px-3 py-2 rounded-xl border border-bunni-200 bg-white text-xs focus:outline-none focus:border-bunni-500"
           />
         </div>
+        <div id="emptyCartQuoteNotice" class="hidden px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs items-center gap-2">
+          <span>💡</span>
+          <span>ขณะนี้ตะกร้าสินค้ายังว่างอยู่ ระบบจึงแสดงรายการสินค้าตัวอย่างเพื่อให้คุณทดสอบพิมพ์หรือบันทึก PDF ได้ทันที (หากต้องการเปลี่ยนสินค้า สามารถกดหยิบสินค้าใส่ตะกร้าได้เลยค่ะ)</span>
+        </div>
       </div>
 
       <!-- A4 Printable Quotation Sheet -->
-      <div class="bg-stone-200/70 p-2 sm:p-6 rounded-b-3xl">
+      <div id="quotationPaperWrapper" class="bg-stone-200/70 p-2 sm:p-6 rounded-b-3xl">
         <div id="quotationPaper" class="bg-white mx-auto shadow-xl rounded-xl sm:rounded-none p-6 sm:p-10 text-stone-900 max-w-[794px]">
           <!-- Dynamically populated by renderQuotationPaper() -->
         </div>
@@ -1807,15 +1844,26 @@
       const validUntil = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
       const formatDate = (d) => d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
 
+      const emptyNotice = document.getElementById('emptyCartQuoteNotice');
+      if (emptyNotice) {
+        if (cart.length === 0) {
+          emptyNotice.classList.remove('hidden');
+          emptyNotice.classList.add('flex');
+        } else {
+          emptyNotice.classList.add('hidden');
+          emptyNotice.classList.remove('flex');
+        }
+      }
+
       paper.innerHTML = `
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 pb-6 border-b-2 border-stone-900">
-          <div class="space-y-2">
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-5 pb-5 border-b-2 border-stone-900">
+          <div class="space-y-1.5">
             <div class="flex items-center gap-3.5">
               <img
                 src="${typeof BUNNI_LOGO_DATA_URI !== 'undefined' ? BUNNI_LOGO_DATA_URI : 'logo.png'}"
                 alt="Bunni Wear Logo"
-                class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border border-bunni-300 shadow-xs shrink-0"
+                class="w-16 h-16 sm:w-18 sm:h-18 rounded-full object-cover border border-bunni-300 shadow-xs shrink-0"
               />
               <div>
                 <h1 class="font-serif text-3xl font-bold tracking-tight text-stone-900">bunniwear</h1>
@@ -1827,35 +1875,28 @@
             <p class="text-xs text-stone-500">โทร: 02-123-4567 | LINE Official: @bunniwear | อีเมล: bunniwear04@gmail.com</p>
           </div>
 
-          <div class="sm:text-right space-y-1 bg-bunni-50 px-5 py-4 rounded-2xl border border-bunni-200 w-full sm:w-auto">
+          <div class="sm:text-right space-y-1 bg-bunni-50 px-5 py-3.5 rounded-2xl border border-bunni-200 w-full sm:w-auto shrink-0">
             <span class="text-xs font-bold uppercase tracking-widest text-bunni-700 block">QUOTATION</span>
             <h2 class="text-2xl font-bold text-stone-900">ใบเสนอราคา</h2>
             <div class="text-xs text-stone-600 space-y-0.5 pt-1">
-              <p><strong>เลขที่เอกสาร:</strong> ${currentQuotationNo}</p>
-              <p><strong>วันที่ออกเอกสาร:</strong> ${formatDate(today)}</p>
-              <p><strong>ยืนยันราคาถึงวันที่:</strong> ${formatDate(validUntil)}</p>
+              <p><span class="font-semibold text-stone-800">เลขที่เอกสาร:</span> ${currentQuotationNo}</p>
+              <p><span class="font-semibold text-stone-800">วันที่ออกเอกสาร:</span> ${formatDate(today)}</p>
+              <p><span class="font-semibold text-stone-800">ยืนยันราคาถึงวันที่:</span> ${formatDate(validUntil)}</p>
             </div>
           </div>
         </div>
 
-        ${cart.length === 0 ? `
-          <div class="no-print mt-4 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
-            <span>💡</span>
-            <span>ขณะนี้ตะกร้าสินค้ายังว่างอยู่ ระบบจึงแสดง <strong>รายการสินค้าตัวอย่าง</strong> เพื่อให้คุณทดสอบพิมพ์หรือบันทึก PDF ได้ทันที (หากต้องการเปลี่ยนสินค้า ให้กดหยิบสินค้าใส่ตะกร้าได้เลยค่ะ)</span>
-          </div>
-        ` : ''}
-
         <!-- Customer Info Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6 p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5 p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs">
           <div class="space-y-1">
             <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">เสนอราคาแก่ (Customer)</p>
             <p class="text-sm font-bold text-stone-900">${custName}</p>
-            <p class="text-stone-600"><strong>ที่อยู่:</strong> ${custAddress}</p>
+            <p class="text-stone-600"><span class="font-semibold text-stone-800">ที่อยู่:</span> ${custAddress}</p>
           </div>
           <div class="space-y-1 sm:text-right">
-            <p class="text-stone-600"><strong>เลขประจำตัวผู้เสียภาษี:</strong> ${custTaxId}</p>
-            <p class="text-stone-600"><strong>เบอร์โทรศัพท์ / ติดต่อ:</strong> ${custPhone}</p>
-            <p class="text-stone-600"><strong>เงื่อนไขการชำระเงิน:</strong> โอนชำระ / เก็บเงินปลายทาง (COD)</p>
+            <p class="text-stone-600"><span class="font-semibold text-stone-800">เลขประจำตัวผู้เสียภาษี:</span> ${custTaxId}</p>
+            <p class="text-stone-600"><span class="font-semibold text-stone-800">เบอร์โทรศัพท์ / ติดต่อ:</span> ${custPhone}</p>
+            <p class="text-stone-600"><span class="font-semibold text-stone-800">เงื่อนไขการชำระเงิน:</span> โอนชำระ / เก็บเงินปลายทาง (COD)</p>
           </div>
         </div>
 
@@ -1864,26 +1905,26 @@
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="bg-stone-900 text-white">
-                <th class="py-3 px-3 font-semibold text-center w-12 rounded-tl-xl">ลำดับ</th>
-                <th class="py-3 px-3 font-semibold">รายการสินค้า (Description)</th>
-                <th class="py-3 px-3 font-semibold text-center w-28">สี / ไซส์</th>
-                <th class="py-3 px-3 font-semibold text-center w-16">จำนวน</th>
-                <th class="py-3 px-3 font-semibold text-right w-28">ราคา/หน่วย</th>
-                <th class="py-3 px-3 font-semibold text-right w-28 rounded-tr-xl">จำนวนเงิน (บาท)</th>
+                <th class="py-2.5 px-3 font-semibold text-center w-12 rounded-tl-xl">ลำดับ</th>
+                <th class="py-2.5 px-3 font-semibold">รายการสินค้า (Description)</th>
+                <th class="py-2.5 px-3 font-semibold text-center w-28">สี / ไซส์</th>
+                <th class="py-2.5 px-3 font-semibold text-center w-16">จำนวน</th>
+                <th class="py-2.5 px-3 font-semibold text-right w-28">ราคา/หน่วย</th>
+                <th class="py-2.5 px-3 font-semibold text-right w-28 rounded-tr-xl">จำนวนเงิน (บาท)</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-stone-200 border-x border-b border-stone-200">
               ${quoteItems.map((item, idx) => `
                 <tr>
-                  <td class="py-3 px-3 text-center text-stone-500 font-medium">${idx + 1}</td>
-                  <td class="py-3 px-3">
+                  <td class="py-2.5 px-3 text-center text-stone-500 font-medium">${idx + 1}</td>
+                  <td class="py-2.5 px-3">
                     <p class="font-semibold text-stone-900">${item.name}</p>
                     <p class="text-[11px] text-stone-400">รหัสสินค้า: ${item.id.toUpperCase()}</p>
                   </td>
-                  <td class="py-3 px-3 text-center text-stone-700">${item.color} / ${item.size}</td>
-                  <td class="py-3 px-3 text-center font-semibold text-stone-900">${item.qty}</td>
-                  <td class="py-3 px-3 text-right text-stone-700">฿${item.price.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
-                  <td class="py-3 px-3 text-right font-semibold text-stone-900">฿${(item.price * item.qty).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                  <td class="py-2.5 px-3 text-center text-stone-700">${item.color} / ${item.size}</td>
+                  <td class="py-2.5 px-3 text-center font-semibold text-stone-900">${item.qty}</td>
+                  <td class="py-2.5 px-3 text-right text-stone-700">฿${item.price.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                  <td class="py-2.5 px-3 text-right font-semibold text-stone-900">฿${(item.price * item.qty).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -1891,18 +1932,18 @@
         </div>
 
         <!-- Totals & Baht Text Summary -->
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 mt-6 items-start">
-          <div class="sm:col-span-7 space-y-3">
-            <div class="p-3.5 rounded-xl bg-bunni-50 border border-bunni-200 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 mt-5 items-start">
+          <div class="sm:col-span-7 space-y-2.5">
+            <div class="p-3 rounded-xl bg-bunni-50 border border-bunni-200 text-xs">
               <span class="text-stone-500 block text-[11px]">จำนวนเงินรวมทั้งสิ้น (ตัวอักษร):</span>
-              <strong class="text-stone-900 text-sm">( ${numberToThaiBahtText(grandTotal)} )</strong>
+              <p class="font-bold text-stone-900 text-sm mt-0.5">( ${numberToThaiBahtText(grandTotal)} )</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-600 space-y-1">
+            <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-600 space-y-1 leading-relaxed">
               <p class="font-semibold text-stone-800">หมายเหตุและเงื่อนไขการสั่งซื้อ:</p>
               <p>1. ใบเสนอราคานี้มีอายุ 15 วัน นับจากวันที่ออกเอกสาร</p>
               <p>2. จัดส่งด่วนฟรีทั่วประเทศเมื่อมียอดสั่งซื้อหลังหักส่วนลดครบ 990 บาทขึ้นไป</p>
-              <p>3. ช่องทางชำระเงิน: ธนาคารกสิกรไทย เลขที่บัญชี 123-4-56789-0 ชื่อบัญชี ร้าน bunniwear</p>
+              <p>3. ชำระเงิน: ธนาคารกสิกรไทย เลขที่บัญชี 123-4-56789-0 (ชื่อบัญชี ร้าน bunniwear)</p>
             </div>
           </div>
 
@@ -1935,13 +1976,13 @@
         </div>
 
         <!-- Signatures -->
-        <div class="grid grid-cols-2 gap-8 mt-12 pt-6 border-t border-stone-200 text-center text-xs text-stone-600">
-          <div class="space-y-8">
+        <div class="grid grid-cols-2 gap-8 mt-9 pt-5 border-t border-stone-200 text-center text-xs text-stone-600">
+          <div class="space-y-7">
             <p class="font-semibold text-stone-800">ในนาม ผู้สั่งซื้อ / ผู้อนุมัติ</p>
             <div class="border-b border-dashed border-stone-400 w-44 mx-auto"></div>
             <p>( ...................................................... )<br/>วันที่ ........../........../..........</p>
           </div>
-          <div class="space-y-8">
+          <div class="space-y-7">
             <p class="font-semibold text-stone-800">ในนาม ร้าน bunniwear (ผู้เสนอราคา)</p>
             <div class="border-b border-dashed border-stone-400 w-44 mx-auto"></div>
             <p>( ฝ่ายขาย bunniwear Official )<br/>วันที่ ${formatDate(today)}</p>
@@ -1950,27 +1991,135 @@
       `;
     }
 
+    function segmentThaiWordsForCanvas(rootEl) {
+      if (typeof Intl === 'undefined' || !Intl.Segmenter) return;
+      const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
+      const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
+      const textNodes = [];
+      let current;
+      while ((current = walker.nextNode())) {
+        if (current.nodeValue && /[\u0E00-\u0E7F]/.test(current.nodeValue)) {
+          textNodes.push(current);
+        }
+      }
+      for (const textNode of textNodes) {
+        const text = textNode.nodeValue;
+        const frag = document.createDocumentFragment();
+        for (const part of segmenter.segment(text)) {
+          if (/^\s+$/.test(part.segment)) {
+            frag.appendChild(document.createTextNode(part.segment));
+          } else {
+            const span = document.createElement('span');
+            span.style.display = 'inline-block';
+            span.textContent = part.segment;
+            frag.appendChild(span);
+          }
+        }
+        if (textNode.parentNode) {
+          textNode.parentNode.replaceChild(frag, textNode);
+        }
+      }
+    }
+
     async function downloadQuotationPdf() {
       const btn = document.getElementById('downloadPdfBtn');
       const originalHtml = btn.innerHTML;
       btn.innerHTML = '<span>กำลังสร้างไฟล์ PDF...</span>';
       btn.disabled = true;
 
+      const savedScrollX = window.scrollX || window.pageXOffset || 0;
+      const savedScrollY = window.scrollY || window.pageYOffset || 0;
+      let offscreenWrapper = null;
+
       try {
+        window.scrollTo(0, 0);
         const element = document.getElementById('quotationPaper');
+        const A4_WIDTH_PX = 794;
+
+        offscreenWrapper = document.createElement('div');
+        offscreenWrapper.style.position = 'absolute';
+        offscreenWrapper.style.top = '0';
+        offscreenWrapper.style.left = '0';
+        offscreenWrapper.style.width = `${A4_WIDTH_PX}px`;
+        offscreenWrapper.style.backgroundColor = '#ffffff';
+        offscreenWrapper.style.zIndex = '-9999';
+        offscreenWrapper.style.pointerEvents = 'none';
+
+        const clone = element.cloneNode(true);
+        clone.style.width = `${A4_WIDTH_PX}px`;
+        clone.style.maxWidth = `${A4_WIDTH_PX}px`;
+        clone.style.margin = '0';
+        clone.style.padding = '36px 44px';
+        clone.style.boxSizing = 'border-box';
+        clone.style.boxShadow = 'none';
+        clone.style.border = 'none';
+        clone.style.borderRadius = '0';
+        clone.style.backgroundColor = '#ffffff';
+
+        clone.querySelectorAll('.no-print').forEach((el) => el.remove());
+        segmentThaiWordsForCanvas(clone);
+
+        offscreenWrapper.appendChild(clone);
+        document.body.appendChild(offscreenWrapper);
+
+        await new Promise((r) => setTimeout(r, 60));
+
+        const totalHeightPx = Math.max(clone.scrollHeight, clone.offsetHeight, 950);
+        const itemCount = cart.length > 0 ? cart.length : 2;
         const opt = {
-          margin: [8, 8, 8, 8],
+          margin: 0,
           filename: `Quotation-${currentQuotationNo}.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
+          pagebreak: { mode: itemCount <= 8 ? [] : ['css'] },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: 0,
+            width: A4_WIDTH_PX,
+            height: totalHeightPx,
+            windowWidth: A4_WIDTH_PX,
+            windowHeight: totalHeightPx + 120
+          },
           jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        await html2pdf().set(opt).from(element).save();
+
+        await html2pdf()
+          .set(opt)
+          .from(clone)
+          .toCanvas()
+          .then(function () {
+            const srcCanvas = this.prop.canvas;
+            if (!srcCanvas) return;
+            const maxSinglePageHeight = Math.floor(srcCanvas.width * this.prop.pageSize.inner.ratio);
+            if (srcCanvas.height > maxSinglePageHeight && itemCount <= 8) {
+              const fitted = document.createElement('canvas');
+              fitted.width = srcCanvas.width;
+              fitted.height = maxSinglePageHeight;
+              const ctx = fitted.getContext('2d');
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, fitted.width, fitted.height);
+              const scale = maxSinglePageHeight / srcCanvas.height;
+              const drawW = srcCanvas.width * scale;
+              const drawX = (fitted.width - drawW) / 2;
+              ctx.drawImage(srcCanvas, 0, 0, srcCanvas.width, srcCanvas.height, drawX, 0, drawW, maxSinglePageHeight);
+              this.prop.canvas = fitted;
+            }
+          })
+          .toPdf()
+          .save();
+
         showToast(`ดาวน์โหลดใบเสนอราคา ${currentQuotationNo}.pdf สำเร็จ!`);
       } catch (err) {
         console.error(err);
         window.print();
       } finally {
+        if (offscreenWrapper && offscreenWrapper.parentNode) {
+          offscreenWrapper.parentNode.removeChild(offscreenWrapper);
+        }
+        window.scrollTo(savedScrollX, savedScrollY);
         btn.innerHTML = originalHtml;
         btn.disabled = false;
         lucide.createIcons();
