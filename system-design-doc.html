@@ -384,30 +384,76 @@ erDiagram
           </div>
         </div>
 
-        <!-- Detailed Thai Explanation of ERD -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs bg-white p-4 rounded-2xl border border-stone-200">
-          <div class="space-y-1.5">
-            <h4 class="font-bold text-stone-900">📌 คำอธิบายตารางข้อมูล (Entities) ทั้ง 4 ส่วน:</h4>
-            <ul class="list-disc list-inside space-y-1 text-stone-600 leading-relaxed">
-              <li><strong>1. CATEGORY (หมวดหมู่สินค้า):</strong> เก็บรหัสหมวดหมู่ (<code>id</code> เป็น <code>PK</code>) และชื่อหมวดหมู่ (<code>name</code>) เช่น เสื้อเชิ้ต, ชุดเดรส, กางเกง</li>
-              <li><strong>2. PRODUCT (ข้อมูลสินค้า):</strong> เก็บรหัสสินค้า (<code>id</code> เป็น <code>PK</code>), ชื่อรุ่น, ราคาขาย, ราคาปกติ, รายการสี (<code>colors</code>), รายการไซส์ (<code>sizes</code>) และเชื่อมกับหมวดหมู่ด้วย <code>category (FK)</code></li>
-              <li><strong>3. CART_ITEM (รายการในตะกร้าสินค้า):</strong> เก็บสินค้าที่ลูกค้าเลือกใส่ตะกร้าใน <code>LocalStorage</code> โดยใช้รหัสผสม <code>cartKey (PK)</code> เช่น <code>bunni-01_ขาวครีม_S</code> เพื่อให้แยกสีและไซส์ของสินค้าตัวเดียวกันได้</li>
-              <li><strong>4. QUOTATION_ORDER (ใบเสนอราคา / คำสั่งซื้อ):</strong> เก็บเลขที่เอกสาร (<code>docNo</code> เป็น <code>PK</code>), ชื่อลูกค้า/บริษัท, เลขผู้เสียภาษี, เบอร์โทร, ที่อยู่, สถานะคิด VAT 7% และยอดรวมสุทธิ</li>
+        <!-- Detailed Thai Explanation of ERD (Full 3-Part Breakdown) -->
+        <div class="space-y-4 text-xs bg-white p-5 rounded-2xl border border-stone-200 mt-3">
+          <!-- Part 1: Symbols & Data Types -->
+          <div class="p-3.5 rounded-xl bg-bunni-50/70 border border-bunni-200 space-y-1.5">
+            <h4 class="font-bold text-stone-900 text-sm">1) ความหมายของคำย่อและชนิดข้อมูลในตาราง (Keys & Data Types)</h4>
+            <ul class="list-disc list-inside space-y-1 text-stone-700 leading-relaxed">
+              <li><strong><code>PK</code> (Primary Key - คีย์หลัก):</strong> รหัสประจำตัวที่ไม่ซ้ำกันของข้อมูลในตารางนั้น (เปรียบเหมือนเลขบัตรประชาชนของข้อมูล)</li>
+              <li><strong><code>FK</code> (Foreign Key - คีย์นอก):</strong> รหัสที่ใช้เชื่อมโยงอ้างอิงไปยังคีย์หลัก (<code>PK</code>) ของอีกตารางหนึ่ง</li>
+              <li><strong>ชนิดข้อมูล (Data Types):</strong> <code>string</code> = ข้อความตัวอักษร, <code>number</code> = ตัวเลขราคาหรือจำนวน, <code>boolean</code> = ค่าความจริง (<code>true</code>/<code>false</code>), <code>string_array</code> = ชุดข้อมูลตัวเลือกหลายค่า เช่น รายการสีและรายการไซส์</li>
             </ul>
           </div>
-          <div class="space-y-1.5">
-            <h4 class="font-bold text-stone-900">🔗 คำอธิบายสัญลักษณ์และความสัมพันธ์ (Relationships):</h4>
-            <ul class="list-disc list-inside space-y-1 text-stone-600 leading-relaxed">
-              <li><strong><code>PK</code> (Primary Key - คีย์หลัก):</strong> รหัสประจำตัวที่ไม่ซ้ำกันในแต่ละตาราง</li>
-              <li><strong><code>FK</code> (Foreign Key - คีย์นอก):</strong> รหัสที่ใช้เชื่อมโยงไปยังตารางอื่น</li>
-              <li><strong><code>||--o{</code> (One-to-Many / 1 ต่อ กลุ่ม):</strong>
-                <ul class="list-none pl-4 space-y-0.5 text-[11px] text-stone-500">
-                  <li>• 1 หมวดหมู่ (<code>CATEGORY</code>) มีสินค้า (<code>PRODUCT</code>) ได้หลายชิ้น (<em>contains</em>)</li>
-                  <li>• 1 สินค้า (<code>PRODUCT</code>) ถูกเลือกใส่ตะกร้า (<code>CART_ITEM</code>) ได้หลายสี/หลายไซส์ (<em>selected_as</em>)</li>
-                  <li>• หลายรายการในตะกร้า (<code>CART_ITEM</code>) ถูกรวมอยู่ในใบเสนอราคา/ใบสั่งซื้อ (<code>QUOTATION_ORDER</code>) 1 ใบ (<em>included_in</em>)</li>
+
+          <!-- Part 2: The 4 Entities & Fields -->
+          <div class="space-y-2">
+            <h4 class="font-bold text-stone-900 text-sm">2) รายละเอียดของทั้ง 4 ตารางข้อมูล (Entities & Attributes) จากบนลงล่าง</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                <p class="font-bold text-bunni-800">📦 กล่องที่ 1: <code>CATEGORY</code> (หมวดหมู่สินค้า)</p>
+                <p class="text-stone-600">ทำหน้าที่เก็บหมวดหมู่เสื้อผ้าทั้งหมดของร้าน</p>
+                <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
+                  <li><code>id (PK)</code>: รหัสหมวดหมู่ เช่น <code>shirts</code>, <code>dresses</code>, <code>pants</code>, <code>outerwear</code></li>
+                  <li><code>name</code>: ชื่อหมวดหมู่ภาษาไทย เช่น <em>"เสื้อเชิ้ต & เสื้อยืด"</em>, <em>"ชุดเดรส & ชุดเซ็ต"</em></li>
                 </ul>
-              </li>
-            </ul>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                <p class="font-bold text-bunni-800">👗 กล่องที่ 2: <code>PRODUCT</code> (ข้อมูลสินค้า)</p>
+                <p class="text-stone-600">ทำหน้าที่เก็บรายละเอียดเสื้อผ้าแต่ละรุ่นในแคตตาล็อก</p>
+                <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
+                  <li><code>id (PK)</code>: รหัสสินค้า เช่น <code>bunni-01</code> ถึง <code>bunni-08</code></li>
+                  <li><code>name</code>: ชื่อรุ่นสินค้า เช่น <em>"เสื้อเชิ้ตโอเวอร์ไซส์ ผ้าลินินพรีเมียม"</em></li>
+                  <li><code>category (FK)</code>: รหัสหมวดหมู่ที่เชื่อมมาจากตาราง <code>CATEGORY</code></li>
+                  <li><code>price</code> / <code>originalPrice</code>: ราคาขายจริง และราคาเต็มก่อนลด</li>
+                  <li><code>colors</code> / <code>sizes</code>: รายการสีและไซส์ที่มีให้เลือก</li>
+                </ul>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                <p class="font-bold text-bunni-800">🛒 กล่องที่ 3: <code>CART_ITEM</code> (รายการในตะกร้าสินค้า)</p>
+                <p class="text-stone-600">ทำหน้าที่เก็บสินค้าที่ลูกค้ากดเลือกใส่ตะกร้า (บันทึกใน <code>LocalStorage</code>)</p>
+                <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
+                  <li><code>cartKey (PK)</code>: รหัสเฉพาะของรายการในตะกร้า เกิดจาก <code>รหัสสินค้า_สี_ไซส์</code> (เช่น <code>bunni-01_ขาวครีม_S</code>) เพื่อแยกสีและไซส์ของเสื้อรุ่นเดียวกันได้</li>
+                  <li><code>id (FK)</code>: อ้างอิงรหัสสินค้าจากตาราง <code>PRODUCT</code></li>
+                  <li><code>name</code> / <code>price</code>: ชื่อสินค้าและราคาต่อหน่วย</li>
+                  <li><code>color</code> / <code>size</code> / <code>qty</code>: สีที่เลือก, ไซส์ที่เลือก และจำนวนชิ้น</li>
+                </ul>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1">
+                <p class="font-bold text-bunni-800">📄 กล่องที่ 4: <code>QUOTATION_ORDER</code> (ใบเสนอราคา / ใบสั่งซื้อ)</p>
+                <p class="text-stone-600">ทำหน้าที่เก็บข้อมูลเอกสารเมื่อลูกค้าออกใบเสนอราคา PDF หรือยืนยันออเดอร์</p>
+                <ul class="list-disc list-inside text-stone-600 space-y-0.5 pt-1">
+                  <li><code>docNo (PK)</code>: เลขที่ใบเสนอราคา (<code>QT-2026-XXXX</code>) หรือเลขที่ออเดอร์ (<code>BNW-XXXXXX</code>)</li>
+                  <li><code>customerName</code> / <code>taxId</code>: ชื่อลูกค้าหรือบริษัท และเลขผู้เสียภาษี</li>
+                  <li><code>phone</code> / <code>address</code>: เบอร์โทรศัพท์และที่อยู่จัดส่ง</li>
+                  <li><code>includeVat</code> / <code>grandTotal</code>: สถานะคิด VAT 7% และยอดเงินรวมสุทธิ</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Part 3: Crow's Foot Relationships -->
+          <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-1.5">
+            <h4 class="font-bold text-stone-900 text-sm">3) ความหมายของเส้นเชื่อมความสัมพันธ์ (Crow's Foot Notation)</h4>
+            <p class="text-stone-600">สัญลักษณ์ <strong>ขีดตรง 2 ขีด (<code>||</code>)</strong> แทนค่า <strong>"หนึ่งเดียว (1)"</strong> และสัญลักษณ์ <strong>วงกลมกับสามแฉกขากา (<code>o{</code>)</strong> แทนค่า <strong>"ศูนย์หรือหลายรายการ (0..Many)"</strong>:</p>
+            <ol class="list-decimal list-inside space-y-1 text-stone-700 leading-relaxed pt-1">
+              <li><strong><code>CATEGORY</code> ── contains ──&gt; <code>PRODUCT</code> (1 ต่อ หลายรายการ):</strong> หมวดหมู่ 1 หมวดหมู่ สามารถมีสินค้าอยู่ในหมวดนั้นได้หลายชิ้น</li>
+              <li><strong><code>PRODUCT</code> ── selected_as ──&gt; <code>CART_ITEM</code> (1 ต่อ หลายรายการ):</strong> สินค้า 1 รุ่น สามารถถูกเลือกใส่ตะกร้าได้หลายรายการ (เช่น เลือกเสื้อรุ่นเดียวกันทั้งสีขาวไซส์ S และสีเบจไซส์ M)</li>
+              <li><strong><code>CART_ITEM</code> ── included_in ──&gt; <code>QUOTATION_ORDER</code> (หลายรายการ ต่อ 1):</strong> สินค้าในตะกร้าหลายรายการ ถูกรวบรวมเข้าไปอยู่ในใบเสนอราคา (หรือใบสั่งซื้อ) 1 ใบ</li>
+            </ol>
           </div>
         </div>
       </div>
