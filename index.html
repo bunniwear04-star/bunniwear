@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bunniwear | ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี มินิมอล คัดเกรดพรีเมียม</title>
+  <meta name="description" content="bunniwear ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี มินิมอล เนื้อผ้าพรีเมียม ใส่สบาย แมทช์ง่ายทุกลุค พร้อมระบบสั่งซื้อง่ายๆ ในหน้าเดียว" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Prompt & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            bunni: {
+              50: '#fdf8f6',
+              100: '#fbefe9',
+              200: '#f7dfd5',
+              300: '#f0c4b3',
+              400: '#e69f86',
+              500: '#da7b5b',
+              600: '#c86040',
+              700: '#a74c32',
+              800: '#8a402c',
+              900: '#713727',
+              pink: '#fce7f3',
+              rose: '#f43f5e',
+              cream: '#faf6f0',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #fdf8f6;
+      color: #292524;
+    }
+    .glass-nav {
+      background: rgba(253, 248, 246, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #fdf8f6;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #f0c4b3;
+      border-radius: 9999px;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-bunni-300 selection:text-stone-900">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-stone-900 text-stone-100 text-xs sm:text-sm py-2.5 px-4 text-center font-light tracking-wide">
+    <span class="inline-flex items-center gap-1.5">
+      🐰 <strong>โปรโมชั่นเปิดร้าน bunniwear!</strong> ส่งฟรีทุกออเดอร์เมื่อช้อปครบ ฿990 + ใช้โค้ด <span class="bg-bunni-500 text-white px-2 py-0.5 rounded font-medium">BUNNI10</span> ลดเพิ่ม 10%
+    </span>
+  </div>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-bunni-200/70 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-2.5 group">
+        <div class="w-10 h-10 rounded-2xl bg-bunni-200 flex items-center justify-center text-xl shadow-sm group-hover:scale-105 transition">
+          🐰
+        </div>
+        <div>
+          <span class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">bunniwear</span>
+          <span class="block text-[10px] uppercase tracking-widest text-bunni-600 -mt-1 font-medium">Seoul Minimal Studio</span>
+        </div>
+      </a>
+
+      <!-- Desktop Menu -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-700">
+        <a href="#home" class="hover:text-bunni-600 transition">หน้าแรก</a>
+        <a href="#catalog" class="hover:text-bunni-600 transition">สินค้าทั้งหมด</a>
+        <a href="#lookbook" class="hover:text-bunni-600 transition">ลุคบุ๊ค</a>
+        <a href="#reviews" class="hover:text-bunni-600 transition">รีวิวลูกค้า</a>
+        <a href="#how-to-order" class="hover:text-bunni-600 transition">วิธีสั่งซื้อ</a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3">
+        <div class="relative hidden sm:block">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="ค้นหาเสื้อเชิ้ต, เดรส, กางเกง..."
+            oninput="handleSearch(this.value)"
+            class="w-48 lg:w-64 pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500 focus:ring-2 focus:ring-bunni-200 transition"
+          />
+          <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        </div>
+
+        <!-- Cart Button -->
+        <button
+          onclick="toggleCart(true)"
+          class="relative inline-flex items-center gap-2 bg-stone-900 hover:bg-bunni-600 text-white px-4 py-2.5 rounded-full text-sm font-medium transition shadow-sm"
+        >
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">ตะกร้าสินค้า</span>
+          <span id="cartCountBadge" class="bg-bunni-400 text-stone-950 text-xs font-bold w-5 h-5 rounded-full inline-flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="relative overflow-hidden pt-8 pb-16 md:py-20 bg-gradient-to-b from-bunni-100/70 via-bunni-50 to-bunni-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <!-- Left Content -->
+        <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-bunni-200 shadow-sm text-xs font-medium text-bunni-700">
+            <span class="w-2 h-2 rounded-full bg-bunni-500 animate-ping"></span>
+            New Autumn / Winter 2026 Collection
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-900 leading-[1.15]">
+            แมทช์ลุคเกาหลีละมุน <br />
+            ในสไตล์คุณกับ <span class="font-serif italic text-bunni-600">bunniwear</span>
+          </h1>
+
+          <p class="text-stone-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
+            คัดสรรเสื้อผ้าแฟชั่นสไตล์มินิมอล-เกาหลี เนื้อผ้าเกรดพรีเมียม คัตติ้งเนี้ยบ ใส่สบายระบายอากาศดี ไม่ว่าจะวันทำงานหรือวันเที่ยวคาเฟ่ก็มั่นใจทุกมุมกล้อง
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
+            <a
+              href="#catalog"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-stone-900 hover:bg-bunni-600 text-white font-medium text-base shadow-lg shadow-stone-900/10 transition"
+            >
+              <span>ช้อปคอลเลกชันใหม่</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a
+              href="#lookbook"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white hover:bg-bunni-100 text-stone-800 border border-bunni-200 font-medium text-base transition"
+            >
+              <i data-lucide="sparkles" class="w-4 h-4 text-bunni-500"></i>
+              <span>ดูไอเดียแต่งตัว</span>
+            </a>
+          </div>
+
+          <!-- Trust Metrics -->
+          <div class="pt-6 grid grid-cols-3 gap-4 border-t border-bunni-200/80 max-w-lg mx-auto lg:mx-0">
+            <div>
+              <p class="text-2xl font-bold text-stone-900">12,500+</p>
+              <p class="text-xs text-stone-500">ลูกค้าที่ไว้วางใจ</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-stone-900">4.9 / 5.0 ⭐</p>
+              <p class="text-xs text-stone-500">คะแนนรีวิวความประทับใจ</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-stone-900">100%</p>
+              <p class="text-xs text-stone-500">ตรงปก คัดเนื้อผ้าพรีเมียม</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Visual Collage -->
+        <div class="lg:col-span-6 relative">
+          <div class="relative mx-auto max-w-md lg:max-w-none">
+            <!-- Main Hero Image -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/5] bg-bunni-100">
+              <img
+                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85"
+                alt="bunniwear Korean Minimal Fashion"
+                class="w-full h-full object-cover object-center"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-stone-950/50 via-transparent to-transparent"></div>
+              <div class="absolute bottom-6 left-6 right-6 text-white flex items-end justify-between">
+                <div>
+                  <span class="text-xs uppercase tracking-widest bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full">Best Seller Look</span>
+                  <h3 class="text-xl font-semibold mt-2">Seoul Linen Set & Minimal Blazer</h3>
+                  <p class="text-sm text-stone-200">เริ่มต้นเพียง ฿350</p>
+                </div>
+                <a href="#catalog" class="bg-white text-stone-900 p-3 rounded-full shadow-lg hover:bg-bunni-200 transition">
+                  <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Floating Card 1 -->
+            <div class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-bunni-100 absolute -left-8 top-10 animate-float">
+              <div class="w-11 h-11 rounded-xl bg-bunni-100 flex items-center justify-center text-xl">✨</div>
+              <div>
+                <p class="text-xs font-semibold text-stone-900">เนื้อผ้าลินิน & คอตตอนแท้</p>
+                <p class="text-[11px] text-stone-500">รีดง่าย ไม่ระคายเคืองผิว</p>
+              </div>
+            </div>
+
+            <!-- Floating Card 2 -->
+            <div class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-bunni-100 absolute -right-6 bottom-24 animate-float" style="animation-delay: 1.5s;">
+              <div class="w-11 h-11 rounded-xl bg-rose-100 flex items-center justify-center text-xl">🎀</div>
+              <div>
+                <p class="text-xs font-semibold text-stone-900">ส่งด่วนทุกวัน จันทร์-อาทิตย์</p>
+                <p class="text-[11px] text-stone-500">เปลี่ยนไซส์ได้ภายใน 7 วัน</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights / Benefits Bar -->
+  <section class="py-10 bg-white border-y border-bunni-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-bunni-100 text-bunni-700 flex items-center justify-center shrink-0">
+            <i data-lucide="truck" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-stone-900 text-sm sm:text-base">ส่งฟรีเมื่อครบ ฿990</h3>
+            <p class="text-xs text-stone-500 mt-0.5">จัดส่งไวทั่วไทย 1-3 วันทำการ</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-bunni-100 text-bunni-700 flex items-center justify-center shrink-0">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-stone-900 text-sm sm:text-base">คัดเกรดผ้าพรีเมียม</h3>
+            <p class="text-xs text-stone-500 mt-0.5">มีซับใน คัตติ้งเนี้ยบ ตรงปก 100%</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-bunni-100 text-bunni-700 flex items-center justify-center shrink-0">
+            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-stone-900 text-sm sm:text-base">เปลี่ยนไซส์ได้ใน 7 วัน</h3>
+            <p class="text-xs text-stone-500 mt-0.5">ใส่ไม่พอดี ทักแอดมินเปลี่ยนได้ทันที</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-bunni-100 text-bunni-700 flex items-center justify-center shrink-0">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-semibold text-stone-900 text-sm sm:text-base">สั่งง่าย ไม่ต้องสมัครสมาชิก</h3>
+            <p class="text-xs text-stone-500 mt-0.5">รองรับโอนเงิน QR และเก็บเงินปลายทาง</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog Section -->
+  <section id="catalog" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Our Collection</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">เลือกช้อปสินค้า bunniwear</h2>
+        <p class="text-stone-500 text-sm mt-1">เลือกสีและไซส์ที่ชอบ แล้วกดหยิบใส่ตะกร้าได้เลย</p>
+      </div>
+
+      <!-- Mobile Search & Sort -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="relative sm:hidden w-full">
+          <input
+            type="text"
+            placeholder="ค้นหาสินค้า..."
+            oninput="handleSearch(this.value)"
+            class="w-full pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500"
+          />
+          <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        </div>
+
+        <select
+          id="sortSelect"
+          onchange="handleSort(this.value)"
+          class="px-4 py-2.5 rounded-full bg-white border border-bunni-200 text-sm text-stone-700 focus:outline-none focus:border-bunni-500"
+        >
+          <option value="popular">เรียงตาม: ยอดนิยม</option>
+          <option value="price-asc">ราคา: ต่ำ ไป สูง</option>
+          <option value="price-desc">ราคา: สูง ไป ต่ำ</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div id="categoryTabs" class="flex items-center gap-2.5 overflow-x-auto pb-4 mb-6 no-scrollbar">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- Lookbook Banner Section -->
+  <section id="lookbook" class="py-16 bg-bunni-100/60 border-y border-bunni-200/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Style Inspiration</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">Bunniwear Lookbook 2026</h2>
+        <p class="text-stone-600 text-sm mt-2">ไอเดียแมทช์ลุคสวยละมุนตั้งแต่เช้าจรดเย็น แต่งตามได้ง่ายๆ ไม่ต้องคิดเยอะ</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Look 1 -->
+        <div class="group relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
+          <img
+            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80"
+            alt="Cafe Hopping Look"
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-stone-900/20 to-transparent p-6 flex flex-col justify-end text-white">
+            <span class="text-xs bg-white/20 backdrop-blur-md w-fit px-3 py-1 rounded-full mb-2">Look 01 • Cafe Hopping</span>
+            <h3 class="text-xl font-bold">Linen Oversize + Creamy Shorts</h3>
+            <p class="text-xs text-stone-200 mt-1">ลุคไปคาเฟ่วันหยุดสุดชิลล์ โปร่งสบายแต่ดูแพง</p>
+          </div>
+        </div>
+
+        <!-- Look 2 -->
+        <div class="group relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
+          <img
+            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80"
+            alt="Sweet Date Look"
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-stone-900/20 to-transparent p-6 flex flex-col justify-end text-white">
+            <span class="text-xs bg-white/20 backdrop-blur-md w-fit px-3 py-1 rounded-full mb-2">Look 02 • Sweet Pastel Date</span>
+            <h3 class="text-xl font-bold">Puff Sleeve Mini Dress</h3>
+            <p class="text-xs text-stone-200 mt-1">เดรสคอเหลี่ยมแขนตุ๊กตา ขับผิวออร่าพุ่งทุกมุม</p>
+          </div>
+        </div>
+
+        <!-- Look 3 -->
+        <div class="group relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
+          <img
+            src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=800&q=80"
+            alt="Smart Casual Office Look"
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-stone-900/20 to-transparent p-6 flex flex-col justify-end text-white">
+            <span class="text-xs bg-white/20 backdrop-blur-md w-fit px-3 py-1 rounded-full mb-2">Look 03 • Smart Casual Office</span>
+            <h3 class="text-xl font-bold">Seoul Crop Blazer + High-Waist Slacks</h3>
+            <p class="text-xs text-stone-200 mt-1">ลุคทำงานสไตล์สาวเกาหลี เรียบหรู ดูเป็นมืออาชีพ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Reviews -->
+  <section id="reviews" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Happy Bunnies</span>
+      <h2 class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">รีวิวจากลูกค้าจริง</h2>
+      <p class="text-stone-500 text-sm mt-2">ความประทับใจจากสาวๆ ที่เลือกใส่เสื้อผ้าจากร้าน bunniwear</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-3xl border border-bunni-200/70 shadow-sm space-y-4">
+        <div class="flex items-center text-amber-400 text-sm">★★★★★</div>
+        <p class="text-stone-700 text-sm leading-relaxed">
+          "ได้รับเสื้อเชิ้ตลินินแล้วประทับใจมากค่ะ ผ้านิ่มไม่คันเลย ทรงโอเวอร์ไซส์กำลังสวย ใส่ไปทำงานเพื่อนทักทั้งออฟฟิศเลย ซื้อซ้ำสีเบจแน่นอนค่ะ!"
+        </p>
+        <div class="flex items-center gap-3 pt-2 border-t border-stone-100">
+          <div class="w-10 h-10 rounded-full bg-bunni-200 flex items-center justify-center font-bold text-bunni-800">พ</div>
+          <div>
+            <p class="text-sm font-semibold text-stone-900">คุณแพรวา (กรุงเทพฯ)</p>
+            <p class="text-xs text-stone-400">ซื้อ เสื้อเชิ้ตโอเวอร์ไซส์ ผ้าลินินพรีเมียม</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-bunni-200/70 shadow-sm space-y-4">
+        <div class="flex items-center text-amber-400 text-sm">★★★★★</div>
+        <p class="text-stone-700 text-sm leading-relaxed">
+          "มินิเดรสคอเหลี่ยมสีชมพูพาสเทลน่ารักมากกก มีซับในทั้งตัวไม่ต้องกลัวบางเลยค่ะ ใส่ไปถ่ายรูปคาเฟ่ขึ้นกล้องสุดๆ จัดส่งไวมากด้วยค่ะ"
+        </p>
+        <div class="flex items-center gap-3 pt-2 border-t border-stone-100">
+          <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center font-bold text-pink-700">ม</div>
+          <div>
+            <p class="text-sm font-semibold text-stone-900">คุณมายด์ (เชียงใหม่)</p>
+            <p class="text-xs text-stone-400">ซื้อ มินิเดรสคอเหลี่ยม แขนตุ๊กตา</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-bunni-200/70 shadow-sm space-y-4">
+        <div class="flex items-center text-amber-400 text-sm">★★★★★</div>
+        <p class="text-stone-700 text-sm leading-relaxed">
+          "กางเกงสแล็คเอวสูงเก็บทรงดีมากค่ะ เราสูง 158 ใส่แล้วดูขายาวขึ้นเยอะมาก ผ้าทิ้งตัวสวยไม่ต้องรีดเยอะเลย แนะนำร้านนี้เลยค่ะ"
+        </p>
+        <div class="flex items-center gap-3 pt-2 border-t border-stone-100">
+          <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center font-bold text-amber-800">น</div>
+          <div>
+            <p class="text-sm font-semibold text-stone-900">คุณนุ่น (ขอนแก่น)</p>
+            <p class="text-xs text-stone-400">ซื้อ กางเกงขายาวเอวสูง ทรงขากระบอก</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How to Order Section -->
+  <section id="how-to-order" class="py-16 bg-stone-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs uppercase tracking-widest text-bunni-300 font-semibold">Easy Shopping</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mt-1">ขั้นตอนการสั่งซื้อง่ายๆ ใน 3 ขั้นตอน</h2>
+        <p class="text-stone-400 text-sm mt-2">ไม่ต้องสมัครสมาชิก ไม่ต้องล็อกอิน กดเลือกสินค้าแล้วสรุปยอดสั่งซื้อได้ทันที</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">1</div>
+          <h3 class="text-lg font-semibold">เลือกชุด & ไซส์ที่ชอบ</h3>
+          <p class="text-sm text-stone-400">กดเลือกสีและไซส์ที่ต้องการ แล้วกดปุ่ม "หยิบใส่ตะกร้า"</p>
+        </div>
+        <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">2</div>
+          <h3 class="text-lg font-semibold">กรอกชื่อ-ที่อยู่จัดส่ง</h3>
+          <p class="text-sm text-stone-400">เปิดตะกร้าสินค้า ใส่โค้ดส่วนลด <code class="text-bunni-300">BUNNI10</code> และกรอกที่อยู่จัดส่ง</p>
+        </div>
+        <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">3</div>
+          <h3 class="text-lg font-semibold">ยืนยันออเดอร์ / คัดลอกบิล</h3>
+          <p class="text-sm text-stone-400">รับใบสรุปคำสั่งซื้อทันที หรือกดคัดลอกส่งทาง LINE `@bunniwear` ได้เลย</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-bunni-200 pt-14 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-stone-100">
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🐰</span>
+            <span class="font-serif text-2xl font-bold text-stone-900">bunniwear</span>
+          </div>
+          <p class="text-sm text-stone-500 leading-relaxed">
+            ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี มินิมอล คัดสรรเนื้อผ้าคุณภาพเพื่อผู้หญิงทุกคน ให้ทุกวันของคุณเป็นวันที่น่ารักและมั่นใจ
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-stone-900 mb-3 text-sm uppercase tracking-wider">หมวดหมู่สินค้า</h4>
+          <ul class="space-y-2 text-sm text-stone-600">
+            <li><a href="#catalog" onclick="setCategory('shirts')" class="hover:text-bunni-600">เสื้อเชิ้ต & เสื้อยืด</a></li>
+            <li><a href="#catalog" onclick="setCategory('dresses')" class="hover:text-bunni-600">ชุดเดรส & ชุดเซ็ต</a></li>
+            <li><a href="#catalog" onclick="setCategory('pants')" class="hover:text-bunni-600">กางเกง & กระโปรง</a></li>
+            <li><a href="#catalog" onclick="setCategory('outerwear')" class="hover:text-bunni-600">เสื้อคลุม & คาร์ดิแกน</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-stone-900 mb-3 text-sm uppercase tracking-wider">ตารางไซส์มาตรฐาน</h4>
+          <ul class="space-y-1.5 text-xs text-stone-600">
+            <li><strong>Size S:</strong> อก 32-34" / เอว 25-26" / สะโพก 35-36"</li>
+            <li><strong>Size M:</strong> อก 35-36" / เอว 27-28" / สะโพก 37-38"</li>
+            <li><strong>Size L:</strong> อก 37-38" / เอว 29-30" / สะโพก 39-40"</li>
+            <li class="text-bunni-600 pt-1">*ทรง Oversize ใส่ได้ตั้งแต่ อก 32-42"</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-stone-900 mb-3 text-sm uppercase tracking-wider">ติดต่อร้าน bunniwear</h4>
+          <ul class="space-y-2 text-sm text-stone-600">
+            <li>💬 LINE Official: <strong>@bunniwear</strong></li>
+            <li>📸 Instagram: <strong>bunniwear.official</strong></li>
+            <li>🎵 TikTok: <strong>@bunniwear.shop</strong></li>
+            <li>📞 โทร: 02-123-4567 (10:00 - 20:00 น.)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-4">
+        <p>© 2026 bunniwear Official Store. All rights reserved.</p>
+        <p>Designed with 🤍 for Korean Minimal Fashion Lovers</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Slide-over Shopping Cart Drawer -->
+  <div id="cartModal" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div onclick="toggleCart(false)" class="fixed inset-0 bg-stone-950/50 backdrop-blur-xs transition-opacity"></div>
+
+    <!-- Drawer Panel -->
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+        <!-- Drawer Header -->
+        <div class="p-5 border-b border-stone-100 flex items-center justify-between bg-bunni-50">
+          <div class="flex items-center gap-2.5">
+            <i data-lucide="shopping-bag" class="w-5 h-5 text-bunni-600"></i>
+            <h3 class="font-bold text-lg text-stone-900">ตะกร้าสินค้าของคุณ</h3>
+          </div>
+          <button onclick="toggleCart(false)" class="p-2 rounded-full hover:bg-stone-200/60 text-stone-500 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Free Shipping Progress -->
+        <div id="freeShippingBanner" class="px-5 py-2.5 bg-bunni-100/80 text-xs text-stone-700 border-b border-bunni-200">
+          <!-- Updated via JS -->
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Cart Footer & Checkout Form -->
+        <div id="cartFooter" class="p-5 border-t border-stone-200 bg-stone-50 space-y-4">
+          <!-- Promo code input -->
+          <div class="flex gap-2">
+            <input
+              id="promoInput"
+              type="text"
+              placeholder="โค้ดส่วนลด (เช่น BUNNI10)"
+              class="flex-1 px-3.5 py-2 text-xs rounded-xl border border-stone-200 bg-white uppercase focus:outline-none focus:border-bunni-500"
+            />
+            <button
+              onclick="applyPromoCode()"
+              class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-bunni-600 text-white text-xs font-medium transition"
+            >
+              ใช้โค้ด
+            </button>
+          </div>
+
+          <!-- Totals -->
+          <div class="space-y-1.5 text-sm">
+            <div class="flex justify-between text-stone-600">
+              <span>ยอดรวมสินค้า</span>
+              <span id="subtotalText">฿0</span>
+            </div>
+            <div id="discountRow" class="flex justify-between text-rose-600 hidden">
+              <span>ส่วนลดโปรโมชั่น (BUNNI10)</span>
+              <span id="discountText">-฿0</span>
+            </div>
+            <div class="flex justify-between text-stone-600">
+              <span>ค่าจัดส่งด่วน</span>
+              <span id="shippingText">฿50</span>
+            </div>
+            <div class="flex justify-between text-base font-bold text-stone-900 pt-2 border-t border-stone-200">
+              <span>ยอดชำระสุทธิ</span>
+              <span id="totalText" class="text-bunni-600 text-lg">฿0</span>
+            </div>
+          </div>
+
+          <button
+            onclick="openCheckoutModal()"
+            class="w-full py-3.5 rounded-full bg-bunni-600 hover:bg-bunni-700 text-white font-semibold text-sm shadow-lg shadow-bunni-600/20 transition flex items-center justify-center gap-2"
+          >
+            <span>ดำเนินการสั่งซื้อ</span>
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout / Order Summary Modal (No Backend Required) -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div onclick="closeCheckoutModal()" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs"></div>
+
+    <div class="relative bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-bunni-100 max-h-[90vh] overflow-y-auto custom-scrollbar z-10">
+      <div class="flex items-center justify-between pb-4 border-b border-stone-100">
+        <div>
+          <span class="text-xs text-bunni-600 font-semibold uppercase">Instant Order</span>
+          <h3 class="text-xl font-bold text-stone-900">กรอกข้อมูลจัดส่ง & ยืนยันออเดอร์</h3>
+        </div>
+        <button onclick="closeCheckoutModal()" class="p-2 rounded-full hover:bg-stone-100 text-stone-500">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="checkoutForm" onsubmit="submitOrder(event)" class="space-y-4 mt-5">
+        <div>
+          <label class="block text-xs font-medium text-stone-700 mb-1">ชื่อ - นามสกุล ผู้รับ *</label>
+          <input required id="custName" type="text" placeholder="เช่น คุณพิมพ์ชนก ใจดี" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-bunni-500" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-700 mb-1">เบอร์โทรศัพท์ติดต่อ *</label>
+          <input required id="custPhone" type="tel" placeholder="เช่น 089-123-4567" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-bunni-500" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-700 mb-1">ที่อยู่สำหรับจัดส่งสินค้า *</label>
+          <textarea required id="custAddress" rows="3" placeholder="บ้านเลขที่, ถนน, แขวง/ตำบล, เขต/อำเภอ, จังหวัด และรหัสไปรษณีย์" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-bunni-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-700 mb-1">วิธีชำระเงิน</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center gap-2.5 p-3 rounded-xl border border-bunni-300 bg-bunni-50/60 cursor-pointer text-xs font-medium">
+              <input type="radio" name="paymentMethod" value="โอนเงินผ่าน QR PromptPay" checked class="accent-bunni-600" />
+              <span>สแกน QR PromptPay</span>
+            </label>
+            <label class="flex items-center gap-2.5 p-3 rounded-xl border border-stone-200 cursor-pointer text-xs font-medium">
+              <input type="radio" name="paymentMethod" value="เก็บเงินปลายทาง (COD)" class="accent-bunni-600" />
+              <span>เก็บเงินปลายทาง (COD)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Order Summary Box -->
+        <div id="orderSuccessBox" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-3">
+          <div class="flex items-center gap-2 text-emerald-800 font-semibold text-sm">
+            <i data-lucide="party-popper" class="w-5 h-5"></i>
+            <span>สร้างใบสรุปออเดอร์สำเร็จแล้ว!</span>
+          </div>
+          <pre id="orderSummaryText" class="text-xs bg-white p-3 rounded-xl border border-emerald-100 text-stone-700 whitespace-pre-wrap font-sans"></pre>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onclick="copyOrderSummary()"
+              class="flex-1 py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium transition flex items-center justify-center gap-1.5"
+            >
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span>คัดลอกใบสั่งซื้อส่ง LINE</span>
+            </button>
+            <button
+              type="button"
+              onclick="finishAndClearOrder()"
+              class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition"
+            >
+              เสร็จสิ้น
+            </button>
+          </div>
+        </div>
+
+        <button
+          id="confirmOrderBtn"
+          type="submit"
+          class="w-full py-3.5 rounded-full bg-stone-900 hover:bg-bunni-600 text-white font-semibold text-sm transition shadow-lg"
+        >
+          ยืนยันคำสั่งซื้อและดูใบสรุปยอด
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-sm">
+      <span class="text-lg">🐰</span>
+      <span id="toastMessage">เพิ่มสินค้าลงตะกร้าแล้ว!</span>
+    </div>
+  </div>
+
+  <!-- Application Script -->
+  <script>
+    // Categories Data
+    const CATEGORIES = [
+      { id: 'all', name: 'ทั้งหมด' },
+      { id: 'shirts', name: 'เสื้อเชิ้ต & เสื้อยืด' },
+      { id: 'dresses', name: 'ชุดเดรส & ชุดเซ็ต' },
+      { id: 'pants', name: 'กางเกง & กระโปรง' },
+      { id: 'outerwear', name: 'เสื้อคลุม & คาร์ดิแกน' }
+    ];
+
+    // Products Catalog Data
+    const PRODUCTS = [
+      {
+        id: 'bunni-01',
+        name: 'เสื้อเชิ้ตโอเวอร์ไซส์ ผ้าลินินพรีเมียม',
+        category: 'shirts',
+        price: 350,
+        originalPrice: 450,
+        badge: 'ขายดีอันดับ 1',
+        description: 'เสื้อเชิ้ตทรงโอเวอร์ไซส์สไตล์เกาหลี ผ้าลินินผสมคอตตอนระบายอากาศดี ไม่บาง ใส่ทำงานหรือคลุมไปคาเฟ่ก็เก๋',
+        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=700&q=80',
+        colors: ['ขาวครีม', 'เบจละมุน', 'ฟ้าพาสเทล'],
+        sizes: ['S', 'M', 'L']
+      },
+      {
+        id: 'bunni-02',
+        name: 'มินิเดรสคอเหลี่ยม แขนตุ๊กตาสไตล์คุณหนู',
+        category: 'dresses',
+        price: 450,
+        originalPrice: 590,
+        badge: 'ยอดนิยม',
+        description: 'ชุดเดรสสั้นทรงสวย คอเหลี่ยมช่วยให้ช่วงคอระหง แขนตุ๊กตาน่ารักละมุน มีซับในทั้งชุด ไม่โป๊',
+        image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=700&q=80',
+        colors: ['ชมพูพาสเทล', 'ขาวครีม', 'กลีบบัว'],
+        sizes: ['S', 'M', 'L']
+      },
+      {
+        id: 'bunni-03',
+        name: 'กางเกงขายาวเอวสูง ทรงขากระบอกพรางหุ่น',
+        category: 'pants',
+        price: 390,
+        originalPrice: 490,
+        badge: 'พรางหุ่นเป๊ะ',
+        description: 'กางเกงสแล็คเอวสูงปรี๊ดช่วยโกงความสูง ผ้าเปเป้เกรดพรีเมียมทิ้งตัวสวย ไม่ต้องรีดเยอะ ใส่สบายไม่อึดอัด',
+        image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=700&q=80',
+        colors: ['ครีมงาช้าง', 'น้ำตาลม็อคค่า', 'ดำคลาสสิก'],
+        sizes: ['S', 'M', 'L']
+      },
+      {
+        id: 'bunni-04',
+        name: 'คาร์ดิแกนไหมพรมถักนุ่ม กระดุมมุก',
+        category: 'outerwear',
+        price: 420,
+        originalPrice: 520,
+        badge: 'มาใหม่',
+        description: 'เสื้อคลุมคาร์ดิแกนไหมพรมเนื้อนุ่มฟู ไม่คัน แต่งกระดุมมุกสุดคิวท์ แมทช์ได้ทั้งกระโปรงและกางเกงยีนส์',
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=80',
+        colors: ['ครีมนม', 'ชมพูพีช', 'น้ำตาลคาราเมล'],
+        sizes: ['Free Size']
+      },
+      {
+        id: 'bunni-05',
+        name: 'ชุดเซ็ต 2 ชิ้น เสื้อกั๊กครอป + กางเกงขาสั้น',
+        category: 'dresses',
+        price: 490,
+        originalPrice: 650,
+        badge: 'คุ้มมาก',
+        description: 'ชุดเซ็ตเข้าชุดสุดคุ้ม ได้ทั้งเสื้อกั๊กกระดุมหน้าและกางเกงขาสั้นเอวสูง มีซับใน ใส่แยกชิ้นก็คุ้มสุดๆ',
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80',
+        colors: ['เบจธรรมชาติ', 'เทาอ่อน'],
+        sizes: ['S', 'M', 'L']
+      },
+      {
+        id: 'bunni-06',
+        name: 'เสื้อยืดเบบี้ที (Baby Tee) ปักโลโก้ bunni',
+        category: 'shirts',
+        price: 250,
+        originalPrice: 320,
+        badge: 'Must Have',
+        description: 'เสื้อยืดทรง Baby Tee ผ้าคอตตอนริบยืดหยุ่นสูง ปักลายกระต่าย bunni สุดน่ารักที่อก ทรงสวยเป๊ะ',
+        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=700&q=80',
+        colors: ['ขาว', 'ชมพูเบบี้พิงค์', 'ดำ'],
+        sizes: ['S', 'M', 'L']
+      },
+      {
+        id: 'bunni-07',
+        name: 'กระโปรงเทนนิสพลีท เอวสูง (มีกางเกงซับใน)',
+        category: 'pants',
+        price: 320,
+        originalPrice: 390,
+        badge: 'ฮิตมาก',
+        description: 'กระโปรงจีบรอบทรงสวยเอวสูง ช่วยพรางสะโพก มาพร้อมกางเกงซับในตัวเดียวกัน ขยับตัวมั่นใจ 100%',
+        image: 'https://images.unsplash.com/photo-1582142306909-195724d33ffc?auto=format&fit=crop&w=700&q=80',
+        colors: ['ขาวครีม', 'เทาเกาหลี', 'ดำ'],
+        sizes: ['S', 'M', 'L']
+      },
+      {
+        id: 'bunni-08',
+        name: 'เบลเซอร์ครอปแขนสั้น สไตล์สาวโซล',
+        category: 'outerwear',
+        price: 550,
+        originalPrice: 690,
+        badge: 'พรีเมียม',
+        description: 'เบลเซอร์ทรงกึ่งครอปเสริมไหล่บางๆ ให้ลุคดูสมาร์ทแต่ยังน่ารัก มีซับในซาตินลื่นสบายผิว',
+        image: 'https://images.unsplash.com/photo-1548624313-0396c75e4b1a?auto=format&fit=crop&w=700&q=80',
+        colors: ['ครีมเบจ', 'น้ำตาลช็อกโกแลต'],
+        sizes: ['S', 'M', 'L']
+      }
+    ];
+
+    // State
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let currentSort = 'popular';
+    let promoDiscountRate = 0;
+    let cart = JSON.parse(localStorage.getItem('bunniwear_cart') || '[]');
+    // Track selected options per product card
+    const selectedOptions = {};
+    PRODUCTS.forEach(p => {
+      selectedOptions[p.id] = {
+        color: p.colors[0],
+        size: p.sizes[0]
+      };
+    });
+
+    function saveCart() {
+      localStorage.setItem('bunniwear_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    // Render Category Tabs
+    function renderCategories() {
+      const container = document.getElementById('categoryTabs');
+      container.innerHTML = CATEGORIES.map(cat => {
+        const active = cat.id === currentCategory;
+        return `
+          <button
+            onclick="setCategory('${cat.id}')"
+            class="px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition ${
+              active
+                ? 'bg-stone-900 text-white shadow-sm'
+                : 'bg-white text-stone-600 hover:bg-bunni-100 border border-bunni-200'
+            }"
+          >
+            ${cat.name}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function setCategory(catId) {
+      currentCategory = catId;
+      renderCategories();
+      renderProducts();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      renderProducts();
+    }
+
+    function handleSort(val) {
+      currentSort = val;
+      renderProducts();
+    }
+
+    function selectProductOption(productId, type, value) {
+      selectedOptions[productId][type] = value;
+      renderProducts();
+    }
+
+    // Render Products Grid
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      let filtered = PRODUCTS.filter(p => {
+        const matchCat = currentCategory === 'all' || p.category === currentCategory;
+        const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery) || p.description.toLowerCase().includes(searchQuery);
+        return matchCat && matchSearch;
+      });
+
+      if (currentSort === 'price-asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (currentSort === 'price-desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-bunni-200/70">
+            <p class="text-3xl mb-2">🐰</p>
+            <p class="text-stone-700 font-medium">ไม่พบสินค้าที่ค้นหา</p>
+            <p class="text-xs text-stone-400 mt-1">ลองเปลี่ยนคำค้นหาหรือเลือกดูหมวดหมู่ทั้งหมดนะคะ</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(product => {
+        const sel = selectedOptions[product.id];
+        return `
+          <div class="bg-white rounded-3xl border border-bunni-200/70 overflow-hidden shadow-xs hover:shadow-xl transition duration-300 flex flex-col justify-between group">
+            <div>
+              <!-- Image Box -->
+              <div class="relative aspect-[4/5] overflow-hidden bg-bunni-100">
+                <img
+                  src="${product.image}"
+                  alt="${product.name}"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
+                ${product.badge ? `
+                  <span class="absolute top-3.5 left-3.5 bg-stone-900/90 backdrop-blur-xs text-white text-[11px] font-medium px-3 py-1 rounded-full">
+                    ${product.badge}
+                  </span>
+                ` : ''}
+                <span class="absolute top-3.5 right-3.5 bg-rose-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
+                  -${Math.round((1 - product.price / product.originalPrice) * 100)}%
+                </span>
+              </div>
+
+              <!-- Details -->
+              <div class="p-5">
+                <h3 class="font-bold text-stone-900 text-base line-clamp-1">${product.name}</h3>
+                <p class="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed">${product.description}</p>
+
+                <!-- Price -->
+                <div class="mt-3 flex items-baseline gap-2">
+                  <span class="text-xl font-bold text-bunni-600">฿${product.price.toLocaleString()}</span>
+                  <span class="text-xs text-stone-400 line-through">฿${product.originalPrice.toLocaleString()}</span>
+                </div>
+
+                <!-- Color Selector -->
+                <div class="mt-3.5">
+                  <span class="block text-[11px] text-stone-500 mb-1.5">เลือกสี: <strong class="text-stone-800">${sel.color}</strong></span>
+                  <div class="flex flex-wrap gap-1.5">
+                    ${product.colors.map(color => `
+                      <button
+                        type="button"
+                        onclick="selectProductOption('${product.id}', 'color', '${color}')"
+                        class="px-2.5 py-1 rounded-lg text-[11px] border transition ${
+                          sel.color === color
+                            ? 'bg-bunni-100 border-bunni-500 text-bunni-900 font-semibold'
+                            : 'bg-stone-50 border-stone-200 text-stone-600 hover:border-bunni-300'
+                        }"
+                      >
+                        ${color}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Size Selector -->
+                <div class="mt-3">
+                  <span class="block text-[11px] text-stone-500 mb-1.5">เลือกไซส์: <strong class="text-stone-800">${sel.size}</strong></span>
+                  <div class="flex flex-wrap gap-1.5">
+                    ${product.sizes.map(size => `
+                      <button
+                        type="button"
+                        onclick="selectProductOption('${product.id}', 'size', '${size}')"
+                        class="px-3 py-1 rounded-lg text-[11px] border transition ${
+                          sel.size === size
+                            ? 'bg-stone-900 border-stone-900 text-white font-semibold'
+                            : 'bg-stone-50 border-stone-200 text-stone-600 hover:border-stone-400'
+                        }"
+                      >
+                        ${size}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add to Cart Button -->
+            <div class="px-5 pb-5">
+              <button
+                onclick="addToCart('${product.id}')"
+                class="w-full py-3 rounded-2xl bg-stone-900 hover:bg-bunni-600 text-white text-xs sm:text-sm font-medium transition flex items-center justify-center gap-2 shadow-xs"
+              >
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>หยิบใส่ตะกร้า</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Add item to Cart
+    function addToCart(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      const sel = selectedOptions[productId];
+      const cartKey = `${product.id}_${sel.color}_${sel.size}`;
+
+      const existing = cart.find(item => item.cartKey === cartKey);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          cartKey,
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          color: sel.color,
+          size: sel.size,
+          qty: 1
+        });
+      }
+
+      saveCart();
+      showToast(`เพิ่ม "${product.name}" (${sel.color}/${sel.size}) ลงตะกร้าแล้ว!`);
+    }
+
+    function updateQty(cartKey, delta) {
+      const idx = cart.findIndex(item => item.cartKey === cartKey);
+      if (idx === -1) return;
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) {
+        cart.splice(idx, 1);
+      }
+      saveCart();
+    }
+
+    function applyPromoCode() {
+      const code = document.getElementById('promoInput').value.trim().toUpperCase();
+      if (code === 'BUNNI10') {
+        promoDiscountRate = 0.10;
+        updateCartUI();
+        showToast('ใช้โค้ดส่วนลด BUNNI10 ลด 10% สำเร็จ!');
+      } else {
+        promoDiscountRate = 0;
+        updateCartUI();
+        showToast('ไม่พบโค้ดส่วนลดนี้ ลองใช้โค้ด BUNNI10 นะคะ');
+      }
+    }
+
+    function calculateTotals() {
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const discount = Math.round(subtotal * promoDiscountRate);
+      const afterDiscount = subtotal - discount;
+      const shipping = afterDiscount >= 990 || afterDiscount === 0 ? 0 : 50;
+      const total = afterDiscount + shipping;
+      return { subtotal, discount, shipping, total };
+    }
+
+    function updateCartUI() {
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cartCountBadge').textContent = totalCount;
+
+      const container = document.getElementById('cartItemsContainer');
+      const banner = document.getElementById('freeShippingBanner');
+      const { subtotal, discount, shipping, total } = calculateTotals();
+
+      // Free shipping progress message
+      const remainingForFreeShip = Math.max(0, 990 - (subtotal - discount));
+      if (subtotal === 0) {
+        banner.innerHTML = '🚚 ช้อปครบ <strong>฿990</strong> รับสิทธิ์ส่งด่วนฟรีทั่วไทย!';
+      } else if (remainingForFreeShip > 0) {
+        banner.innerHTML = `🛍️ ช้อปเพิ่มอีกเพียง <strong>฿${remainingForFreeShip.toLocaleString()}</strong> เพื่อรับสิทธิ์ <strong>ส่งฟรี!</strong>`;
+      } else {
+        banner.innerHTML = '🎉 ยินดีด้วย! ออเดอร์นี้ของคุณได้รับสิทธิ์ <strong>จัดส่งฟรี</strong> แล้ว';
+      }
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="h-64 flex flex-col items-center justify-center text-center text-stone-400">
+            <span class="text-4xl mb-2">🧺</span>
+            <p class="text-sm font-medium text-stone-600">ตะกร้าสินค้ายังว่างอยู่</p>
+            <p class="text-xs mt-1">เลือกชมเสื้อผ้าน่ารักๆ แล้วหยิบใส่ตะกร้าได้เลยค่ะ</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = cart.map(item => `
+          <div class="flex gap-3.5 p-3 rounded-2xl bg-bunni-50/60 border border-bunni-100">
+            <img src="${item.image}" alt="${item.name}" class="w-18 h-22 object-cover rounded-xl shrink-0 bg-stone-200" style="width: 70px; height: 88px;" />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-semibold text-stone-900 truncate">${item.name}</h4>
+              <p class="text-[11px] text-stone-500 mt-0.5">สี: ${item.color} | ไซส์: ${item.size}</p>
+              <p class="text-sm font-bold text-bunni-600 mt-1">฿${(item.price * item.qty).toLocaleString()}</p>
+
+              <div class="flex items-center gap-2 mt-2">
+                <button onclick="updateQty('${item.cartKey}', -1)" class="w-6 h-6 rounded-lg bg-white border border-stone-200 flex items-center justify-center text-xs hover:bg-stone-100">-</button>
+                <span class="text-xs font-semibold w-5 text-center">${item.qty}</span>
+                <button onclick="updateQty('${item.cartKey}', 1)" class="w-6 h-6 rounded-lg bg-white border border-stone-200 flex items-center justify-center text-xs hover:bg-stone-100">+</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('subtotalText').textContent = `฿${subtotal.toLocaleString()}`;
+      const discountRow = document.getElementById('discountRow');
+      if (discount > 0) {
+        discountRow.classList.remove('hidden');
+        document.getElementById('discountText').textContent = `-฿${discount.toLocaleString()}`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+      document.getElementById('shippingText').textContent = shipping === 0 ? 'ฟรี' : `฿${shipping}`;
+      document.getElementById('totalText').textContent = `฿${total.toLocaleString()}`;
+    }
+
+    function toggleCart(open) {
+      const modal = document.getElementById('cartModal');
+      if (open) {
+        modal.classList.remove('hidden');
+        updateCartUI();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        showToast('กรุณาเลือกสินค้าใส่ตะกร้าก่อนสั่งซื้อนะคะ');
+        return;
+      }
+      toggleCart(false);
+      document.getElementById('orderSuccessBox').classList.add('hidden');
+      document.getElementById('confirmOrderBtn').classList.remove('hidden');
+      const modal = document.getElementById('checkoutModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCheckoutModal() {
+      const modal = document.getElementById('checkoutModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitOrder(e) {
+      e.preventDefault();
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+      const payment = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const { subtotal, discount, shipping, total } = calculateTotals();
+      const orderNo = 'BNW-' + Math.floor(100000 + Math.random() * 900000);
+
+      const itemsLines = cart.map((item, idx) =>
+        `${idx + 1}. ${item.name} (${item.color} / ไซส์ ${item.size}) x${item.qty} = ฿${(item.price * item.qty).toLocaleString()}`
+      ).join('\n');
+
+      const summary = `🐰 ใบสรุปคำสั่งซื้อร้าน bunniwear
+เลขที่ออเดอร์: #${orderNo}
+------------------------
+รายการสินค้า:
+${itemsLines}
+------------------------
+ยอดรวมสินค้า: ฿${subtotal.toLocaleString()}
+ส่วนลด: -฿${discount.toLocaleString()}
+ค่าจัดส่ง: ${shipping === 0 ? 'ส่งฟรี' : '฿' + shipping}
+ยอดชำระสุทธิ: ฿${total.toLocaleString()}
+วิธีชำระเงิน: ${payment}
+------------------------
+ผู้รับ: ${name} (${phone})
+ที่อยู่จัดส่ง: ${address}`;
+
+      document.getElementById('orderSummaryText').textContent = summary;
+      document.getElementById('orderSuccessBox').classList.remove('hidden');
+      document.getElementById('confirmOrderBtn').classList.add('hidden');
+      lucide.createIcons();
+    }
+
+    function copyOrderSummary() {
+      const text = document.getElementById('orderSummaryText').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('คัดลอกใบสั่งซื้อเรียบร้อย! ส่งให้แอดมินทาง LINE @bunniwear ได้เลยค่ะ');
+      });
+    }
+
+    function finishAndClearOrder() {
+      cart = [];
+      promoDiscountRate = 0;
+      saveCart();
+      document.getElementById('checkoutForm').reset();
+      closeCheckoutModal();
+      showToast('ขอบคุณที่อุดหนุนร้าน bunniwear ค่ะ 🐰💖');
+    }
+
+    let toastTimeout;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Initialize Page
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCategories();
+      renderProducts();
+      updateCartUI();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
