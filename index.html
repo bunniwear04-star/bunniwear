@@ -75,13 +75,27 @@
     .animate-float {
       animation: floatSlow 4s ease-in-out infinite;
     }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      70% { transform: scale(1.25); opacity: 0; }
+      100% { transform: scale(1.25); opacity: 0; }
+    }
+    .line-pulse::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      background-color: #06C755;
+      animation: pulseRing 2s infinite;
+      z-index: -1;
+    }
   </style>
 </head>
 <body class="antialiased selection:bg-bunni-300 selection:text-stone-900">
 
   <!-- Top Announcement Bar -->
   <div class="bg-stone-900 text-stone-100 text-xs sm:text-sm py-2.5 px-4 text-center font-light tracking-wide">
-    <span class="inline-flex items-center gap-1.5">
+    <span class="inline-flex items-center gap-1.5 flex-wrap justify-center">
       🐰 <strong>โปรโมชั่นเปิดร้าน bunniwear!</strong> ส่งฟรีทุกออเดอร์เมื่อช้อปครบ ฿990 + ใช้โค้ด <span class="bg-bunni-500 text-white px-2 py-0.5 rounded font-medium">BUNNI10</span> ลดเพิ่ม 10%
     </span>
   </div>
@@ -101,26 +115,39 @@
       </a>
 
       <!-- Desktop Menu -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-700">
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-stone-700">
         <a href="#home" class="hover:text-bunni-600 transition">หน้าแรก</a>
         <a href="#catalog" class="hover:text-bunni-600 transition">สินค้าทั้งหมด</a>
+        <button onclick="openSizeModal()" class="inline-flex items-center gap-1.5 hover:text-bunni-600 transition text-bunni-700 font-semibold">
+          <i data-lucide="ruler" class="w-4 h-4"></i>
+          <span>ตารางเทียบไซส์</span>
+        </button>
         <a href="#lookbook" class="hover:text-bunni-600 transition">ลุคบุ๊ค</a>
         <a href="#reviews" class="hover:text-bunni-600 transition">รีวิวลูกค้า</a>
-        <a href="#how-to-order" class="hover:text-bunni-600 transition">วิธีสั่งซื้อ</a>
       </nav>
 
       <!-- Actions -->
-      <div class="flex items-center gap-3">
-        <div class="relative hidden sm:block">
+      <div class="flex items-center gap-2.5">
+        <div class="relative hidden lg:block">
           <input
             id="searchInput"
             type="text"
             placeholder="ค้นหาเสื้อเชิ้ต, เดรส, กางเกง..."
             oninput="handleSearch(this.value)"
-            class="w-48 lg:w-64 pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500 focus:ring-2 focus:ring-bunni-200 transition"
+            class="w-56 pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500 focus:ring-2 focus:ring-bunni-200 transition"
           />
           <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
         </div>
+
+        <!-- Mobile Size Chart Trigger -->
+        <button
+          onclick="openSizeModal()"
+          class="md:hidden inline-flex items-center gap-1 px-3 py-2 rounded-full bg-white border border-bunni-200 text-xs font-medium text-stone-700 hover:bg-bunni-100 transition"
+          title="ตารางเทียบไซส์"
+        >
+          <i data-lucide="ruler" class="w-3.5 h-3.5 text-bunni-600"></i>
+          <span>ตารางไซส์</span>
+        </button>
 
         <!-- Cart Button -->
         <button
@@ -163,13 +190,13 @@
               <span>ช้อปคอลเลกชันใหม่</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
-            <a
-              href="#lookbook"
+            <button
+              onclick="openSizeModal()"
               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white hover:bg-bunni-100 text-stone-800 border border-bunni-200 font-medium text-base transition"
             >
-              <i data-lucide="sparkles" class="w-4 h-4 text-bunni-500"></i>
-              <span>ดูไอเดียแต่งตัว</span>
-            </a>
+              <i data-lucide="ruler" class="w-4 h-4 text-bunni-500"></i>
+              <span>เช็คไซส์ที่เหมาะกับคุณ</span>
+            </button>
           </div>
 
           <!-- Trust Metrics -->
@@ -206,9 +233,9 @@
                   <h3 class="text-xl font-semibold mt-2">Seoul Linen Set & Minimal Blazer</h3>
                   <p class="text-sm text-stone-200">เริ่มต้นเพียง ฿350</p>
                 </div>
-                <a href="#catalog" class="bg-white text-stone-900 p-3 rounded-full shadow-lg hover:bg-bunni-200 transition">
-                  <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                </a>
+                <button onclick="openQuickView('bunni-05')" class="bg-white text-stone-900 p-3 rounded-full shadow-lg hover:bg-bunni-200 transition" title="ดูรายละเอียดชุดนี้">
+                  <i data-lucide="eye" class="w-5 h-5"></i>
+                </button>
               </div>
             </div>
 
@@ -285,20 +312,28 @@
       <div>
         <span class="text-xs uppercase tracking-widest text-bunni-600 font-semibold">Our Collection</span>
         <h2 class="text-3xl sm:text-4xl font-bold text-stone-900 mt-1">เลือกช้อปสินค้า bunniwear</h2>
-        <p class="text-stone-500 text-sm mt-1">เลือกสีและไซส์ที่ชอบ แล้วกดหยิบใส่ตะกร้าได้เลย</p>
+        <p class="text-stone-500 text-sm mt-1">คลิกที่รูปสินค้าเพื่อดูรายละเอียดแบบขยาย (Quick View) หรือเลือกสีและไซส์ได้เลย</p>
       </div>
 
-      <!-- Mobile Search & Sort -->
+      <!-- Search, Size Chart Button & Sort -->
       <div class="flex flex-wrap items-center gap-3">
-        <div class="relative sm:hidden w-full">
+        <div class="relative lg:hidden w-full sm:w-auto">
           <input
             type="text"
             placeholder="ค้นหาสินค้า..."
             oninput="handleSearch(this.value)"
-            class="w-full pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500"
+            class="w-full sm:w-52 pl-9 pr-4 py-2 text-sm rounded-full bg-white border border-bunni-200 focus:outline-none focus:border-bunni-500"
           />
           <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
         </div>
+
+        <button
+          onclick="openSizeModal()"
+          class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-bunni-100 hover:bg-bunni-200 text-bunni-800 text-xs sm:text-sm font-medium transition"
+        >
+          <i data-lucide="ruler" class="w-4 h-4"></i>
+          <span>ตารางไซส์ & คำนวณไซส์</span>
+        </button>
 
         <select
           id="sortSelect"
@@ -334,7 +369,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Look 1 -->
-        <div class="group relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
+        <div onclick="openQuickView('bunni-01')" class="group cursor-pointer relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
           <img
             src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=800&q=80"
             alt="Cafe Hopping Look"
@@ -343,12 +378,12 @@
           <div class="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-stone-900/20 to-transparent p-6 flex flex-col justify-end text-white">
             <span class="text-xs bg-white/20 backdrop-blur-md w-fit px-3 py-1 rounded-full mb-2">Look 01 • Cafe Hopping</span>
             <h3 class="text-xl font-bold">Linen Oversize + Creamy Shorts</h3>
-            <p class="text-xs text-stone-200 mt-1">ลุคไปคาเฟ่วันหยุดสุดชิลล์ โปร่งสบายแต่ดูแพง</p>
+            <p class="text-xs text-stone-200 mt-1">ลุคไปคาเฟ่วันหยุดสุดชิลล์ คลิกเพื่อดูสินค้าในลุคนี้</p>
           </div>
         </div>
 
         <!-- Look 2 -->
-        <div class="group relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
+        <div onclick="openQuickView('bunni-02')" class="group cursor-pointer relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
           <img
             src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80"
             alt="Sweet Date Look"
@@ -362,7 +397,7 @@
         </div>
 
         <!-- Look 3 -->
-        <div class="group relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
+        <div onclick="openQuickView('bunni-08')" class="group cursor-pointer relative rounded-3xl overflow-hidden shadow-md aspect-[4/5] bg-stone-200">
           <img
             src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=800&q=80"
             alt="Smart Casual Office Look"
@@ -443,8 +478,8 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">1</div>
-          <h3 class="text-lg font-semibold">เลือกชุด & ไซส์ที่ชอบ</h3>
-          <p class="text-sm text-stone-400">กดเลือกสีและไซส์ที่ต้องการ แล้วกดปุ่ม "หยิบใส่ตะกร้า"</p>
+          <h3 class="text-lg font-semibold">เลือกชุด & เช็คไซส์</h3>
+          <p class="text-sm text-stone-400">กดดูรายละเอียดสินค้า (Quick View) เทียบตารางไซส์ แล้วกดหยิบใส่ตะกร้า</p>
         </div>
         <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">2</div>
@@ -453,15 +488,15 @@
         </div>
         <div class="bg-stone-800/70 border border-stone-700 rounded-3xl p-7 text-center space-y-3">
           <div class="w-12 h-12 rounded-2xl bg-bunni-500 text-white font-bold text-lg flex items-center justify-center mx-auto">3</div>
-          <h3 class="text-lg font-semibold">ยืนยันออเดอร์ / คัดลอกบิล</h3>
-          <p class="text-sm text-stone-400">รับใบสรุปคำสั่งซื้อทันที หรือกดคัดลอกส่งทาง LINE `@bunniwear` ได้เลย</p>
+          <h3 class="text-lg font-semibold">ยืนยันออเดอร์ / ส่งแชท LINE</h3>
+          <p class="text-sm text-stone-400">รับใบสรุปคำสั่งซื้อทันที หรือกดปุ่มแชท LINE มุมขวาล่างส่งให้แอดมินได้เลย</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-bunni-200 pt-14 pb-10">
+  <footer class="bg-white border-t border-bunni-200 pt-14 pb-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-stone-100">
         <div class="space-y-3">
@@ -485,12 +520,11 @@
         </div>
 
         <div>
-          <h4 class="font-semibold text-stone-900 mb-3 text-sm uppercase tracking-wider">ตารางไซส์มาตรฐาน</h4>
-          <ul class="space-y-1.5 text-xs text-stone-600">
-            <li><strong>Size S:</strong> อก 32-34" / เอว 25-26" / สะโพก 35-36"</li>
-            <li><strong>Size M:</strong> อก 35-36" / เอว 27-28" / สะโพก 37-38"</li>
-            <li><strong>Size L:</strong> อก 37-38" / เอว 29-30" / สะโพก 39-40"</li>
-            <li class="text-bunni-600 pt-1">*ทรง Oversize ใส่ได้ตั้งแต่ อก 32-42"</li>
+          <h4 class="font-semibold text-stone-900 mb-3 text-sm uppercase tracking-wider">บริการช่วยเหลือ</h4>
+          <ul class="space-y-2 text-sm text-stone-600">
+            <li><button onclick="openSizeModal()" class="hover:text-bunni-600 underline">📏 เปิดตารางเทียบไซส์ & คำนวณไซส์</button></li>
+            <li><button onclick="toggleLineWidget(true)" class="hover:text-bunni-600">💬 ทักแชทสอบถามแอดมิน</button></li>
+            <li class="text-xs text-stone-400 pt-1">เปลี่ยนไซส์ได้ภายใน 7 วันหลังได้รับสินค้า</li>
           </ul>
         </div>
 
@@ -511,6 +545,239 @@
       </div>
     </div>
   </footer>
+
+  <!-- ========================================================= -->
+  <!-- FEATURE 1: Product Quick View Modal (ดูรายละเอียดแบบขยาย) -->
+  <!-- ========================================================= -->
+  <div id="quickViewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div onclick="closeQuickView()" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs transition-opacity"></div>
+
+    <div class="relative bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-bunni-100 z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <button
+        onclick="closeQuickView()"
+        class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-stone-700 shadow-md flex items-center justify-center transition"
+      >
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div id="quickViewContent" class="grid grid-cols-1 md:grid-cols-2">
+        <!-- Populated dynamically by openQuickView(productId) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- FEATURE 2: Size Chart & Smart Size Finder Modal (ตารางไซส์) -->
+  <!-- ========================================================= -->
+  <div id="sizeModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div onclick="closeSizeModal()" class="fixed inset-0 bg-stone-950/60 backdrop-blur-xs transition-opacity"></div>
+
+    <div class="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-bunni-100 z-10 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between pb-4 border-b border-stone-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-bunni-100 text-bunni-700 flex items-center justify-center">
+            <i data-lucide="ruler" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-[11px] uppercase tracking-widest text-bunni-600 font-semibold">Size Guide</span>
+            <h3 class="text-xl font-bold text-stone-900">ตารางเทียบไซส์มาตรฐาน bunniwear</h3>
+          </div>
+        </div>
+        <button onclick="closeSizeModal()" class="p-2 rounded-full hover:bg-stone-100 text-stone-500">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-5 space-y-6">
+        <!-- Interactive Size Recommender -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-bunni-50 border border-bunni-200/80 space-y-3">
+          <div class="flex items-center gap-2 text-sm font-semibold text-stone-900">
+            <span>✨ ระบบช่วยคำนวณไซส์อัตโนมัติ</span>
+            <span class="text-xs font-normal text-stone-500">(กรอกสัดส่วนของคุณเป็นนิ้ว)</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] text-stone-600 mb-1">รอบอก (นิ้ว)</label>
+              <input id="calcBust" type="number" placeholder="เช่น 33" class="w-full px-3 py-2 rounded-xl border border-bunni-200 bg-white text-sm focus:outline-none focus:border-bunni-500" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-stone-600 mb-1">รอบเอว (นิ้ว)</label>
+              <input id="calcWaist" type="number" placeholder="เช่น 26" class="w-full px-3 py-2 rounded-xl border border-bunni-200 bg-white text-sm focus:outline-none focus:border-bunni-500" />
+            </div>
+            <div class="flex items-end">
+              <button
+                type="button"
+                onclick="calculateRecommendedSize()"
+                class="w-full py-2 px-4 rounded-xl bg-stone-900 hover:bg-bunni-600 text-white text-xs font-medium transition h-[38px]"
+              >
+                เช็คไซส์ที่แนะนำ
+              </button>
+            </div>
+          </div>
+          <div id="sizeCalcResult" class="hidden text-xs font-medium text-bunni-800 bg-white px-3.5 py-2.5 rounded-xl border border-bunni-200"></div>
+        </div>
+
+        <!-- Size Table -->
+        <div class="overflow-x-auto rounded-2xl border border-stone-200">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-stone-900 text-white">
+                <th class="py-3 px-4 font-semibold">ขนาด (Size)</th>
+                <th class="py-3 px-4 font-semibold">รอบอก (นิ้ว)</th>
+                <th class="py-3 px-4 font-semibold">รอบเอว (นิ้ว)</th>
+                <th class="py-3 px-4 font-semibold">สะโพก (นิ้ว)</th>
+                <th class="py-3 px-4 font-semibold">น้ำหนักแนะนำ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200 bg-white">
+              <tr class="hover:bg-bunni-50/60">
+                <td class="py-3 px-4 font-bold text-stone-900">Size S</td>
+                <td class="py-3 px-4 text-stone-600">31 - 33"</td>
+                <td class="py-3 px-4 text-stone-600">24 - 26"</td>
+                <td class="py-3 px-4 text-stone-600">34 - 36"</td>
+                <td class="py-3 px-4 text-stone-600">40 - 48 กก.</td>
+              </tr>
+              <tr class="hover:bg-bunni-50/60">
+                <td class="py-3 px-4 font-bold text-stone-900">Size M</td>
+                <td class="py-3 px-4 text-stone-600">34 - 36"</td>
+                <td class="py-3 px-4 text-stone-600">27 - 28"</td>
+                <td class="py-3 px-4 text-stone-600">37 - 38"</td>
+                <td class="py-3 px-4 text-stone-600">49 - 55 กก.</td>
+              </tr>
+              <tr class="hover:bg-bunni-50/60">
+                <td class="py-3 px-4 font-bold text-stone-900">Size L</td>
+                <td class="py-3 px-4 text-stone-600">37 - 38"</td>
+                <td class="py-3 px-4 text-stone-600">29 - 30"</td>
+                <td class="py-3 px-4 text-stone-600">39 - 40"</td>
+                <td class="py-3 px-4 text-stone-600">56 - 63 กก.</td>
+              </tr>
+              <tr class="bg-bunni-50/40 hover:bg-bunni-50">
+                <td class="py-3 px-4 font-bold text-bunni-700">Free Size / Oversize</td>
+                <td class="py-3 px-4 text-stone-600">32 - 42"</td>
+                <td class="py-3 px-4 text-stone-600">24 - 32"</td>
+                <td class="py-3 px-4 text-stone-600">ฟรีไซส์</td>
+                <td class="py-3 px-4 text-stone-600">40 - 65 กก.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tips -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-stone-600">
+          <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80">
+            <strong class="text-stone-900 block mb-1">💡 ทริคการเลือกไซส์เดรส/กางเกง:</strong>
+            หากสัดส่วนอยู่กึ่งกลางระหว่าง 2 ไซส์ แนะนำให้ยึด <strong>"รอบเอวและสะโพก"</strong> เป็นหลัก หรือเลือกเผื่อ 1 ไซส์เพื่อความใส่สบายค่ะ
+          </div>
+          <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80">
+            <strong class="text-stone-900 block mb-1">🔄 รับประกันใส่พอดี:</strong>
+            หากได้รับสินค้าแล้วใส่ไม่พอดี สามารถทัก LINE <strong>@bunniwear</strong> เพื่อเปลี่ยนไซส์ได้ภายใน 7 วันค่ะ
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- FEATURE 3: Floating LINE Chat Widget (ปุ่มลอยแชท LINE)    -->
+  <!-- ========================================================= -->
+  <div class="fixed bottom-5 right-5 z-40 flex flex-col items-end">
+    <!-- Expandable Chat Box -->
+    <div
+      id="lineChatPopup"
+      class="hidden mb-3 w-80 sm:w-88 bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden transition-all"
+    >
+      <!-- Header -->
+      <div class="bg-[#06C755] text-white p-4 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-full bg-white text-stone-900 flex items-center justify-center text-xl shadow-xs">
+            🐰
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h4 class="font-bold text-sm">bunniwear Official</h4>
+              <span class="w-2 h-2 rounded-full bg-emerald-200 animate-ping"></span>
+            </div>
+            <p class="text-[11px] text-emerald-50">แอดมินออนไลน์ • ตอบกลับไวใน 2 นาที</p>
+          </div>
+        </div>
+        <button onclick="toggleLineWidget(false)" class="p-1.5 rounded-full hover:bg-black/10 text-white transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Chat Body -->
+      <div class="p-4 bg-stone-50 space-y-3 text-xs">
+        <div class="flex items-start gap-2">
+          <div class="w-7 h-7 rounded-full bg-bunni-200 flex items-center justify-center text-sm shrink-0">🐰</div>
+          <div class="bg-white p-3 rounded-2xl rounded-tl-xs shadow-2xs border border-stone-100 text-stone-700 leading-relaxed">
+            สวัสดีค่ะคุณลูกค้า 💕 แอดมินร้าน <strong>bunniwear</strong> ยินดีให้บริการค่ะ สนใจสอบถามรุ่นไหน หรือให้ช่วยแนะนำไซส์ กดเลือกหัวข้อด้านล่างได้เลยนะคะ 👇
+          </div>
+        </div>
+
+        <!-- Quick Inquiry Buttons -->
+        <div class="space-y-1.5 pt-1">
+          <button
+            onclick="sendLineTopic('สวัสดีค่ะ อยากให้แอดมินช่วยแนะนำไซส์เสื้อผ้าร้าน bunniwear ค่ะ')"
+            class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-200 hover:border-[#06C755] text-stone-700 font-medium transition flex items-center justify-between"
+          >
+            <span>📏 ให้แอดมินช่วยแนะนำไซส์</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+          </button>
+          <button
+            onclick="sendLineTopic('สวัสดีค่ะ สนใจสั่งซื้อสินค้าและเช็คสต็อกพร้อมส่งค่ะ')"
+            class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-200 hover:border-[#06C755] text-stone-700 font-medium transition flex items-center justify-between"
+          >
+            <span>🛍️ สอบถามสต็อก / สั่งซื้อทาง LINE</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+          </button>
+          <button
+            onclick="sendLineTopic('สวัสดีค่ะ ต้องการแจ้งโอนเงิน / ส่งใบสรุปออเดอร์ค่ะ')"
+            class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-200 hover:border-[#06C755] text-stone-700 font-medium transition flex items-center justify-between"
+          >
+            <span>💳 แจ้งโอนเงิน / ส่งสลิป</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-stone-400"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer CTA -->
+      <div class="p-3.5 bg-white border-t border-stone-100 space-y-2">
+        <a
+          href="https://line.me/R/ti/p/@bunniwear"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full py-2.5 px-4 rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition"
+        >
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>เปิดแอป LINE แชทกับ @bunniwear</span>
+        </a>
+        <button
+          onclick="copyLineId()"
+          class="w-full py-1.5 text-[11px] text-stone-500 hover:text-stone-800 flex items-center justify-center gap-1 transition"
+        >
+          <i data-lucide="copy" class="w-3 h-3"></i>
+          <span>คัดลอก LINE ID: <strong>@bunniwear</strong></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Trigger Button -->
+    <button
+      onclick="toggleLineWidget()"
+      class="relative line-pulse group flex items-center gap-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white pl-4 pr-5 py-3.5 rounded-full shadow-xl transition transform hover:scale-105"
+    >
+      <span class="relative flex h-6 w-6 items-center justify-center">
+        <i data-lucide="message-circle" class="w-5 h-5 fill-white text-[#06C755]"></i>
+      </span>
+      <div class="text-left">
+        <span class="block text-xs font-bold leading-none">แชท LINE กับเรา</span>
+        <span class="block text-[10px] text-emerald-100 leading-tight mt-0.5">@bunniwear</span>
+      </div>
+      <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+        1
+      </span>
+    </button>
+  </div>
 
   <!-- Slide-over Shopping Cart Drawer -->
   <div id="cartModal" class="fixed inset-0 z-50 hidden">
@@ -647,7 +914,7 @@
             <button
               type="button"
               onclick="copyOrderSummary()"
-              class="flex-1 py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium transition flex items-center justify-center gap-1.5"
+              class="flex-1 py-2.5 px-4 rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-semibold transition flex items-center justify-center gap-1.5"
             >
               <i data-lucide="copy" class="w-4 h-4"></i>
               <span>คัดลอกใบสั่งซื้อส่ง LINE</span>
@@ -655,7 +922,7 @@
             <button
               type="button"
               onclick="finishAndClearOrder()"
-              class="py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition"
+              class="py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium transition"
             >
               เสร็จสิ้น
             </button>
@@ -674,7 +941,7 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+  <div id="toast" class="fixed bottom-24 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
     <div class="bg-stone-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-sm">
       <span class="text-lg">🐰</span>
       <span id="toastMessage">เพิ่มสินค้าลงตะกร้าแล้ว!</span>
@@ -692,17 +959,24 @@
       { id: 'outerwear', name: 'เสื้อคลุม & คาร์ดิแกน' }
     ];
 
-    // Products Catalog Data
+    // Products Catalog Data with Extended Features for Quick View
     const PRODUCTS = [
       {
         id: 'bunni-01',
         name: 'เสื้อเชิ้ตโอเวอร์ไซส์ ผ้าลินินพรีเมียม',
         category: 'shirts',
+        categoryLabel: 'เสื้อเชิ้ต & เสื้อยืด',
         price: 350,
         originalPrice: 450,
         badge: 'ขายดีอันดับ 1',
-        description: 'เสื้อเชิ้ตทรงโอเวอร์ไซส์สไตล์เกาหลี ผ้าลินินผสมคอตตอนระบายอากาศดี ไม่บาง ใส่ทำงานหรือคลุมไปคาเฟ่ก็เก๋',
-        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=700&q=80',
+        description: 'เสื้อเชิ้ตทรงโอเวอร์ไซส์สไตล์เกาหลี ผ้าลินินผสมคอตตอนระบายอากาศดี ไม่บาง ใส่ทำงานหรือคลุมไปคาเฟ่ก็เก๋ แมทช์ได้ทั้งขาสั้นและขายาว',
+        features: [
+          'เนื้อผ้าลินินผสมคอตตอนเกรดพรีเมียม ไม่ระคายผิว',
+          'ทรง Oversize พลางต้นแขนและช่วงตัวได้ดีเยี่ยม',
+          'รีดง่าย ยับยาก ใส่ได้ทั้งเป็นเสื้อเดี่ยวและเสื้อคลุม'
+        ],
+        fabricCare: 'ซักมือหรือซักเครื่องในถุงถนอมผ้า รีดด้วยไฟอ่อน-ปานกลาง',
+        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80',
         colors: ['ขาวครีม', 'เบจละมุน', 'ฟ้าพาสเทล'],
         sizes: ['S', 'M', 'L']
       },
@@ -710,11 +984,18 @@
         id: 'bunni-02',
         name: 'มินิเดรสคอเหลี่ยม แขนตุ๊กตาสไตล์คุณหนู',
         category: 'dresses',
+        categoryLabel: 'ชุดเดรส & ชุดเซ็ต',
         price: 450,
         originalPrice: 590,
         badge: 'ยอดนิยม',
-        description: 'ชุดเดรสสั้นทรงสวย คอเหลี่ยมช่วยให้ช่วงคอระหง แขนตุ๊กตาน่ารักละมุน มีซับในทั้งชุด ไม่โป๊',
-        image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=700&q=80',
+        description: 'ชุดเดรสสั้นทรงสวย คอเหลี่ยมช่วยให้ช่วงคอระหง แขนตุ๊กตาน่ารักละมุน มีซับในทั้งชุด ไม่โป๊ ใส่ออกเดทหรือไปคาเฟ่ถ่ายรูปสวยทุกมุม',
+        features: [
+          'มีซับในเต็มตัว เนื้อผ้านุ่มทิ้งตัว ไม่บาง',
+          'ดีไซน์คอเหลี่ยมช่วยโชว์ไหปลาร้าให้ดูเพรียว',
+          'ซิปหลังซ่อนอย่างดี สวมใส่ง่าย ทรงเข้ารูปพอดีตัว'
+        ],
+        fabricCare: 'แนะนำซักมือหรือใส่ถุงซักผ้า ตากในที่ร่ม',
+        image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80',
         colors: ['ชมพูพาสเทล', 'ขาวครีม', 'กลีบบัว'],
         sizes: ['S', 'M', 'L']
       },
@@ -722,11 +1003,18 @@
         id: 'bunni-03',
         name: 'กางเกงขายาวเอวสูง ทรงขากระบอกพรางหุ่น',
         category: 'pants',
+        categoryLabel: 'กางเกง & กระโปรง',
         price: 390,
         originalPrice: 490,
         badge: 'พรางหุ่นเป๊ะ',
-        description: 'กางเกงสแล็คเอวสูงปรี๊ดช่วยโกงความสูง ผ้าเปเป้เกรดพรีเมียมทิ้งตัวสวย ไม่ต้องรีดเยอะ ใส่สบายไม่อึดอัด',
-        image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=700&q=80',
+        description: 'กางเกงสแล็คเอวสูงปรี๊ดช่วยโกงความสูง ผ้าเปเป้เกรดพรีเมียมทิ้งตัวสวย ไม่ต้องรีดเยอะ ใส่สบายไม่อึดอัด เก็บหน้าท้องและสะโพกอยู่หมัด',
+        features: [
+          'เอวสูงเหนือสะดือ ช่วยให้ขาดูเรียวยาวขึ้นทันที',
+          'ผ้าเปเป้เนื้อหนาพรีเมียม ทิ้งตัวสวย ไม่เป็นขุย',
+          'มีกระเป๋าใช้งานได้จริงทั้ง 2 ข้าง ตะขอหน้าแข็งแรง'
+        ],
+        fabricCare: 'ซักเครื่องได้ตามปกติ สะบัดตากแทบไม่ต้องรีด',
+        image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=80',
         colors: ['ครีมงาช้าง', 'น้ำตาลม็อคค่า', 'ดำคลาสสิก'],
         sizes: ['S', 'M', 'L']
       },
@@ -734,11 +1022,18 @@
         id: 'bunni-04',
         name: 'คาร์ดิแกนไหมพรมถักนุ่ม กระดุมมุก',
         category: 'outerwear',
+        categoryLabel: 'เสื้อคลุม & คาร์ดิแกน',
         price: 420,
         originalPrice: 520,
         badge: 'มาใหม่',
-        description: 'เสื้อคลุมคาร์ดิแกนไหมพรมเนื้อนุ่มฟู ไม่คัน แต่งกระดุมมุกสุดคิวท์ แมทช์ได้ทั้งกระโปรงและกางเกงยีนส์',
-        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=80',
+        description: 'เสื้อคลุมคาร์ดิแกนไหมพรมเนื้อนุ่มฟู ไม่คัน แต่งกระดุมมุกสุดคิวท์ แมทช์ได้ทั้งกระโปรงและกางเกงยีนส์ กันหนาวในห้องแอร์หรือใส่เที่ยวต่างประเทศได้',
+        features: [
+          'ไหมพรมทอแน่นสัมผัสนุ่มพิเศษ ไม่ระคายเคืองผิว',
+          'แต่งกระดุมมุกขอบทอง เพิ่มความหรูหราละมุน',
+          'ขนาด Free Size ยืดหยุ่นตามสัดส่วน'
+        ],
+        fabricCare: 'ซักมือและตากแนวราบเพื่อรักษารูปทรงไหมพรม',
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=800&q=80',
         colors: ['ครีมนม', 'ชมพูพีช', 'น้ำตาลคาราเมล'],
         sizes: ['Free Size']
       },
@@ -746,11 +1041,18 @@
         id: 'bunni-05',
         name: 'ชุดเซ็ต 2 ชิ้น เสื้อกั๊กครอป + กางเกงขาสั้น',
         category: 'dresses',
+        categoryLabel: 'ชุดเดรส & ชุดเซ็ต',
         price: 490,
         originalPrice: 650,
         badge: 'คุ้มมาก',
-        description: 'ชุดเซ็ตเข้าชุดสุดคุ้ม ได้ทั้งเสื้อกั๊กกระดุมหน้าและกางเกงขาสั้นเอวสูง มีซับใน ใส่แยกชิ้นก็คุ้มสุดๆ',
-        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80',
+        description: 'ชุดเซ็ตเข้าชุดสุดคุ้ม ได้ทั้งเสื้อกั๊กกระดุมหน้าและกางเกงขาสั้นเอวสูง มีซับใน ใส่แยกชิ้นไปแมทช์กับชุดอื่นก็คุ้มสุดๆ',
+        features: [
+          'ได้ครบเซ็ต 2 ชิ้น (เสื้อกั๊ก + กางเกงขาสั้นเข้าชุด)',
+          'กางเกงมีซับในและสม็อกหลังยืดหยุ่นตามเอว',
+          'เนื้อผ้าลินินทอพิเศษ อยู่ทรงสวยตลอดวัน'
+        ],
+        fabricCare: 'ซักเครื่องในถุงถนอมผ้า รีดด้วยไฟกลาง',
+        image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80',
         colors: ['เบจธรรมชาติ', 'เทาอ่อน'],
         sizes: ['S', 'M', 'L']
       },
@@ -758,11 +1060,18 @@
         id: 'bunni-06',
         name: 'เสื้อยืดเบบี้ที (Baby Tee) ปักโลโก้ bunni',
         category: 'shirts',
+        categoryLabel: 'เสื้อเชิ้ต & เสื้อยืด',
         price: 250,
         originalPrice: 320,
         badge: 'Must Have',
-        description: 'เสื้อยืดทรง Baby Tee ผ้าคอตตอนริบยืดหยุ่นสูง ปักลายกระต่าย bunni สุดน่ารักที่อก ทรงสวยเป๊ะ',
-        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=700&q=80',
+        description: 'เสื้อยืดทรง Baby Tee ผ้าคอตตอนริบยืดหยุ่นสูง ปักลายกระต่าย bunni สุดน่ารักที่อก ทรงสวยเป๊ะ ใส่คู่กับกางเกงเอวสูงหรือกระโปรงเทนนิสก็น่ารัก',
+        features: [
+          'ผ้า Cotton Rib 100% นุ่มยืดหยุ่น ระบายอากาศดี',
+          'งานปักโลโก้กระต่าย bunni ละเอียดแน่นไม่หลุดลอก',
+          'ความยาวกำลังดี ไม่เต่อเกินไป'
+        ],
+        fabricCare: 'ซักเครื่องได้ปกติ หลีกเลี่ยงการอบความร้อนสูง',
+        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
         colors: ['ขาว', 'ชมพูเบบี้พิงค์', 'ดำ'],
         sizes: ['S', 'M', 'L']
       },
@@ -770,11 +1079,18 @@
         id: 'bunni-07',
         name: 'กระโปรงเทนนิสพลีท เอวสูง (มีกางเกงซับใน)',
         category: 'pants',
+        categoryLabel: 'กางเกง & กระโปรง',
         price: 320,
         originalPrice: 390,
         badge: 'ฮิตมาก',
-        description: 'กระโปรงจีบรอบทรงสวยเอวสูง ช่วยพรางสะโพก มาพร้อมกางเกงซับในตัวเดียวกัน ขยับตัวมั่นใจ 100%',
-        image: 'https://images.unsplash.com/photo-1582142306909-195724d33ffc?auto=format&fit=crop&w=700&q=80',
+        description: 'กระโปรงจีบรอบทรงสวยเอวสูง ช่วยพรางสะโพก มาพร้อมกางเกงซับในตัวเดียวกัน ขยับตัวมั่นใจ 100% จีบคมสวยไม่แตก',
+        features: [
+          'มีกางเกงซับในเย็บติดในตัว ปลอดภัยไม่โป๊',
+          'อัดจีบคมด้วยเทคนิคพิเศษ ซักแล้วจีบไม่คลาย',
+          'ทรงเอวสูงช่วยเก็บหน้าท้องและพรางต้นขา'
+        ],
+        fabricCare: 'ใส่ถุงถนอมผ้าก่อนซัก ตากโดยใช้ไม้หนีบขอบเอว',
+        image: 'https://images.unsplash.com/photo-1582142306909-195724d33ffc?auto=format&fit=crop&w=800&q=80',
         colors: ['ขาวครีม', 'เทาเกาหลี', 'ดำ'],
         sizes: ['S', 'M', 'L']
       },
@@ -782,11 +1098,18 @@
         id: 'bunni-08',
         name: 'เบลเซอร์ครอปแขนสั้น สไตล์สาวโซล',
         category: 'outerwear',
+        categoryLabel: 'เสื้อคลุม & คาร์ดิแกน',
         price: 550,
         originalPrice: 690,
         badge: 'พรีเมียม',
-        description: 'เบลเซอร์ทรงกึ่งครอปเสริมไหล่บางๆ ให้ลุคดูสมาร์ทแต่ยังน่ารัก มีซับในซาตินลื่นสบายผิว',
-        image: 'https://images.unsplash.com/photo-1548624313-0396c75e4b1a?auto=format&fit=crop&w=700&q=80',
+        description: 'เบลเซอร์ทรงกึ่งครอปเสริมไหล่บางๆ ให้ลุคดูสมาร์ทแต่ยังน่ารัก มีซับในซาตินลื่นสบายผิว ใส่ประชุมหรือใส่เที่ยวก็ดูแพง',
+        features: [
+          'ซับในผ้าซาตินทั้งตัว สวมใส่ลื่นสบายไม่ร้อน',
+          'เสริมฟองน้ำบ่าบางๆ ช่วยให้บุคลิกดูสง่า',
+          'คัตติ้งเนี้ยบระดับงานขึ้นห้าง'
+        ],
+        fabricCare: 'ซักมือหรือซักแห้ง รีดด้วยเตารีดไอน้ำ',
+        image: 'https://images.unsplash.com/photo-1548624313-0396c75e4b1a?auto=format&fit=crop&w=800&q=80',
         colors: ['ครีมเบจ', 'น้ำตาลช็อกโกแลต'],
         sizes: ['S', 'M', 'L']
       }
@@ -797,7 +1120,10 @@
     let searchQuery = '';
     let currentSort = 'popular';
     let promoDiscountRate = 0;
+    let activeQuickViewId = null;
+    let quickViewQty = 1;
     let cart = JSON.parse(localStorage.getItem('bunniwear_cart') || '[]');
+
     // Track selected options per product card
     const selectedOptions = {};
     PRODUCTS.forEach(p => {
@@ -851,6 +1177,9 @@
     function selectProductOption(productId, type, value) {
       selectedOptions[productId][type] = value;
       renderProducts();
+      if (activeQuickViewId === productId) {
+        renderQuickViewContent(productId);
+      }
     }
 
     // Render Products Grid
@@ -884,8 +1213,8 @@
         return `
           <div class="bg-white rounded-3xl border border-bunni-200/70 overflow-hidden shadow-xs hover:shadow-xl transition duration-300 flex flex-col justify-between group">
             <div>
-              <!-- Image Box -->
-              <div class="relative aspect-[4/5] overflow-hidden bg-bunni-100">
+              <!-- Image Box with Quick View Overlay -->
+              <div onclick="openQuickView('${product.id}')" class="relative aspect-[4/5] overflow-hidden bg-bunni-100 cursor-pointer">
                 <img
                   src="${product.image}"
                   alt="${product.name}"
@@ -899,17 +1228,30 @@
                 <span class="absolute top-3.5 right-3.5 bg-rose-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
                   -${Math.round((1 - product.price / product.originalPrice) * 100)}%
                 </span>
+
+                <!-- Hover Quick View Button -->
+                <div class="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition duration-200">
+                  <div class="w-full py-2 px-3 rounded-xl bg-white/95 backdrop-blur-xs text-stone-900 text-xs font-semibold shadow-md flex items-center justify-center gap-1.5">
+                    <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-bunni-600"></i>
+                    <span>ดูรายละเอียดสินค้า (Quick View)</span>
+                  </div>
+                </div>
               </div>
 
               <!-- Details -->
               <div class="p-5">
-                <h3 class="font-bold text-stone-900 text-base line-clamp-1">${product.name}</h3>
+                <h3 onclick="openQuickView('${product.id}')" class="font-bold text-stone-900 text-base line-clamp-1 cursor-pointer hover:text-bunni-600 transition">${product.name}</h3>
                 <p class="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed">${product.description}</p>
 
-                <!-- Price -->
-                <div class="mt-3 flex items-baseline gap-2">
-                  <span class="text-xl font-bold text-bunni-600">฿${product.price.toLocaleString()}</span>
-                  <span class="text-xs text-stone-400 line-through">฿${product.originalPrice.toLocaleString()}</span>
+                <!-- Price & Quick View Link -->
+                <div class="mt-3 flex items-center justify-between">
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-xl font-bold text-bunni-600">฿${product.price.toLocaleString()}</span>
+                    <span class="text-xs text-stone-400 line-through">฿${product.originalPrice.toLocaleString()}</span>
+                  </div>
+                  <button onclick="openQuickView('${product.id}')" class="text-[11px] text-bunni-600 hover:underline font-medium">
+                    ดูเพิ่มเติม →
+                  </button>
                 </div>
 
                 <!-- Color Selector -->
@@ -934,7 +1276,12 @@
 
                 <!-- Size Selector -->
                 <div class="mt-3">
-                  <span class="block text-[11px] text-stone-500 mb-1.5">เลือกไซส์: <strong class="text-stone-800">${sel.size}</strong></span>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[11px] text-stone-500">เลือกไซส์: <strong class="text-stone-800">${sel.size}</strong></span>
+                    <button type="button" onclick="openSizeModal()" class="text-[11px] text-bunni-600 hover:underline flex items-center gap-0.5">
+                      <i data-lucide="ruler" class="w-3 h-3"></i> ตารางไซส์
+                    </button>
+                  </div>
                   <div class="flex flex-wrap gap-1.5">
                     ${product.sizes.map(size => `
                       <button
@@ -957,7 +1304,7 @@
             <!-- Add to Cart Button -->
             <div class="px-5 pb-5">
               <button
-                onclick="addToCart('${product.id}')"
+                onclick="addToCart('${product.id}', 1)"
                 class="w-full py-3 rounded-2xl bg-stone-900 hover:bg-bunni-600 text-white text-xs sm:text-sm font-medium transition flex items-center justify-center gap-2 shadow-xs"
               >
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -971,15 +1318,254 @@
       lucide.createIcons();
     }
 
-    // Add item to Cart
-    function addToCart(productId) {
+    // =========================================================
+    // FEATURE 1 FUNCTIONS: Quick View Modal
+    // =========================================================
+    function openQuickView(productId) {
+      activeQuickViewId = productId;
+      quickViewQty = 1;
+      renderQuickViewContent(productId);
+      const modal = document.getElementById('quickViewModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeQuickView() {
+      activeQuickViewId = null;
+      const modal = document.getElementById('quickViewModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function changeQuickViewQty(delta) {
+      quickViewQty = Math.max(1, quickViewQty + delta);
+      document.getElementById('qvQtyText').textContent = quickViewQty;
+    }
+
+    function renderQuickViewContent(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+      const sel = selectedOptions[productId];
+      const discountPercent = Math.round((1 - product.price / product.originalPrice) * 100);
+
+      const container = document.getElementById('quickViewContent');
+      container.innerHTML = `
+        <!-- Left Image Column -->
+        <div class="relative bg-bunni-100 aspect-[4/5] md:aspect-auto md:h-full">
+          <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
+          ${product.badge ? `
+            <span class="absolute top-4 left-4 bg-stone-900/90 text-white text-xs font-medium px-3.5 py-1 rounded-full">
+              ${product.badge}
+            </span>
+          ` : ''}
+          <span class="absolute bottom-4 left-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+            ประหยัด ${discountPercent}%
+          </span>
+        </div>
+
+        <!-- Right Details Column -->
+        <div class="p-6 sm:p-8 flex flex-col justify-between space-y-5">
+          <div class="space-y-4">
+            <div>
+              <span class="text-xs uppercase tracking-wider text-bunni-600 font-semibold">${product.categoryLabel}</span>
+              <h3 class="text-xl sm:text-2xl font-bold text-stone-900 mt-1">${product.name}</h3>
+              <div class="flex items-center gap-2 mt-1.5">
+                <span class="text-amber-400 text-xs">★★★★★</span>
+                <span class="text-xs text-stone-400">(รีวิว 4.9/5 • สินค้าพร้อมส่ง)</span>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="flex items-baseline gap-3 bg-bunni-50 p-3.5 rounded-2xl border border-bunni-100">
+              <span class="text-2xl sm:text-3xl font-bold text-bunni-600">฿${product.price.toLocaleString()}</span>
+              <span class="text-sm text-stone-400 line-through">฿${product.originalPrice.toLocaleString()}</span>
+              <span class="ml-auto text-[11px] text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full font-medium">มีสินค้าพร้อมส่ง</span>
+            </div>
+
+            <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">${product.description}</p>
+
+            <!-- Highlights List -->
+            <div class="space-y-1.5 pt-1">
+              <p class="text-xs font-semibold text-stone-900">จุดเด่นของรุ่นนี้:</p>
+              <ul class="space-y-1 text-xs text-stone-600">
+                ${product.features.map(f => `
+                  <li class="flex items-start gap-2">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-bunni-600 shrink-0 mt-0.5"></i>
+                    <span>${f}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+
+            <!-- Color Option -->
+            <div class="pt-2 border-t border-stone-100">
+              <span class="block text-xs text-stone-600 mb-2">เลือกสี: <strong class="text-stone-900">${sel.color}</strong></span>
+              <div class="flex flex-wrap gap-2">
+                ${product.colors.map(color => `
+                  <button
+                    type="button"
+                    onclick="selectProductOption('${product.id}', 'color', '${color}')"
+                    class="px-3.5 py-1.5 rounded-xl text-xs border transition ${
+                      sel.color === color
+                        ? 'bg-bunni-100 border-bunni-500 text-bunni-900 font-semibold shadow-2xs'
+                        : 'bg-white border-stone-200 text-stone-600 hover:border-bunni-300'
+                    }"
+                  >
+                    ${color}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Size Option -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-stone-600">เลือกไซส์: <strong class="text-stone-900">${sel.size}</strong></span>
+                <button
+                  type="button"
+                  onclick="openSizeModal()"
+                  class="text-xs text-bunni-600 hover:underline font-medium flex items-center gap-1"
+                >
+                  <i data-lucide="ruler" class="w-3.5 h-3.5"></i>
+                  <span>ดูตารางเทียบไซส์</span>
+                </button>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                ${product.sizes.map(size => `
+                  <button
+                    type="button"
+                    onclick="selectProductOption('${product.id}', 'size', '${size}')"
+                    class="px-4 py-1.5 rounded-xl text-xs border transition ${
+                      sel.size === size
+                        ? 'bg-stone-900 border-stone-900 text-white font-semibold'
+                        : 'bg-white border-stone-200 text-stone-600 hover:border-stone-400'
+                    }"
+                  >
+                    ${size}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-xs text-stone-600">จำนวน:</span>
+              <div class="flex items-center gap-3 bg-stone-100 rounded-xl p-1">
+                <button type="button" onclick="changeQuickViewQty(-1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs text-stone-700 font-bold text-sm hover:bg-stone-50">-</button>
+                <span id="qvQtyText" class="text-xs font-bold w-6 text-center">${quickViewQty}</span>
+                <button type="button" onclick="changeQuickViewQty(1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs text-stone-700 font-bold text-sm hover:bg-stone-50">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="pt-4 border-t border-stone-100 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onclick="addToCart('${product.id}', quickViewQty); closeQuickView();"
+              class="py-3 px-4 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2"
+            >
+              <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+              <span>หยิบใส่ตะกร้า</span>
+            </button>
+            <button
+              type="button"
+              onclick="addToCart('${product.id}', quickViewQty); closeQuickView(); openCheckoutModal();"
+              class="py-3 px-4 rounded-2xl bg-bunni-600 hover:bg-bunni-700 text-white text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 shadow-md shadow-bunni-600/20"
+            >
+              <i data-lucide="zap" class="w-4 h-4"></i>
+              <span>ซื้อเลยทันที</span>
+            </button>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // =========================================================
+    // FEATURE 2 FUNCTIONS: Size Chart & Smart Recommender
+    // =========================================================
+    function openSizeModal() {
+      const modal = document.getElementById('sizeModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeSizeModal() {
+      const modal = document.getElementById('sizeModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function calculateRecommendedSize() {
+      const bust = parseFloat(document.getElementById('calcBust').value);
+      const waist = parseFloat(document.getElementById('calcWaist').value);
+      const resBox = document.getElementById('sizeCalcResult');
+
+      if (!bust || !waist) {
+        resBox.textContent = '⚠️ กรุณากรอกทั้งรอบอกและรอบเอว (นิ้ว) เพื่อคำนวณไซส์นะคะ';
+        resBox.classList.remove('hidden');
+        return;
+      }
+
+      let rec = '';
+      if (bust <= 33 && waist <= 26) {
+        rec = '🎉 ไซส์ที่แนะนำสำหรับคุณคือ: Size S (ใส่พอดีตัวสวยเป๊ะ!) และใส่รุ่น Free Size ได้ค่ะ';
+      } else if (bust <= 36 && waist <= 28) {
+        rec = '🎉 ไซส์ที่แนะนำสำหรับคุณคือ: Size M (ใส่สบายกำลังดี) และใส่รุ่น Free Size ได้ค่ะ';
+      } else if (bust <= 38.5 && waist <= 30.5) {
+        rec = '🎉 ไซส์ที่แนะนำสำหรับคุณคือ: Size L และรุ่นทรง Oversize / Free Size ค่ะ';
+      } else {
+        rec = '✨ แนะนำเป็นรุ่นทรง Oversize / Free Size (รอบอกได้ถึง 42") หรือทักแชท LINE ให้แอดมินช่วยวัดขนาดจริงแต่ละรุ่นได้เลยนะคะ';
+      }
+
+      resBox.textContent = rec;
+      resBox.classList.remove('hidden');
+    }
+
+    // =========================================================
+    // FEATURE 3 FUNCTIONS: Floating LINE Chat Widget
+    // =========================================================
+    function toggleLineWidget(forceState) {
+      const popup = document.getElementById('lineChatPopup');
+      const isHidden = popup.classList.contains('hidden');
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : isHidden;
+
+      if (shouldOpen) {
+        popup.classList.remove('hidden');
+      } else {
+        popup.classList.add('hidden');
+      }
+    }
+
+    function copyLineId() {
+      navigator.clipboard.writeText('@bunniwear').then(() => {
+        showToast('คัดลอก LINE ID: @bunniwear เรียบร้อยแล้วค่ะ!');
+      });
+    }
+
+    function sendLineTopic(messageText) {
+      navigator.clipboard.writeText(messageText).then(() => {
+        showToast('คัดลอกข้อความแล้ว! กำลังเปิด LINE @bunniwear...');
+        setTimeout(() => {
+          window.open('https://line.me/R/ti/p/@bunniwear', '_blank');
+        }, 700);
+      });
+    }
+
+    // =========================================================
+    // Cart & Checkout Functions
+    // =========================================================
+    function addToCart(productId, quantity = 1) {
       const product = PRODUCTS.find(p => p.id === productId);
       const sel = selectedOptions[productId];
       const cartKey = `${product.id}_${sel.color}_${sel.size}`;
 
       const existing = cart.find(item => item.cartKey === cartKey);
       if (existing) {
-        existing.qty += 1;
+        existing.qty += quantity;
       } else {
         cart.push({
           cartKey,
@@ -989,12 +1575,12 @@
           image: product.image,
           color: sel.color,
           size: sel.size,
-          qty: 1
+          qty: quantity
         });
       }
 
       saveCart();
-      showToast(`เพิ่ม "${product.name}" (${sel.color}/${sel.size}) ลงตะกร้าแล้ว!`);
+      showToast(`เพิ่ม "${product.name}" (${sel.color}/${sel.size}) x${quantity} ลงตะกร้าแล้ว!`);
     }
 
     function updateQty(cartKey, delta) {
@@ -1037,7 +1623,6 @@
       const banner = document.getElementById('freeShippingBanner');
       const { subtotal, discount, shipping, total } = calculateTotals();
 
-      // Free shipping progress message
       const remainingForFreeShip = Math.max(0, 990 - (subtotal - discount));
       if (subtotal === 0) {
         banner.innerHTML = '🚚 ช้อปครบ <strong>฿990</strong> รับสิทธิ์ส่งด่วนฟรีทั่วไทย!';
@@ -1058,7 +1643,7 @@
       } else {
         container.innerHTML = cart.map(item => `
           <div class="flex gap-3.5 p-3 rounded-2xl bg-bunni-50/60 border border-bunni-100">
-            <img src="${item.image}" alt="${item.name}" class="w-18 h-22 object-cover rounded-xl shrink-0 bg-stone-200" style="width: 70px; height: 88px;" />
+            <img src="${item.image}" alt="${item.name}" class="object-cover rounded-xl shrink-0 bg-stone-200" style="width: 70px; height: 88px;" />
             <div class="flex-1 min-w-0">
               <h4 class="text-xs font-semibold text-stone-900 truncate">${item.name}</h4>
               <p class="text-[11px] text-stone-500 mt-0.5">สี: ${item.color} | ไซส์: ${item.size}</p>
