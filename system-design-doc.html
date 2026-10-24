@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เอกสารวิเคราะห์และออกแบบระบบ (System Analysis & Design) - โครงการ bunniwear</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Prompt & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Mermaid JS for Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <!-- html2pdf.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            bunni: {
+              50: '#fdf8f6',
+              100: '#fbefe9',
+              200: '#f7dfd5',
+              300: '#f0c4b3',
+              400: '#e69f86',
+              500: '#da7b5b',
+              600: '#c86040',
+              700: '#a74c32',
+              800: '#8a402c',
+              900: '#713727',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #e7e5e4;
+      color: #1c1917;
+    }
+    .doc-page {
+      background: #ffffff;
+      max-width: 210mm;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
+      }
+      body {
+        background: #ffffff !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .doc-page {
+        box-shadow: none !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .avoid-break {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="py-6 sm:py-10 px-2 sm:px-6">
+
+  <!-- Top Floating Control Bar (Hidden when printing) -->
+  <div class="no-print max-w-[210mm] mx-auto mb-6 bg-stone-900 text-white rounded-3xl p-4 sm:px-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-bunni-500 flex items-center justify-center text-xl">📘</div>
+      <div>
+        <h1 class="font-bold text-sm sm:text-base">เอกสารวิเคราะห์และออกแบบระบบ (System Analysis & Design)</h1>
+        <p class="text-xs text-stone-400">คลิกแก้ไขชื่อผู้จัดทำบนเอกสารได้โดยตรง • พร้อมพิมพ์ขนาด A4 หรือบันทึกเป็น PDF</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2.5">
+      <a
+        href="index.html"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-medium transition"
+      >
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>กลับหน้าร้าน bunniwear</span>
+      </a>
+      <button
+        onclick="window.print()"
+        class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-stone-100 text-stone-900 text-xs font-semibold transition shadow-sm"
+      >
+        <i data-lucide="printer" class="w-4 h-4 text-bunni-600"></i>
+        <span>พิมพ์เอกสาร / Save as PDF (คมชัดสูงสุด)</span>
+      </button>
+      <button
+        id="downloadDocPdfBtn"
+        onclick="downloadDocumentPdf()"
+        class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-bunni-500 hover:bg-bunni-600 text-white text-xs font-semibold transition shadow-sm"
+      >
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>ดาวน์โหลดไฟล์ PDF</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Printable A4 Report Container -->
+  <main id="reportContainer" class="doc-page rounded-2xl sm:rounded-none p-6 sm:p-12 space-y-8">
+
+    <!-- Report Header / Cover Banner -->
+    <div class="border-b-2 border-stone-900 pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bunni-100 text-bunni-800 text-xs font-semibold mb-2">
+          <span>🐰 SYSTEM ANALYSIS & DESIGN DOCUMENT</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-stone-900">เอกสารวิเคราะห์และออกแบบระบบ</h1>
+        <p class="text-sm sm:text-base text-bunni-700 font-semibold mt-1">
+          โครงการ: ระบบหน้าเว็บขายเสื้อผ้าแฟชั่นและออกใบเสนอราคาออนไลน์ (bunniwear)
+        </p>
+      </div>
+
+      <div class="text-xs text-stone-600 bg-stone-50 p-3.5 rounded-2xl border border-stone-200 w-full sm:w-auto space-y-1">
+        <p contenteditable="true" class="focus:outline-none focus:bg-bunni-50 px-1 rounded"><strong>ผู้จัดทำ:</strong> ทีมพัฒนาโปรเจกต์ bunniwear (คลิกเพื่อแก้ไขชื่อ)</p>
+        <p contenteditable="true" class="focus:outline-none focus:bg-bunni-50 px-1 rounded"><strong>วันที่จัดทำ:</strong> 24 ตุลาคม 2569</p>
+        <p><strong>Repository:</strong> github.com/bunniwear04-star/bunniwear</p>
+      </div>
+    </div>
+
+    <!-- Section 0: Overview Diagram from Whiteboard -->
+    <section class="avoid-break space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-stone-900 text-white font-bold text-xs flex items-center justify-center">0</span>
+        <h2 class="text-lg font-bold text-stone-900">โครงสร้างกระบวนการพัฒนาระบบ (ตามผังกระดานไวท์บอร์ด)</h2>
+      </div>
+      <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+        แผนผังแสดงลำดับขั้นตอนการวิเคราะห์และออกแบบระบบ ตั้งแต่การตั้งโจทย์ปัญหา (<code>?</code>) การทบทวนความต้องการ (<code>Review</code>) การกำหนดกรณีการใช้งาน (<code>Use Case</code>) แยกเป็นความต้องการทางฟังก์ชัน (<code>FR</code>) และไม่ใช่ฟังก์ชัน (<code>NF</code> / <code>HW</code>) นำไปสู่การออกแบบ (<code>DFD</code>, <code>ERD</code>, <code>UX/UI</code>, <code>Flowchart</code>) การพัฒนา (<code>Dev</code>) และการทดสอบย้อนกลับ (<code>Testing</code>):
+      </p>
+
+      <!-- Visual Flowchart matching the Whiteboard -->
+      <div class="p-5 rounded-2xl bg-bunni-50/70 border border-bunni-200 text-center">
+        <div class="mermaid">
+flowchart TD
+    Q["1. ? โจทย์ปัญหาและที่มาของโครงการ"]
+    REV["Review (ทบทวนความต้องการ)"]
+    UC["2. Use Case (กรณีการใช้งานระบบ)"]
+    FR["3.1 FR (Functional Requirements)"]
+    NF["3.2 NF (Non-Functional Requirements)"]
+    HW["4. HW (Hardware & Environment)"]
+    DESIGN["5. การออกแบบระบบ (DFD / ERD / UX-UI / Flowchart)"]
+    DEV["6. Dev (พัฒนาโปรแกรมด้วย HTML / Tailwind / JS)"]
+    TEST["7. Testing (ทดสอบระบบเทียบกับ Use Case)"]
+
+    Q --> UC
+    REV -.->|"ตรวจสอบและปรับปรุง"| UC
+    UC --> FR
+    UC --> NF
+    NF --> HW
+    FR --> DESIGN
+    DESIGN --> DEV
+    DEV --> TEST
+    TEST -->|"Verify ย้อนกลับ"| UC
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: Problem Statement (?) & Review -->
+    <section class="avoid-break space-y-3 pt-2 border-t border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-bunni-600 text-white font-bold text-xs flex items-center justify-center">1</span>
+        <h2 class="text-lg font-bold text-stone-900">โจทย์ปัญหาและที่มาของโครงการ (<code>?</code> และ <code>Review</code>)</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
+          <h3 class="font-bold text-stone-900 flex items-center gap-1.5">
+            <span>❓</span> <span>ที่มาของปัญหา (Problem Statement)</span>
+          </h3>
+          <p class="text-stone-600 leading-relaxed">
+            ร้านเสื้อผ้าแฟชั่นสไตล์เกาหลี-มินิมอล <strong>bunniwear</strong> ต้องการระบบหน้าร้านออนไลน์ที่ช่วยให้ลูกค้าเลือกชมสินค้า เลือกสีและไซส์ คำนวณส่วนลด สรุปยอดสั่งซื้อส่งทาง LINE และสามารถออก <strong>ใบเสนอราคา (Quotation) ขนาด A4 เป็นไฟล์ PDF</strong> ได้ทันที โดยไม่ต้องพึ่งพาระบบฐานข้อมูลหรือเซิร์ฟเวอร์หลังบ้าน (No Backend) เพื่อประหยัดค่าใช้จ่ายและดูแลรักษาง่าย
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1.5">
+          <h3 class="font-bold text-stone-900 flex items-center gap-1.5">
+            <span>🔍</span> <span>การทบทวนความต้องการ (Review)</span>
+          </h3>
+          <ul class="list-disc list-inside text-stone-600 space-y-1 leading-relaxed">
+            <li>ทำงานจบในไฟล์ <code>index.html</code> เพียงไฟล์เดียว เปิดใช้งานได้ทันที</li>
+            <li>จดจำรายการสินค้าในตะกร้าได้แม้ปิดหรือรีเฟรชหน้าเว็บด้วย <code>LocalStorage</code></li>
+            <li>มีระบบช่วยคำนวณไซส์อัตโนมัติ และหน้าต่างดูรายละเอียดสินค้าแบบขยาย (Quick View)</li>
+            <li>รองรับทั้งลูกค้าซื้อปลีก และลูกค้าองค์กรที่ต้องการใบเสนอราคา PDF</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Use Case -->
+    <section class="avoid-break space-y-3 pt-2 border-t border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-bunni-600 text-white font-bold text-xs flex items-center justify-center">2</span>
+        <h2 class="text-lg font-bold text-stone-900">กรณีการใช้งานระบบ (<code>Use Case Diagram</code>)</h2>
+      </div>
+      <p class="text-xs sm:text-sm text-stone-600">
+        กำหนดขอบเขตการใช้งานระหว่างผู้ใช้งาน (<strong>ลูกค้า / ผู้ขอใบเสนอราคา</strong>) กับระบบหน้าร้าน <strong>bunniwear</strong> ทั้ง 7 กรณีการใช้งานหลัก:
+      </p>
+
+      <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-center">
+        <div class="mermaid">
+flowchart LR
+    Customer(["👤 ลูกค้า / ผู้สั่งซื้อ"])
+    subgraph System ["ระบบหน้าร้าน bunniwear"]
+        UC1["UC01: ค้นหาและกรองหมวดหมู่เสื้อผ้า"]
+        UC2["UC02: ดูรายละเอียดสินค้าแบบขยาย (Quick View)"]
+        UC3["UC03: เปิดตารางเทียบไซส์และคำนวณไซส์อัตโนมัติ"]
+        UC4["UC04: เลือกสี/ไซส์ และจัดการตะกร้าสินค้า"]
+        UC5["UC05: ใช้โค้ดส่วนลด BUNNI10 และคำนวณค่าส่ง"]
+        UC6["UC06: ออกใบเสนอราคา A4 (สั่งพิมพ์ / ดาวน์โหลด PDF)"]
+        UC7["UC07: ยืนยันคำสั่งซื้อและคัดลอกใบสรุปส่ง LINE"]
+    end
+    Customer --> UC1
+    Customer --> UC2
+    Customer --> UC3
+    Customer --> UC4
+    Customer --> UC5
+    Customer --> UC6
+    Customer --> UC7
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: FR & NF + Section 4: HW -->
+    <section class="avoid-break space-y-4 pt-2 border-t border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-bunni-600 text-white font-bold text-xs flex items-center justify-center">3</span>
+        <h2 class="text-lg font-bold text-stone-900">ความต้องการของระบบ (<code>FR</code> & <code>NF</code>) และอุปกรณ์ (<code>HW</code>)</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <!-- FR Box -->
+        <div class="p-4 rounded-2xl bg-bunni-50/60 border border-bunni-200 space-y-2">
+          <h3 class="font-bold text-sm text-bunni-900">3.1 Functional Requirements (FR: ระบบทำอะไรได้บ้าง)</h3>
+          <ol class="list-decimal list-inside space-y-1.5 text-stone-700 leading-relaxed">
+            <li><strong>ระบบแคตตาล็อกและค้นหา:</strong> กรองสินค้าตาม 5 หมวดหมู่ ค้นหาชื่อสินค้า และเรียงลำดับตามราคา/ความนิยม</li>
+            <li><strong>ระบบ Quick View:</strong> แสดงป๊อปอัปภาพขนาดใหญ่ จุดเด่นเนื้อผ้า เลือกสี ไซส์ และจำนวนชิ้น</li>
+            <li><strong>ระบบตารางไซส์อัจฉริยะ:</strong> รับค่ารอบอกและรอบเอว (นิ้ว) เพื่อประมวลผลแนะนำไซส์ (<code>S</code>, <code>M</code>, <code>L</code>, <code>Free Size</code>)</li>
+            <li><strong>ระบบตะกร้าและโปรโมชั่น:</strong> เพิ่ม/ลดจำนวนสินค้า คำนวณสิทธิ์ส่งฟรีเมื่อครบ ฿990 และลด 10% เมื่อใช้โค้ด <code>BUNNI10</code></li>
+            <li><strong>ระบบใบเสนอราคา (Quotation PDF):</strong> กรอกชื่อลูกค้า/บริษัท เลขผู้เสียภาษี คำนวณ VAT 7% แปลงยอดเงินเป็นตัวอักษรไทย และพิมพ์/โหลด PDF ขนาด A4</li>
+            <li><strong>ระบบสรุปออเดอร์และแชท LINE:</strong> สร้างใบสรุปคำสั่งซื้อพร้อมปุ่มลอยแชท LINE <code>@bunniwear</code></li>
+          </ol>
+        </div>
+
+        <!-- NF & HW Box -->
+        <div class="space-y-4">
+          <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+            <h3 class="font-bold text-sm text-stone-900">3.2 Non-Functional Requirements (NF: คุณภาพของระบบ)</h3>
+            <ul class="list-disc list-inside space-y-1 text-stone-700 leading-relaxed">
+              <li><strong>Performance:</strong> โหลดหน้าเว็บไว คำนวณราคาและสลับหมวดหมู่แบบ Real-time ทันทีโดยไม่รีโหลดหน้า</li>
+              <li><strong>Responsiveness:</strong> รองรับการแสดงผลทั้งมือถือ แท็บเล็ต และคอมพิวเตอร์</li>
+              <li><strong>Persistence:</strong> บันทึกข้อมูลตะกร้าลงใน <code>LocalStorage</code> ของเบราว์เซอร์อัตโนมัติ</li>
+              <li><strong>Portability:</strong> ไม่ต้องใช้เซิร์ฟเวอร์ฐานข้อมูลหลังบ้าน โฮสต์ฟรีบน GitHub Pages ได้ทันที</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+            <h3 class="font-bold text-sm text-stone-900">4. Hardware & Environment (HW: สเปกเครื่องและสภาพแวดล้อม)</h3>
+            <ul class="list-disc list-inside space-y-1 text-stone-700 leading-relaxed">
+              <li><strong>ฝั่งผู้ใช้งาน (Client):</strong> สมาร์ทโฟน (iOS/Android) หรือคอมพิวเตอร์ทั่วไปที่มีเว็บเบราว์เซอร์ (RAM ขั้นต่ำ 2 GB)</li>
+              <li><strong>ฝั่งนักพัฒนา (Dev PC):</strong> คอมพิวเตอร์ที่บ้านและที่ทำงาน เชื่อมต่อผ่าน Git และ GitHub Desktop</li>
+              <li><strong>Hosting:</strong> GitHub Repository (<code>bunniwear04-star/bunniwear</code>)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: System Design (DFD, ERD, UX/UI, Flowchart) -->
+    <section class="space-y-5 pt-2 border-t border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-bunni-600 text-white font-bold text-xs flex items-center justify-center">5</span>
+        <h2 class="text-lg font-bold text-stone-900">การออกแบบระบบ (<code>DFD</code>, <code>ERD</code>, <code>UX/UI</code>, <code>Flowchart</code>)</h2>
+      </div>
+
+      <!-- 5.1 DFD -->
+      <div class="avoid-break space-y-2">
+        <h3 class="text-sm font-bold text-stone-800">5.1 แผนภาพกระแสข้อมูล (Data Flow Diagram: DFD)</h3>
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-center">
+          <div class="mermaid">
+flowchart TD
+    Customer(["👤 ลูกค้า (Customer)"])
+    Admin(["💬 แอดมินร้าน (LINE @bunniwear)"])
+
+    P1("1.0 ระบบแสดงผลและค้นหาสินค้า")
+    P2("2.0 ระบบจัดการตะกร้าและคำนวณราคา")
+    P3("3.0 ระบบออกใบเสนอราคา A4 / PDF")
+    P4("4.0 ระบบสรุปคำสั่งซื้อ (Checkout)")
+
+    DS1[("D1: ข้อมูลสินค้า (PRODUCTS)")]
+    DS2[("D2: ตะกร้าสินค้า (LocalStorage)")]
+
+    Customer -->|"คำค้นหา / หมวดหมู่ / สี-ไซส์"| P1
+    DS1 -->|"ข้อมูลเสื้อผ้าและราคา"| P1
+    P1 -->|"แสดงรายการสินค้า & Quick View"| Customer
+
+    Customer -->|"หยิบสินค้าใส่ตะกร้า / โค้ด BUNNI10"| P2
+    P2 <-->|"บันทึก / อ่านรายการในตะกร้า"| DS2
+    P2 -->|"ยอดรวมสุทธิ & สถานะส่งฟรี"| Customer
+
+    Customer -->|"ชื่อบริษัท / ที่อยู่ / VAT 7%"| P3
+    DS2 -->|"รายการสินค้าที่เลือก"| P3
+    P3 -->|"ไฟล์ PDF / เอกสารพิมพ์ A4"| Customer
+
+    Customer -->|"ชื่อ-ที่อยู่จัดส่ง / วิธีชำระเงิน"| P4
+    DS2 -->|"รายการสินค้าและยอดสุทธิ"| P4
+    P4 -->|"ใบสรุปคำสั่งซื้อ (#BNW-XXXXXX)"| Customer
+    Customer -->|"คัดลอกใบสั่งซื้อส่งแชท"| Admin
+          </div>
+        </div>
+      </div>
+
+      <!-- 5.2 ERD -->
+      <div class="avoid-break space-y-2">
+        <h3 class="text-sm font-bold text-stone-800">5.2 แผนภาพความสัมพันธ์ของข้อมูล (Entity Relationship Diagram: ERD)</h3>
+        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-center">
+          <div class="mermaid">
+erDiagram
+    CATEGORY ||--o{ PRODUCT : "contains"
+    PRODUCT ||--o{ CART_ITEM : "selected_as"
+    CART_ITEM }o--|| QUOTATION_ORDER : "included_in"
+
+    CATEGORY {
+        string id PK
+        string name
+    }
+    PRODUCT {
+        string id PK
+        string name
+        string category FK
+        number price
+        number originalPrice
+        string_array colors
+        string_array sizes
+    }
+    CART_ITEM {
+        string cartKey PK
+        string id FK
+        string name
+        number price
+        string color
+        string size
+        number qty
+    }
+    QUOTATION_ORDER {
+        string docNo PK
+        string customerName
+        string taxId
+        string phone
+        string address
+        boolean includeVat
+        number grandTotal
+    }
+          </div>
+        </div>
+      </div>
+
+      <!-- 5.3 UX/UI & 5.4 Flowchart -->
+      <div class="avoid-break grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+        <div class="md:col-span-5 p-4 rounded-2xl bg-bunni-50/60 border border-bunni-200 text-xs space-y-2">
+          <h3 class="text-sm font-bold text-stone-900">5.3 การออกแบบ UX/UI</h3>
+          <ul class="list-disc list-inside space-y-1.5 text-stone-700 leading-relaxed">
+            <li><strong>Mood & Tone:</strong> สไตล์ <em>Seoul Minimal Studio</em> ใช้สีครีมพาสเทล (<code>#fdf8f6</code>) และสีโรสโกลด์-พีช (<code>#da7b5b</code>)</li>
+            <li><strong>Typography:</strong> ใช้ฟอนต์ <code>Playfair Display</code> สำหรับโลโก้แบรนด์ และฟอนต์ <code>Prompt</code> สำหรับภาษาไทย</li>
+            <li><strong>Single-Page Experience:</strong> เลือกสี/ไซส์บนการ์ดได้ทันที มีแถบแจ้งเตือนยอดส่งฟรีอัตโนมัติในตะกร้า</li>
+            <li><strong>Print-First Quotation:</strong> ใช้ <code>@media print</code> ซ่อนปุ่มหน้าเว็บทั้งหมดเมื่อสั่งพิมพ์ เหลือเฉพาะกระดาษใบเสนอราคา A4</li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-7 p-4 rounded-2xl bg-stone-50 border border-stone-200 text-center">
+          <h3 class="text-sm font-bold text-stone-800 text-left mb-2">5.4 ผังงานการทำงาน (System Flowchart)</h3>
+          <div class="mermaid">
+flowchart TD
+    Start(["เริ่มต้น: เปิดหน้าเว็บ bunniwear"])
+    Browse["เลือกชมสินค้า / กรองหมวดหมู่ / เช็คไซส์"]
+    Add["เลือกสี-ไซส์ และกดหยิบใส่ตะกร้า (บันทึก LocalStorage)"]
+    Choice{"เลือกรูปแบบการทำรายการ"}
+    Quote["เปิดใบเสนอราคา -> กรอกชื่อบริษัท/VAT -> พิมพ์/โหลด PDF"]
+    Order["เปิดหน้าสั่งซื้อ -> กรอกที่อยู่ -> คัดลอกบิลส่ง LINE"]
+    End(["จบการทำงาน"])
+
+    Start --> Browse --> Add --> Choice
+    Choice -->|"ออกใบเสนอราคา"| Quote --> End
+    Choice -->|"สั่งซื้อสินค้า"| Order --> End
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Dev & Section 7: Testing -->
+    <section class="avoid-break space-y-4 pt-2 border-t border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-bunni-600 text-white font-bold text-xs flex items-center justify-center">6</span>
+        <h2 class="text-lg font-bold text-stone-900">การพัฒนาโปรแกรม (<code>Dev</code>) และการทดสอบระบบ (<code>Testing</code>)</h2>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs space-y-1.5">
+        <h3 class="font-bold text-sm text-stone-900">🛠️ 6. การพัฒนาโปรแกรม (Development Stack)</h3>
+        <p class="text-stone-600 leading-relaxed">
+          พัฒนาด้วย <strong>HTML5, Tailwind CSS, Vanilla JavaScript (ES6+), Lucide Icons</strong> และ <strong>html2pdf.js</strong> โดยรวมโค้ดไว้ในไฟล์ <code>index.html</code> เพียงไฟล์เดียว พร้อมฟังก์ชันแปลงจำนวนเงินเป็นตัวอักษรภาษาไทย (<code>numberToThaiBahtText</code>) และบริหารจัดการโค้ดร่วมกันระหว่างคอมพิวเตอร์ที่บ้านและที่ทำงานผ่าน <strong>GitHub (SSH Key Authentication)</strong>
+        </p>
+      </div>
+
+      <!-- Testing Table -->
+      <div class="space-y-2">
+        <h3 class="font-bold text-sm text-stone-900">✅ 7. ตารางการทดสอบระบบเทียบกับ Use Case (Testing & Verification)</h3>
+        <div class="overflow-x-auto rounded-2xl border border-stone-200">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-stone-900 text-white">
+                <th class="py-2.5 px-3 font-semibold w-16">รหัส</th>
+                <th class="py-2.5 px-3 font-semibold">Use Case ที่ตรวจสอบย้อนกลับ</th>
+                <th class="py-2.5 px-3 font-semibold">วิธีการทดสอบ (Test Scenario)</th>
+                <th class="py-2.5 px-3 font-semibold">ผลลัพธ์ที่ได้</th>
+                <th class="py-2.5 px-3 font-semibold text-center w-20">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-stone-200 bg-white">
+              <tr>
+                <td class="py-2.5 px-3 font-semibold">TC01</td>
+                <td class="py-2.5 px-3">UC01: ค้นหาและกรองสินค้า</td>
+                <td class="py-2.5 px-3 text-stone-600">คลิกหมวดหมู่ "ชุดเดรส" และค้นหาคำว่า "ลินิน"</td>
+                <td class="py-2.5 px-3 text-stone-600">แสดงรายการสินค้าตรงตามเงื่อนไขทันที</td>
+                <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-semibold">TC02</td>
+                <td class="py-2.5 px-3">UC02: ดูรายละเอียด (Quick View)</td>
+                <td class="py-2.5 px-3 text-stone-600">คลิกที่รูปสินค้าเพื่อเปิดป๊อปอัปขยาย</td>
+                <td class="py-2.5 px-3 text-stone-600">แสดงภาพใหญ่ จุดเด่นเนื้อผ้า เลือกสี/ไซส์ได้ครบ</td>
+                <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-semibold">TC03</td>
+                <td class="py-2.5 px-3">UC03: ตารางไซส์ & คำนวณไซส์</td>
+                <td class="py-2.5 px-3 text-stone-600">กรอกรอบอก 33" รอบเอว 26" แล้วกดคำนวณ</td>
+                <td class="py-2.5 px-3 text-stone-600">แนะนำ Size S และ Free Size ถูกต้อง</td>
+                <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-semibold">TC04</td>
+                <td class="py-2.5 px-3">UC04-05: ตะกร้า & โค้ดส่วนลด</td>
+                <td class="py-2.5 px-3 text-stone-600">เพิ่มสินค้า ใส่โค้ด <code>BUNNI10</code> และรีเฟรชหน้าเว็บ</td>
+                <td class="py-2.5 px-3 text-stone-600">ลด 10% คำนวณส่งฟรีถูกต้อง ข้อมูลไม่หาย</td>
+                <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-semibold">TC05</td>
+                <td class="py-2.5 px-3">UC06: ออกใบเสนอราคา PDF</td>
+                <td class="py-2.5 px-3 text-stone-600">กรอกชื่อบริษัท ติ๊ก VAT 7% กดดาวน์โหลด PDF</td>
+                <td class="py-2.5 px-3 text-stone-600">ได้ไฟล์ PDF ขนาด A4 พร้อมคำอ่านบาทไทย</td>
+                <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-semibold">TC06</td>
+                <td class="py-2.5 px-3">UC07: สรุปคำสั่งซื้อส่ง LINE</td>
+                <td class="py-2.5 px-3 text-stone-600">กรอกที่อยู่จัดส่งและกดคัดลอกใบสรุปออเดอร์</td>
+                <td class="py-2.5 px-3 text-stone-600">คัดลอกข้อความบิลพร้อมส่ง LINE ได้ทันที</td>
+                <td class="py-2.5 px-3 text-center text-emerald-700 font-bold">ผ่าน ✓</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Prompt, sans-serif'
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+
+    async function downloadDocumentPdf() {
+      const btn = document.getElementById('downloadDocPdfBtn');
+      const original = btn.innerHTML;
+      btn.innerHTML = '<span>กำลังสร้างไฟล์ PDF...</span>';
+      btn.disabled = true;
+
+      try {
+        const element = document.getElementById('reportContainer');
+        const opt = {
+          margin: [8, 8, 8, 8],
+          filename: 'Bunniwear-System-Analysis-and-Design.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await html2pdf().set(opt).from(element).save();
+      } catch (e) {
+        console.error(e);
+        window.print();
+      } finally {
+        btn.innerHTML = original;
+        btn.disabled = false;
+        lucide.createIcons();
+      }
+    }
+  </script>
+</body>
+</html>
