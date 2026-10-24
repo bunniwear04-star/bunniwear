@@ -22,13 +22,10 @@
       font-style: normal;
     }
 
-    /* ตั้งค่าหน้ากระดาษ A4 เว้นขอบซ้าย 1.5 นิ้ว (38.1 มม.) เผื่อเย็บเล่ม */
+    /* ตั้งค่า @page margin: 0 เพื่อบังคับปิดวันที่/ชื่อไฟล์ (Header & Footer) ของเบราว์เซอร์อัตโนมัติ */
     @page {
       size: A4 portrait;
-      margin-top: 13mm;
-      margin-right: 24mm;
-      margin-bottom: 13mm;
-      margin-left: 38.1mm; /* เว้นพื้นที่ด้านซ้ายเผื่อเย็บเล่ม 1.5 นิ้ว */
+      margin: 0mm !important;
     }
 
     * {
@@ -56,10 +53,6 @@
         width: 210mm;
         margin: 0 auto;
         background: #ffffff;
-        padding-top: 18mm;
-        padding-right: 24mm;
-        padding-bottom: 18mm;
-        padding-left: 38.1mm;
         box-shadow: 0 8px 28px rgba(0,0,0,0.18);
       }
       .screen-toolbar {
@@ -84,9 +77,11 @@
         cursor: pointer;
       }
       .report-page {
+        padding-top: 13mm;
+        padding-right: 24mm;
+        padding-bottom: 13mm;
+        padding-left: 38.1mm; /* เว้นพื้นที่ด้านซ้ายเผื่อเย็บเล่ม 1.5 นิ้ว */
         border-bottom: 1px dashed #d6d3d1;
-        padding-bottom: 14mm;
-        margin-bottom: 14mm;
       }
     }
 
@@ -95,18 +90,21 @@
         display: none !important;
       }
       .paper-container {
-        width: 100%;
-        padding: 0 2mm 0 0;
+        width: 210mm;
+        padding: 0;
         margin: 0;
         box-shadow: none;
       }
       .report-page {
+        width: 210mm;
+        padding-top: 13mm;
+        padding-right: 24mm;
+        padding-bottom: 13mm;
+        padding-left: 38.1mm; /* เว้นพื้นที่ด้านซ้ายเผื่อเย็บเล่ม 1.5 นิ้ว */
         page-break-after: always;
         break-after: page;
         border-bottom: none;
-        padding-bottom: 0;
-        padding-right: 1mm;
-        margin-bottom: 0;
+        margin: 0;
       }
       .report-page:last-child {
         page-break-after: auto;
